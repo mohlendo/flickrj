@@ -15,7 +15,7 @@ public class UploadMetaData {
     private String description;
     private Collection tags;
     private boolean publicFlag;
-    private boolean friendsFlag;
+    private boolean friendFlag;
     private boolean familyFlag;
 
     public String getEmail() {
@@ -66,12 +66,12 @@ public class UploadMetaData {
         this.publicFlag = publicFlag;
     }
 
-    public boolean isFriendsFlag() {
-        return friendsFlag;
+    public boolean isFriendFlag() {
+        return friendFlag;
     }
 
-    public void setFriendsFlag(boolean friendsFlag) {
-        this.friendsFlag = friendsFlag;
+    public void setFriendFlag(boolean friendFlag) {
+        this.friendFlag = friendFlag;
     }
 
     public boolean isFamilyFlag() {

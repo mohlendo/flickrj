@@ -75,7 +75,7 @@ public class Uploader {
 
         parameters.add(new Parameter("is_public", metaData.isPublicFlag() ? "1" : "0"));
         parameters.add(new Parameter("is_family", metaData.isFamilyFlag() ? "1" : "0"));
-        parameters.add(new Parameter("is_friends", metaData.isFriendsFlag() ? "1" : "0"));
+        parameters.add(new Parameter("is_friend", metaData.isFriendFlag() ? "1" : "0"));
 
         parameters.add(new Parameter("photo", data));
 
