@@ -85,7 +85,7 @@ public class TestInterface {
             User user = new User();
             user.setId(userElement.getAttribute("id"));
 
-            Element usernameElement = (Element) userElement.getFirstChild();
+            Element usernameElement = (Element) userElement.getElementsByTagName("username").item(0);
             user.setUsername(((Text)usernameElement.getFirstChild()).getData());
 
             return user;
