@@ -1,0 +1,3 @@
+flickrj is built with Ant.  Install the current version of Ant, cd into the flickrj/api directory and type 'ant'.
+
+To execute tests cd into flickrj/api/test and type 'ant test'.

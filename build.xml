@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<project name="Blazon Core" default="build" basedir=".">
+<project name="flickrj API" default="build" basedir=".">
 
 	<property file="build.properties"/>
 
@@ -43,10 +43,6 @@
 		<jar 
 			jarfile="${build.dir}/${vname}.jar" 
 			basedir="${build.classes}">
-            <manifest>
-                <attribute name="Class-Path" value="" />
-                <attribute name="Main-Class" value="com.aetrion.flickr.FlickrTest"/>
-            </manifest>
 			<include name="**/*"/>
 		</jar>
 	</target>
@@ -103,13 +99,11 @@
 	<!-- ==================================================== -->
 
 	<target name="dist" depends="clean, build, javadocs">
-		<!--
 		<copy file="README.txt" todir="${build.dir}"/>
 		<copy file="LICENSE.txt" todir="${build.dir}"/>
 		<copy file="CHANGELOG.txt" todir="${build.dir}"/>
 		<copy file="BUILDING.txt" todir="${build.dir}"/>
 		<copy file="CONTRIB.txt" todir="${build.dir}"/>
-		-->
 		
 		<copy todir="${build.docs}">
 			<fileset dir="${docs.dir}"/>
