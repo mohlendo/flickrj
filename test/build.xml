@@ -5,6 +5,7 @@
 	<property file="build.properties"/>
 
 	<path id="build.classpath">
+        <pathelement location="${api.dir}/flickrapi-0.1.jar"/>
 		<pathelement location="${lib.dir}/${junit.jar}"/>
 	</path>
 	
@@ -103,18 +104,14 @@
 		<junit printsummary="on" showoutput="on">
             <formatter type="plain"/>
 			<classpath>
-				<pathelement location="${edenlib.dir}/${edenlib.jar}"/>
-				<pathelement location="${edenlib.lib.dir}/${commons-logging.jar}"/>
-                <pathelement location="${lib.dir}/${mockobjects-core.jar}"/>
-                <pathelement location="${lib.dir}/${mockobjects-jdk.jar}"/>
-                <pathelement location="${lib.dir}/${mockobjects-j2ee.jar}"/>
-                <pathelement location="${build.lib}/${vname}.jar"/>
+                <pathelement location="${api.dir}/flickrapi-0.1.jar"/>
+				<pathelement location="${build.lib}/${vname}.jar"/>
 			</classpath>
-            <!--  
-            <test name="com.anthonyeden.lib.config.sax.SAXConfigurationFactoryTest"/>
-            <test name="com.anthonyeden.lib.util.MessageUtilitiesTest"/>
-            -->
-            <test name="com."/>
+            <test name="com.aetrion.flickr.BlogsInterfaceTest"/>
+            <test name="com.aetrion.flickr.ContactsInterfaceTest"/>
+            <test name="com.aetrion.flickr.FavoritesInterfaceTest"/>
+            <test name="com.aetrion.flickr.GroupsInterfaceTest"/>
+            <test name="com.aetrion.flickr.PeopleInterfaceTest"/>
 		</junit>
 	</target>
 	

@@ -14,7 +14,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/test/junit.jar!/" />
+          <root url="jar://$MODULE_DIR$/test/lib/junit.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
