@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="EdenLib-Test" default="test" basedir=".">
+
+	<property file="build.properties"/>
+
+	<path id="build.classpath">
+		<pathelement location="${lib.dir}/${junit.jar}"/>
+	</path>
+	
+	<!-- ==================================================== -->
+	<!-- Initialize Ant                                       -->
+	<!-- ==================================================== -->
+	
+	<target name="init">
+		<ant dir="${root.dir}" inheritAll="false"/>
+		<tstamp/>
+	</target>
+	
+	<!-- ==================================================== -->
+	<!-- Compile the source code.                             -->
+	<!-- ==================================================== -->
+
+	<target	name="compile" depends="init">
+		<copy todir="${build.src}" filtering="true">
+			<fileset dir="${src.dir}"/>
+		</copy>
+	
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.classes}"/>
+		
+		<javac
+			srcdir="${src.dir}" 
+			destdir="${build.classes}"
+			classpathref="build.classpath"
+			debug="${javac.debug}"
+			deprecation="${javac.deprecation}"
+			optimize="${javac.optimize}">
+			<include name="**/*.java"/>
+		</javac>
+        <copy todir="${build.classes}">
+			<fileset dir="${src.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+            </fileset>
+		</copy>
+	</target>
+	
+	<!-- ==================================================== -->
+	<!-- Create the JAR archive.                              -->
+	<!-- ==================================================== -->
+
+	<target	name="jar" depends="compile">
+		<mkdir dir="${build.lib}"/>
+		<jar jarfile="${build.lib}/${vname}.jar" basedir="${build.classes}">
+			<include name="**/*"/>
+		</jar>
+	</target>
+	
+	<!-- ==================================================== -->
+	<!-- Generate the API documentation.                      -->
+	<!-- ==================================================== -->
+	
+	<target	name="javadocs"	depends="init">
+		<mkdir dir="${build.javadocs}"/>
+		<javadoc
+			packagenames="${packages}"
+			sourcepath="${src.dir}"
+			destdir="${build.javadocs}"
+			classpathref="build.classpath"
+			overview="${overview}"
+			author="${javadoc.author}"
+			version="${javadoc.version}"
+			windowtitle="${vName} API"
+			doctitle="${vName}"
+			bottom="${copyright}"/>
+	</target>
+	
+	<!-- ==================================================== -->
+	<!-- Generate the API documentation and compress to ZIP   -->
+	<!-- ==================================================== -->
+	
+	<target name="javadocs-zip" depends="javadocs">
+		<zip zipfile="${vName}-javadocs.zip" basedir="${build.javadocs}"/>
+	</target>
+	
+	<!-- ==================================================== -->
+	<!-- Build the application.                               -->
+	<!-- ==================================================== -->
+	
+	<target name="build" depends="jar">
+		<copy todir="${build.lib}">
+			<fileset dir="${lib.dir}"/>
+		</copy>
+	</target>
+	
+	<!-- ==================================================== -->
+	<!-- Execute the JUnit tests                              -->
+	<!-- ==================================================== -->
+	
+	<target name="test" depends="build">
+        <echo message="${build.lib}/${vname}.jar"/>
+		<junit printsummary="on" showoutput="on">
+            <formatter type="plain"/>
+			<classpath>
+				<pathelement location="${edenlib.dir}/${edenlib.jar}"/>
+				<pathelement location="${edenlib.lib.dir}/${commons-logging.jar}"/>
+                <pathelement location="${lib.dir}/${mockobjects-core.jar}"/>
+                <pathelement location="${lib.dir}/${mockobjects-jdk.jar}"/>
+                <pathelement location="${lib.dir}/${mockobjects-j2ee.jar}"/>
+                <pathelement location="${build.lib}/${vname}.jar"/>
+			</classpath>
+            <!--  
+            <test name="com.anthonyeden.lib.config.sax.SAXConfigurationFactoryTest"/>
+            <test name="com.anthonyeden.lib.util.MessageUtilitiesTest"/>
+            -->
+            <test name="com."/>
+		</junit>
+	</target>
+	
+	<!-- ==================================================== -->
+	<!-- Create the distribution                              -->
+	<!-- ==================================================== -->
+
+	<target name="dist" depends="clean, build, javadocs">
+		<copy file="README.txt" todir="${build.dir}"/>
+		
+		<copy todir="${build.docs}">
+			<fileset dir="${docs.dir}"/>
+		</copy>
+		
+		<delete dir="${build.classes}"/>
+		
+		<mkdir dir="zip/${vName}"/>
+		<copy todir="zip/${vName}">
+			<fileset dir="${build.dir}"/>
+		</copy>
+		<zip zipfile="${Name}-${version}.zip" basedir="zip" excludes="modules/*.tar.gz"/>
+		<tar tarfile="${Name}-${version}.tar" basedir="zip" excludes="modules/*.zip"/>
+		<gzip zipfile="${Name}-${version}.tar.gz" src="${Name}-${version}.tar"/>
+		<delete file="${Name}-${version}.tar"/>
+		<delete dir="zip"/>
+	</target>
+	
+	<!-- ==================================================== -->
+	<!-- Clean up generated stuff                             -->
+	<!-- ==================================================== -->
+
+	<target	name="clean">
+		<delete dir="${build.dir}"/>
+	</target>
+	
+</project>
