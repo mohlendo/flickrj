@@ -43,8 +43,12 @@ public class PoolsInterfaceTest extends TestCase {
         }
     }
 
-    public void testAddAndRemove() {
-
+    public void testAddAndRemove() throws FlickrException, IOException, SAXException {
+        String photoId = properties.getProperty("photoid");
+        String groupId = properties.getProperty("testgroupid");
+        PoolsInterface iface = flickr.getPoolsInterface();
+        iface.add(auth, photoId, groupId);
+        iface.remove(auth, photoId, groupId);
     }
 
     public void testGetContext() {
@@ -55,13 +59,15 @@ public class PoolsInterfaceTest extends TestCase {
         PoolsInterface iface = flickr.getPoolsInterface();
         Collection groups = iface.getGroups(auth);
         assertNotNull(groups);
+        assertEquals(1, groups.size());
     }
 
     public void testGetPhotos() throws FlickrException, IOException, SAXException {
-        String groupId = properties.getProperty("groupid");
+        String groupId = properties.getProperty("testgroupid");
         PoolsInterface iface = flickr.getPoolsInterface();
         Collection photos = iface.getPhotos(groupId, null, 0, 0);
         assertNotNull(photos);
+        assertEquals(4, photos.size());
     }
 
 }

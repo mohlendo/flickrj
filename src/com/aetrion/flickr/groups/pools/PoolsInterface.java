@@ -11,6 +11,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
@@ -109,6 +110,18 @@ public class PoolsInterface {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
+            Element groupsElement = (Element) response.getPayload();
+            NodeList groupNodes = groupsElement.getElementsByTagName("group");
+            for (int i = 0; i < groupNodes.getLength(); i++) {
+                Element groupElement = (Element) groupNodes.item(i);
+                Group group = new Group();
+                group.setId(groupElement.getAttribute("id"));
+                group.setName(groupElement.getAttribute("name"));
+                group.setAdmin("1".equals(groupElement.getAttribute("admin")));
+                group.setPrivacy(groupElement.getAttribute("privacy"));
+                group.setPhotoCount(groupElement.getAttribute("photos"));
+                groups.add(group);
+            }
             return groups;
         }
     }

@@ -14,6 +14,8 @@ public class Group {
     private String chatId;
     private int inChat;
     private String privacy;
+    private boolean admin;
+    private int photoCount;
 
     public Group() {
 
@@ -85,6 +87,28 @@ public class Group {
 
     public void setPrivacy(String privacy) {
         this.privacy = privacy;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public int getPhotoCount() {
+        return photoCount;
+    }
+
+    public void setPhotoCount(int photoCount) {
+        this.photoCount = photoCount;
+    }
+
+    public void setPhotoCount(String photoCount) {
+        if (photoCount != null) {
+            setPhotoCount(Integer.parseInt(photoCount));
+        }
     }
 
 }

@@ -14,9 +14,10 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.Response;
-import com.aetrion.flickr.tags.Tag;
 import com.aetrion.flickr.people.User;
+import com.aetrion.flickr.tags.Tag;
 import com.aetrion.flickr.util.StringUtilities;
+import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -56,7 +57,8 @@ public class PhotosInterface {
         this.restInterface = restInterface;
     }
 
-    public void addTags(Authentication auth, String photoId, String[] tags) throws IOException, SAXException, FlickrException {
+    public void addTags(Authentication auth, String photoId, String[] tags) throws IOException, SAXException,
+            FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_ADD_TAGS));
         parameters.add(new Parameter("api_key", apiKey));
@@ -71,7 +73,8 @@ public class PhotosInterface {
         }
     }
 
-    public Collection getContactsPhotos(Authentication auth, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf) throws IOException, SAXException, FlickrException {
+    public Collection getContactsPhotos(Authentication auth, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
+            throws IOException, SAXException, FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
@@ -121,7 +124,8 @@ public class PhotosInterface {
         }
     }
 
-    public Collection getContactsPublicPhotos(String userId, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf) throws IOException, SAXException, FlickrException {
+    public Collection getContactsPublicPhotos(String userId, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
+            throws IOException, SAXException, FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
@@ -179,7 +183,8 @@ public class PhotosInterface {
      * @return
      */
 
-    public Collection getCounts(Authentication auth, Date[] dates, Date[] takenDates) throws IOException, SAXException, FlickrException {
+    public Collection getCounts(Authentication auth, Date[] dates, Date[] takenDates) throws IOException, SAXException,
+            FlickrException {
         List photocounts = new ArrayList();
 
         List parameters = new ArrayList();
@@ -265,10 +270,10 @@ public class PhotosInterface {
             photo.setOwner(owner);
 
             Element titleElement = (Element) photoElement.getElementsByTagName("title").item(0);
-            photo.setTitle(((Text) titleElement.getFirstChild()).getData());
+            photo.setTitle(XMLUtilities.getValue(titleElement));
 
             Element descriptionElement = (Element) photoElement.getElementsByTagName("description").item(0);
-            photo.setDescription(((Text) descriptionElement.getFirstChild()).getData());
+            photo.setDescription(XMLUtilities.getValue(descriptionElement));
 
             Element visibilityElement = (Element) photoElement.getElementsByTagName("visibility").item(0);
             photo.setPublicFlag("1".equals(visibilityElement.getAttribute("ispublic")));
@@ -305,7 +310,8 @@ public class PhotosInterface {
                 note.setId(noteElement.getAttribute("id"));
                 note.setAuthor(noteElement.getAttribute("author"));
                 note.setAuthorName(noteElement.getAttribute("authorname"));
-                note.setBounds(noteElement.getAttribute("x"), noteElement.getAttribute("y"), noteElement.getAttribute("w"), noteElement.getAttribute("h"));
+                note.setBounds(noteElement.getAttribute("x"), noteElement.getAttribute("y"),
+                        noteElement.getAttribute("w"), noteElement.getAttribute("h"));
                 notes.add(note);
             }
             photo.setNotes(notes);
@@ -440,7 +446,8 @@ public class PhotosInterface {
         }
     }
 
-    public Collection getUntagged(Authentication auth, int perPage, int page) throws IOException, SAXException, FlickrException {
+    public Collection getUntagged(Authentication auth, int perPage, int page) throws IOException, SAXException,
+            FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
@@ -497,7 +504,8 @@ public class PhotosInterface {
         }
     }
 
-    public Collection search(SearchParameters params, int perPage, int page) throws IOException, SAXException, FlickrException {
+    public Collection search(SearchParameters params, int perPage, int page) throws IOException, SAXException,
+            FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
@@ -540,7 +548,8 @@ public class PhotosInterface {
         }
     }
 
-    public void setDates(Authentication auth, String photoId, Date datePosted, Date dateTaken, String dateTakenGranularity) throws IOException, SAXException, FlickrException {
+    public void setDates(Authentication auth, String photoId, Date datePosted, Date dateTaken, String dateTakenGranularity)
+            throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_DATES));
         parameters.add(new Parameter("api_key", apiKey));
@@ -566,7 +575,8 @@ public class PhotosInterface {
         }
     }
 
-    public void setMeta(Authentication auth, String photoId, String title, String description) throws IOException, SAXException, FlickrException {
+    public void setMeta(Authentication auth, String photoId, String title, String description) throws IOException,
+            SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_META));
         parameters.add(new Parameter("api_key", apiKey));
@@ -582,7 +592,8 @@ public class PhotosInterface {
         }
     }
 
-    public void setPerms(Authentication auth, String photoId, Permissions permissions) throws IOException, SAXException, FlickrException {
+    public void setPerms(Authentication auth, String photoId, Permissions permissions) throws IOException,
+            SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_META));
         parameters.add(new Parameter("api_key", apiKey));
@@ -601,7 +612,8 @@ public class PhotosInterface {
         }
     }
 
-    public void setTags(Authentication auth, String photoId, String[] tags) throws IOException, SAXException, FlickrException {
+    public void setTags(Authentication auth, String photoId, String[] tags) throws IOException, SAXException,
+            FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_TAGS));
         parameters.add(new Parameter("api_key", apiKey));
