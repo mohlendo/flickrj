@@ -196,7 +196,7 @@ public class PhotosInterface {
      * first.
      * @param takenDates An array of dates, denoting the periods to return counts for. They should be specified smallest
      * first.
-     * @return
+     * @return A Collection of Photocount objects
      */
 
     public Collection getCounts(Date[] dates, Date[] takenDates) throws IOException, SAXException,
@@ -506,7 +506,7 @@ public class PhotosInterface {
      *
      * @param perPage
      * @param page
-     * @return
+     * @return A Collection of Photos
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
