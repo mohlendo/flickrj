@@ -6,7 +6,8 @@ Release 1.0a2 (February 24, 2005):
  - Implemented PoolsInterface.
  - Added more JavaDocs.
 
-Release 1.0a3
+Release 1.0a3 (March 31, 2005):
  - Authentication is now specified in a ThreadLocal instance of the RequestContext class.
  - Added simplified constructors to Flickr and Uploader.
  - Fixed README.
+ - Fixed bug in PhotosInterface reported by Rozim.
