@@ -7,10 +7,14 @@ To use the API just construct a instance of the class
 com.aetreion.flickr.Flickr and request the interfaces which you need
 to work with.  For example, to send a test ping to the Flickr service:
 
-Flickr f = new Flickr();
+String apiKey = YOUR_API_KEY
+Flickr f = new Flickr(apiKey);
 TestInterface testInterface = f.getTestInterface();
-Document document = testInterface.echo(Collections.EMPTY_LIST);
-System.out.println("Document: " + document);
+Collection results = testInterface.echo(Collections.EMPTY_LIST);
+
+An API key is required to use this API.  You should contact Flickr to
+acquire an API key.  More information is available at:
+http://www.flickr.com/services/api/
 
 Comments and questions should be sent to anthonyeden@gmail.com.
 

@@ -1,5 +1,7 @@
 package com.aetrion.flickr;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import com.aetrion.flickr.blogs.BlogsInterface;
 import com.aetrion.flickr.contacts.ContactsInterface;
 import com.aetrion.flickr.favorites.FavoritesInterface;
@@ -19,6 +21,8 @@ import com.aetrion.flickr.urls.UrlsInterface;
  */
 public class Flickr {
 
+    public static final String DEFAULT_HOST = "www.flickr.com";
+
     private String apiKey;
     private REST restInterface;
 
@@ -33,6 +37,20 @@ public class Flickr {
     private TagsInterface tagsInterface;
     private TestInterface testInterface;
     private UrlsInterface urlsInterface;
+
+    /**
+     * Construct a new Flickr gateway instance.
+     *
+     * @param apiKey The API key.
+     */
+    public Flickr(String apiKey) {
+        setApiKey(apiKey);
+        try {
+            setRestInterface(new REST(DEFAULT_HOST));
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
 
     /**
      * Construct a new Flickr gateway instance.
@@ -143,6 +161,11 @@ public class Flickr {
         return photosetsInterface;
     }
 
+    /**
+     * Get the TagsInterface for working with Flickr Tags.
+     * 
+     * @return The TagsInterface
+     */
     public TagsInterface getTagsInterface() {
         if (tagsInterface == null) {
             tagsInterface = new TagsInterface(apiKey, restInterface);
