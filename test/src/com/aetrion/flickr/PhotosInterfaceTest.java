@@ -2,6 +2,8 @@
 
 package com.aetrion.flickr;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -9,6 +11,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.photos.Permissions;
@@ -193,6 +196,86 @@ public class PhotosInterfaceTest extends TestCase {
         tags = photo.getTags();
         assertNotNull(tags);
         assertEquals(0, tags.size());
+    }
+
+    public void testGetSmallImage() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        String photoId = properties.getProperty("photoid");
+        Photo photo = iface.getInfo(photoId, null);
+        BufferedImage image = photo.getSmallImage();
+        assertNotNull(image);
+        assertEquals(240, image.getWidth());
+        assertEquals(180, image.getHeight());
+//        System.out.println("Image width: " + image.getWidth());
+//        System.out.println("Image height: " + image.getHeight());
+        ImageIO.write(image, "jpg", new File("out.small.jpg"));
+    }
+
+    public void testGetThumbnailImage() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        String photoId = properties.getProperty("photoid");
+        Photo photo = iface.getInfo(photoId, null);
+        BufferedImage image = photo.getThumbnailImage();
+        assertNotNull(image);
+        assertEquals(100, image.getWidth());
+        assertEquals(75, image.getHeight());
+        ImageIO.write(image, "jpg", new File("out.thumbnail.jpg"));
+    }
+
+    public void testGetSmallSquareImage() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        String photoId = properties.getProperty("photoid");
+        Photo photo = iface.getInfo(photoId, null);
+        BufferedImage image = photo.getSmallSquareImage();
+        assertNotNull(image);
+        assertEquals(75, image.getWidth());
+        assertEquals(75, image.getHeight());
+        ImageIO.write(image, "jpg", new File("out.smallsquare.jpg"));
+    }
+
+    public void testGetOriginalImage() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        String photoId = properties.getProperty("photoid");
+        Photo photo = iface.getInfo(photoId, null);
+        BufferedImage image = photo.getOriginalImage();
+        assertNotNull(image);
+        assertEquals(800, image.getWidth());
+        assertEquals(600, image.getHeight());
+        ImageIO.write(image, "jpg", new File("out.original.jpg"));
+    }
+
+    public void testGetMediumImage() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        String photoId = properties.getProperty("photoid");
+        Photo photo = iface.getInfo(photoId, null);
+        BufferedImage image = photo.getMediumImage();
+        assertNotNull(image);
+        assertEquals(500, image.getWidth());
+        assertEquals(375, image.getHeight());
+        ImageIO.write(image, "jpg", new File("out.medium.jpg"));
+    }
+
+    public void testGetLargeImage() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        String photoId = properties.getProperty("photoid");
+        Photo photo = iface.getInfo(photoId, null);
+        BufferedImage image = photo.getLargeImage();
+        assertNotNull(image);
+        assertEquals(500, image.getWidth());
+        assertEquals(375, image.getHeight());
+        ImageIO.write(image, "jpg", new File("out.large.jpg"));
     }
 
 }

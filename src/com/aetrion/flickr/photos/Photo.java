@@ -1,12 +1,20 @@
 package com.aetrion.flickr.photos;
 
-import java.util.Date;
-import java.util.Collection;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+
+import javax.imageio.ImageIO;
 
 import com.aetrion.flickr.people.User;
+import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * Class representing metadata about a Flickr photo.  Instances do not actually contain the photo data.
@@ -225,6 +233,69 @@ public class Photo {
 
     public void setTags(Collection tags) {
         this.tags = tags;
+    }
+
+    public BufferedImage getOriginalImage() throws IOException {
+        return getImage("_o.jpg");
+    }
+
+    /**
+     * Get an Image object which is a 75x75 pixel square.
+     *
+     * @return An Image
+     * @throws IOException
+     */
+    public BufferedImage getSmallSquareImage() throws IOException {
+        return getImage("_s.jpg");
+    }
+
+    public BufferedImage getThumbnailImage() throws IOException {
+        return getImage("_t.jpg");
+    }
+
+    public BufferedImage getSmallImage() throws IOException {
+        return getImage("_m.jpg");
+    }
+
+    public BufferedImage getMediumImage() throws IOException {
+        return getImage(".jpg");
+    }
+
+    public BufferedImage getLargeImage() throws IOException {
+        return getImage("_b.jpg");
+    }
+
+    /**
+     * Get an image using the specified URL suffix.
+     *
+     * @param suffix The URL suffix, including the .extension
+     * @return The BufferedImage object
+     * @throws IOException
+     */
+    private BufferedImage getImage(String suffix) throws IOException {
+        StringBuffer buffer = getBaseImageUrl();
+        buffer.append(suffix);
+        URL url = new URL(buffer.toString());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.connect();
+        InputStream in = null;
+        try {
+            in = conn.getInputStream();
+            return ImageIO.read(in);
+        } finally {
+            IOUtilities.close(in);
+        }
+    }
+
+    private StringBuffer getBaseImageUrl() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("http://photos");
+        buffer.append(getServer());
+        buffer.append(".flickr.com/");
+        buffer.append(getId());
+        buffer.append("_");
+        buffer.append(secret);
+        return buffer;
     }
 
 }

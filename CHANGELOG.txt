@@ -13,3 +13,7 @@ Release 1.0a3 (March 8, 2005):
 
 Release 1.0a4 (March 31, 2005):
  - Fixed bug in PhotosInterface reported by Rozim.
+ - Fixed bug reported by tomandkate.
+
+Release 1.0a5 (April 1, 2005):
+ - Photo now includes methods for obtaining BufferedImage objects.
