@@ -4,14 +4,17 @@ import com.aetrion.flickr.blogs.BlogsInterface;
 import com.aetrion.flickr.contacts.ContactsInterface;
 import com.aetrion.flickr.favorites.FavoritesInterface;
 import com.aetrion.flickr.groups.GroupsInterface;
+import com.aetrion.flickr.groups.pools.PoolsInterface;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotosInterface;
-import com.aetrion.flickr.test.TestInterface;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
 import com.aetrion.flickr.tags.TagsInterface;
+import com.aetrion.flickr.test.TestInterface;
 import com.aetrion.flickr.urls.UrlsInterface;
 
 /**
+ * Main entry point for the Flickrj API.  This class is used to acquire Interface classes which wrap the Flickr API.
+ *
  * @author Anthony Eden
  */
 public class Flickr {
@@ -23,6 +26,7 @@ public class Flickr {
     private ContactsInterface contactsInterface;
     private FavoritesInterface favoritesInterface;
     private GroupsInterface groupsInterface;
+    private PoolsInterface poolsInterface;
     private PeopleInterface peopleInterface;
     private PhotosInterface photosInterface;
     private PhotosetsInterface photosetsInterface;
@@ -41,6 +45,11 @@ public class Flickr {
         setRestInterface(restInterface);
     }
 
+    /**
+     * Get the API key.
+     *
+     * @return The API key
+     */
     public String getApiKey() {
         return apiKey;
     }
@@ -48,7 +57,7 @@ public class Flickr {
     /**
      * Set the API key to use which must not be null.
      *
-     * @param apiKey
+     * @param apiKey The API key which cannot be null
      */
     public void setApiKey(String apiKey) {
         if (apiKey == null) {
@@ -57,6 +66,11 @@ public class Flickr {
         this.apiKey = apiKey;
     }
 
+    /**
+     * Get the REST interface.
+     *
+     * @return The REST interface
+     */
     public REST getRestInterface() {
         return restInterface;
     }
@@ -99,6 +113,13 @@ public class Flickr {
             groupsInterface = new GroupsInterface(apiKey, restInterface);
         }
         return groupsInterface;
+    }
+
+    public PoolsInterface getPoolsInterface() {
+        if (poolsInterface == null) {
+            poolsInterface = new PoolsInterface(apiKey, restInterface);
+        }
+        return poolsInterface;
     }
 
     public PeopleInterface getPeopleInterface() {

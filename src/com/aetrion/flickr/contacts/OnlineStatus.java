@@ -1,6 +1,8 @@
 package com.aetrion.flickr.contacts;
 
 /**
+ * Class representing the various types of online statuses.
+ *
  * @author Anthony Eden
  */
 public class OnlineStatus {
@@ -19,10 +21,21 @@ public class OnlineStatus {
         this.type = type;
     }
 
+    /**
+     * Get the int value for the online status.  This method is useful in switch statements.
+     *
+     * @return The int value for the online status
+     */
     public int getType() {
         return type;
     }
 
+    /**
+     * Get an OnlineStatus object for a given int value.
+     *
+     * @param type The int value
+     * @return The OnlineStatus object
+     */
     public static OnlineStatus fromType(int type) {
         switch (type) {
             case OFFLINE_TYPE:
@@ -36,6 +49,12 @@ public class OnlineStatus {
         }
     }
 
+    /**
+     * Get the OnlineStatus value for a given int represented as a String
+     *
+     * @param type The int represented as a String
+     * @return The OnlineStatus object
+     */
     public static OnlineStatus fromType(String type) {
         return fromType(Integer.parseInt(type));
     }

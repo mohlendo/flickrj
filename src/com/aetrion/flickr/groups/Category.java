@@ -3,6 +3,8 @@ package com.aetrion.flickr.groups;
 import java.util.Collection;
 
 /**
+ * Class representing a group Category.
+ *
  * @author Anthony Eden
  */
 public class Category {

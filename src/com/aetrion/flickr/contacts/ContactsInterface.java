@@ -16,6 +16,8 @@ import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 /**
+ * Interface for working with Flickr contacts.
+ *
  * @author Anthony Eden
  */
 public class ContactsInterface {

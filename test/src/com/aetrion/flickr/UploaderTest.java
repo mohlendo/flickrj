@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.FileNotFoundException;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -47,6 +46,13 @@ public class UploaderTest extends TestCase {
         }
     }
 
+    /**
+     * Test photo uploading using a byte array.
+     *
+     * @throws IOException
+     * @throws FlickrException
+     * @throws SAXException
+     */
     public void testUploadByteArray() throws IOException, FlickrException, SAXException {
         File imageFile = new File(properties.getProperty("imagefile"));
         InputStream in = null;
@@ -69,6 +75,13 @@ public class UploaderTest extends TestCase {
         }
     }
 
+    /**
+     * Test photo upload using an InputStream.
+     *
+     * @throws IOException
+     * @throws FlickrException
+     * @throws SAXException
+     */
     public void testUploadInputStream() throws IOException, FlickrException, SAXException {
         File imageFile = new File(properties.getProperty("imagefile"));
         InputStream in = null;

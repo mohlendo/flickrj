@@ -18,6 +18,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * Interface for working with Flickr favorites.
+ *
  * @author Anthony Eden
  */
 public class FavoritesInterface {
@@ -35,6 +37,15 @@ public class FavoritesInterface {
         this.restInterface = restInterface;
     }
 
+    /**
+     * Add a photo to the user's favorites.
+     *
+     * @param auth The Authorization object
+     * @param photoId The photo ID
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public void add(Authentication auth, String photoId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_ADD));

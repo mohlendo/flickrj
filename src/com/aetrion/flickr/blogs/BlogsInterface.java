@@ -17,6 +17,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * Interface for working with Flickr blog configurations.
+ *
  * @author Anthony Eden
  */
 public class BlogsInterface {
@@ -67,10 +69,31 @@ public class BlogsInterface {
         }
     }
 
+    /**
+     * Post the specified photo to a blog.
+     *
+     * @param auth The authentication object
+     * @param photo The photo metadata
+     * @param blogId The blog ID
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public void postPhoto(Authentication auth, Photo photo, String blogId) throws IOException, SAXException, FlickrException {
         postPhoto(auth, photo, blogId, null);
     }
 
+    /**
+     * Post the specified photo to a blog.
+     *
+     * @param auth The authentication object
+     * @param photo The photo metadata
+     * @param blogId The blog ID
+     * @param blogPassword The blog password
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public void postPhoto(Authentication auth, Photo photo, String blogId, String blogPassword) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_POST_PHOTO));

@@ -1,6 +1,8 @@
 package com.aetrion.flickr.groups;
 
 /**
+ * Class representing a subcategory.
+ *
  * @author Anthony Eden
  */
 public class Subcategory {

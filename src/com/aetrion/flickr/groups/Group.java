@@ -1,6 +1,8 @@
 package com.aetrion.flickr.groups;
 
 /**
+ * Class representing a Flickr Group.
+ *
  * @author Anthony Eden
  */
 public class Group {

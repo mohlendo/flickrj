@@ -16,6 +16,8 @@ import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 /**
+ * Interface for working with Flickr Groups.
+ *
  * @author Anthony Eden
  */
 public class GroupsInterface {
@@ -33,7 +35,8 @@ public class GroupsInterface {
     }
 
     /**
-     * Get the collection of favorites for the calling user or the specified user ID.
+     * Browse groups for the given category ID.  If a null value is passed for the category then the root category is
+     * used.
      *
      * @param auth The Authentication innformation.
      * @param catId The optional category id.  Null value will be ignored.
