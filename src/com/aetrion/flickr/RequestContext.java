@@ -25,10 +25,20 @@ public class RequestContext {
         return (RequestContext) threadLocal.get();
     }
 
+    /**
+     * Get the authentication object.
+     *
+     * @return The Authentication object
+     */
     public Authentication getAuthentication() {
         return authentication;
     }
 
+    /**
+     * Set the authentication object.
+     *
+     * @param authentication The Authentication object
+     */
     public void setAuthentication(Authentication authentication) {
         this.authentication = authentication;
     }
