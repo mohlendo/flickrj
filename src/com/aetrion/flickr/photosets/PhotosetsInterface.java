@@ -11,6 +11,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.Response;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
@@ -21,6 +22,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * Interface for working with photosets.
+ *
  * @author Anthony Eden
  */
 public class PhotosetsInterface {
@@ -65,7 +68,7 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("description", description));
         parameters.add(new Parameter("primary_photo_id", primaryPhotoId));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -94,7 +97,7 @@ public class PhotosetsInterface {
 
         parameters.add(new Parameter("photoset_id", photosetId));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -121,7 +124,7 @@ public class PhotosetsInterface {
             parameters.add(new Parameter("description", description));
         }
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -148,7 +151,7 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("primary_photo_id", primaryPhotoId));
         parameters.add(new Parameter("photo_ids", StringUtilities.join(photoIds, ",")));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -174,7 +177,7 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("photoset_id", photosetId));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -216,7 +219,7 @@ public class PhotosetsInterface {
 
         parameters.add(new Parameter("photoset_id", photosetId));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -260,7 +263,7 @@ public class PhotosetsInterface {
 
         parameters.add(new Parameter("user_id", userId));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -299,6 +302,15 @@ public class PhotosetsInterface {
         }
     }
 
+    /**
+     * Get a collection of Photo objects for the specified Photoset.
+     *
+     * @param photosetId The photoset ID
+     * @return The Collection of Photo objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public Collection getPhotos(String photosetId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_PHOTOS));
@@ -306,7 +318,7 @@ public class PhotosetsInterface {
 
         parameters.add(new Parameter("photoset_id", photosetId));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -344,7 +356,7 @@ public class PhotosetsInterface {
 
         parameters.add(new Parameter("photoset_ids", StringUtilities.join(photosetIds, ",")));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

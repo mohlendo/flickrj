@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
  *
  * @author Anthony Eden
  */
-public class RESTResponse {
+public class RESTResponse implements Response {
 
     private String stat;
     private Collection payload;
@@ -20,26 +20,18 @@ public class RESTResponse {
     private String errorCode;
     private String errorMessage;
 
-    protected RESTResponse() {
-
-    }
-
-    public static RESTResponse parse(Document document) {
-        RESTResponse response = new RESTResponse();
-
+    public void parse(Document document) {
         Element rspElement = document.getDocumentElement();
         rspElement.normalize();
-        response.stat = rspElement.getAttribute("stat");
-        if ("ok".equals(response.stat)) {
+        stat = rspElement.getAttribute("stat");
+        if ("ok".equals(stat)) {
             // TODO: Verify that the payload is always a single XML node
-            response.payload = XMLUtilities.getChildElements(rspElement);
-        } else if ("fail".equals(response.stat)) {
+            payload = XMLUtilities.getChildElements(rspElement);
+        } else if ("fail".equals(stat)) {
             Element errElement = (Element) rspElement.getElementsByTagName("err").item(0);
-            response.errorCode = errElement.getAttribute("code");
-            response.errorMessage = errElement.getAttribute("msg");
+            errorCode = errElement.getAttribute("code");
+            errorMessage = errElement.getAttribute("msg");
         }
-
-        return response;
     }
 
     public String getStat() {

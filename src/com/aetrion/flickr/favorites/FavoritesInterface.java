@@ -10,6 +10,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.Response;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import org.w3c.dom.Element;
@@ -41,7 +42,7 @@ public class FavoritesInterface {
         parameters.addAll(auth.getAsParameters());
         parameters.add(new Parameter("photo_id", photoId));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -76,7 +77,7 @@ public class FavoritesInterface {
             parameters.add(new Parameter("user_id", new Integer(page)));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -130,7 +131,7 @@ public class FavoritesInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -172,7 +173,7 @@ public class FavoritesInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

@@ -9,7 +9,7 @@ import java.text.ParseException;
 import com.aetrion.flickr.people.User;
 
 /**
- * Class representing a Flickr photo.
+ * Class representing metadata about a Flickr photo.  Instances do not actually contain the photo data.
  *
  * @author Anthony Eden
  */

@@ -47,7 +47,7 @@ public class ContactsInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.addAll(auth.getAsParameters());
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -90,7 +90,7 @@ public class ContactsInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("user_id", userId));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {

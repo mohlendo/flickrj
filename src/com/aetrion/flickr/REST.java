@@ -1,16 +1,15 @@
 package com.aetrion.flickr;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.util.IOUtilities;
@@ -24,6 +23,7 @@ public class REST {
 
     private String host;
     private int port = 80;
+    private Class responseClass = RESTResponse.class;
 
     private DocumentBuilder builder;
 
@@ -59,16 +59,24 @@ public class REST {
         this.port = port;
     }
 
+    public Class getResponseClass() {
+        return responseClass;
+    }
+
+    public void setResponseClass(Class responseClass) {
+        this.responseClass = responseClass;
+    }
+
     /**
      * Invoke an HTTP GET request on a remote host.  You must close the InputStream after you are done with.
      *
      * @param path The request path
      * @param parameters The parameters (collection of Parameter objects)
-     * @return The RESTResponse
+     * @return The Response
      * @throws IOException
      * @throws SAXException
      */
-    public RESTResponse get(String path, Collection parameters) throws IOException, SAXException {
+    public Response get(String path, Collection parameters) throws IOException, SAXException {
         StringBuffer buffer = new StringBuffer();
         buffer.append("http://");
         buffer.append(host);
@@ -85,7 +93,7 @@ public class REST {
         if (iter.hasNext()) {
             buffer.append("?");
         }
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             Parameter p = (Parameter) iter.next();
             buffer.append(p.getName());
             buffer.append("=");
@@ -93,7 +101,7 @@ public class REST {
             if (iter.hasNext()) buffer.append("&");
         }
 
-        System.out.println("Executing GET: " + buffer);
+//        System.out.println("Executing GET: " + buffer);
 
         URL url = new URL(buffer.toString());
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -104,22 +112,42 @@ public class REST {
         try {
             in = conn.getInputStream();
             Document document = builder.parse(in);
-            return RESTResponse.parse(document);
+            Response response = (Response) responseClass.newInstance();
+            response.parse(document);
+            return response;
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e); // TODO: Replace with a better exception
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e); // TODO: Replace with a better exception
         } finally {
             IOUtilities.close(in);
         }
     }
 
     /**
-     * Invoke an HTTP GET request on a remote host.  You must close the InputStream after you are done with.
+     * Invoke an HTTP POST request on a remote host.
      *
      * @param path The request path
      * @param parameters The parameters (collection of Parameter objects)
-     * @return The RESTResponse object
+     * @return The Response object
      * @throws IOException
      * @throws SAXException
      */
-    public RESTResponse post(String path, Collection parameters) throws IOException, SAXException {
+    public Response post(String path, Collection parameters) throws IOException, SAXException {
+        return post(path, parameters, false);
+    }
+
+    /**
+     * Invoke an HTTP POST request on a remote host.
+     *
+     * @param path The request path
+     * @param parameters The parameters (collection of Parameter objects)
+     * @param multipart Use multipart
+     * @return The Response object
+     * @throws IOException
+     * @throws SAXException
+     */
+    public Response post(String path, Collection parameters, boolean multipart) throws IOException, SAXException {
         StringBuffer buffer = new StringBuffer();
         buffer.append("http://");
         buffer.append(host);
@@ -133,37 +161,78 @@ public class REST {
         buffer.append(path);
         URL url = new URL(buffer.toString());
 
-        buffer = new StringBuffer();
-        Iterator iter = parameters.iterator();
-        while(iter.hasNext()) {
-            Parameter p = (Parameter) iter.next();
-            buffer.append(p.getName());
-            buffer.append("=");
-            buffer.append(p.getValue());
-            if (iter.hasNext()) buffer.append("&");
-        }
-
-        System.out.println("Executing POST: " + buffer);
-
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setDoOutput(true);
-        conn.setRequestMethod("POST");
-        PrintWriter out = null;
+        HttpURLConnection conn = null;
         try {
-            out = new PrintWriter(new OutputStreamWriter(conn.getOutputStream()));
-            out.print(buffer.toString());
-        } finally {
-            IOUtilities.close(out);
-        }
-        conn.connect();
+            String boundary = "---------------------------7d273f7a0d3";
 
-        InputStream in = null;
-        try {
-            in = conn.getInputStream();
-            Document document = builder.parse(in);
-            return RESTResponse.parse(document);
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            if (multipart) {
+                conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+            }
+            conn.connect();
+
+            DataOutputStream out = null;
+            try {
+                out = new DataOutputStream(conn.getOutputStream());
+
+                // construct the body
+                if (multipart) {
+                    out.writeBytes("--" + boundary + "\r\n");
+                    Iterator iter = parameters.iterator();
+                    while (iter.hasNext()) {
+                        Parameter p = (Parameter) iter.next();
+                        writeParam(p.getName(), p.getValue(), out, boundary);
+                    }
+                } else {
+                    Iterator iter = parameters.iterator();
+                    while (iter.hasNext()) {
+                        Parameter p = (Parameter) iter.next();
+                        out.writeBytes(p.getName());
+                        out.writeBytes("=");
+                        out.writeBytes(String.valueOf(p.getValue()));
+                        if (iter.hasNext()) out.writeBytes("&");
+                    }
+                }
+                out.flush();
+            } finally {
+                IOUtilities.close(out);
+            }
+
+            InputStream in = null;
+            try {
+                in = conn.getInputStream();
+                Document document = builder.parse(in);
+                Response response = (Response) responseClass.newInstance();
+                response.parse(document);
+                return response;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e); // TODO: Replace with a better exception
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e); // TODO: Replace with a better exception
+            } finally {
+                IOUtilities.close(in);
+            }
         } finally {
-            IOUtilities.close(in);
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+    }
+
+    private void writeParam(String name, Object value, DataOutputStream out, String boundary)
+            throws IOException {
+        if (value instanceof byte[]) {
+            out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"image.jpg\";\r\n");
+            out.writeBytes("Content-Type: image/jpeg" + "\r\n\r\n");
+            out.write((byte[]) value);
+            out.writeBytes("\r\n" + "--" + boundary + "\r\n");
+        } else {
+            out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"\r\n\r\n");
+            out.writeBytes(String.valueOf(value));
+            out.writeBytes("\r\n" + "--" + boundary + "\r\n");
         }
     }
 

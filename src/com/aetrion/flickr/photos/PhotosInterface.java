@@ -13,6 +13,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.Response;
 import com.aetrion.flickr.tags.Tag;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.util.StringUtilities;
@@ -64,7 +65,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("tags", StringUtilities.join(tags, " ")));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -91,7 +92,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("include_self", "1"));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -141,7 +142,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("include_self", "1"));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -206,7 +207,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("taken_dates", StringUtilities.join(dateList, ",")));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -243,7 +244,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("secret", secret));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -345,7 +346,7 @@ public class PhotosInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -374,7 +375,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -419,7 +420,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("photo_id", photoId));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -454,7 +455,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -490,7 +491,7 @@ public class PhotosInterface {
 
         parameters.add(new Parameter("tag_id", tagId));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -511,7 +512,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -559,7 +560,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("date_taken_granularity", dateTakenGranularity));
         }
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -575,7 +576,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("title", title));
         parameters.add(new Parameter("description", description));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -594,7 +595,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("perm_comment", new Integer(permissions.getComment())));
         parameters.add(new Parameter("perm_addmeta", new Integer(permissions.getAddmeta())));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -609,7 +610,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("tags", StringUtilities.join(tags, " ")));
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

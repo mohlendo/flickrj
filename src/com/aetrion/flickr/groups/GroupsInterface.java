@@ -54,7 +54,7 @@ public class GroupsInterface {
             parameters.add(new Parameter("cat_id", catId));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -112,7 +112,7 @@ public class GroupsInterface {
         parameters.add(new Parameter("method", METHOD_GET_ACTIVE_LIST));
         parameters.add(new Parameter("api_key", apiKey));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -146,7 +146,7 @@ public class GroupsInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("group_id", groupId));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {

@@ -54,7 +54,7 @@ public class TestInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.addAll(params);
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -77,7 +77,7 @@ public class TestInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.addAll(auth.getAsParameters());
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {

@@ -41,7 +41,7 @@ public class PeopleInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("find_email", email));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -62,7 +62,7 @@ public class PeopleInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("username", username));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -83,7 +83,7 @@ public class PeopleInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("user_id", userId));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -134,7 +134,7 @@ public class PeopleInterface {
         parameters.add(new Parameter("method", METHOD_GET_ONLINE_LIST));
         parameters.add(new Parameter("api_key", apiKey));
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -170,7 +170,7 @@ public class PeopleInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {

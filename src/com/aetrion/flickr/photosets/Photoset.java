@@ -4,6 +4,8 @@ import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 
 /**
+ * Meta information about a photoset.  To retrieve the photos in the photoset use PhotosetsInterface.getPhotos().
+ *
  * @author Anthony Eden
  */
 public class Photoset {

@@ -10,6 +10,7 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.Response;
 import com.aetrion.flickr.photos.Photo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -47,7 +48,7 @@ public class BlogsInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.addAll(auth.getAsParameters());
 
-        RESTResponse response = restInterface.get("/services/rest/", parameters);
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
@@ -84,7 +85,7 @@ public class BlogsInterface {
             parameters.add(new Parameter("blog_password", blogPassword));
         }
 
-        RESTResponse response = restInterface.post("/services/rest/", parameters);
+        Response response = restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
