@@ -10,6 +10,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.people.User;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -65,17 +66,21 @@ public class TestInterface {
     /**
      * A testing method which checks if the caller is logged in then returns a User object.
      *
-     * @param auth The Authentication data
      * @return The User object
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
      */
-    public User login(Authentication auth) throws IOException, SAXException, FlickrException {
+    public User login() throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_LOGIN));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+        
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
         if (response.isError()) {

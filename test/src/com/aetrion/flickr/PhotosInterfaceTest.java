@@ -31,7 +31,6 @@ public class PhotosInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
-
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -59,10 +58,12 @@ public class PhotosInterfaceTest extends TestCase {
     }
 
     public void testAddAndRemoveTags() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         PhotosInterface iface = flickr.getPhotosInterface();
         String photoId = properties.getProperty("photoid");
         String[] tagsToAdd = {"test"};
-        iface.addTags(auth, photoId, tagsToAdd);
+        iface.addTags(photoId, tagsToAdd);
         Photo photo = iface.getInfo(photoId, null);
         Collection tags = photo.getTags();
         assertNotNull(tags);
@@ -78,12 +79,14 @@ public class PhotosInterfaceTest extends TestCase {
             }
         }
 
-        iface.removeTag(auth, tagId);
+        iface.removeTag(tagId);
     }
 
     public void testGetContactsPhotos() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         PhotosInterface iface = flickr.getPhotosInterface();
-        Collection photos = iface.getContactsPhotos(auth, 0, false, false, false);
+        Collection photos = iface.getContactsPhotos(0, false, false, false);
         assertNotNull(photos);
         assertTrue(photos.size() > 0);
     }
@@ -96,11 +99,13 @@ public class PhotosInterfaceTest extends TestCase {
     }
 
     public void testGetCounts() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         PhotosInterface iface = flickr.getPhotosInterface();
         Date[] dates = new Date[2];
         dates[0] = new Date(100000);
         dates[1] = new Date(); // now
-        Collection counts = iface.getCounts(auth, dates, null);
+        Collection counts = iface.getCounts(dates, null);
         assertNotNull(counts);
 
         Iterator countsIter = counts.iterator();
@@ -111,8 +116,10 @@ public class PhotosInterfaceTest extends TestCase {
     }
 
     public void testGetPerms() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         PhotosInterface iface = flickr.getPhotosInterface();
-        Permissions perms = iface.getPerms(auth, properties.getProperty("photoid"));
+        Permissions perms = iface.getPerms(properties.getProperty("photoid"));
         assertNotNull(perms);
     }
 
@@ -129,8 +136,10 @@ public class PhotosInterfaceTest extends TestCase {
     }
 
     public void testGetUntagged() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         PhotosInterface iface = flickr.getPhotosInterface();
-        Collection photos = iface.getUntagged(auth, 0, 0);
+        Collection photos = iface.getUntagged(0, 0);
         assertNotNull(photos);
     }
 
@@ -155,10 +164,12 @@ public class PhotosInterfaceTest extends TestCase {
     }
 
     public void testSetTags() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         PhotosInterface iface = flickr.getPhotosInterface();
         String photoId = properties.getProperty("photoid");
         String[] tagsToAdd = {"test"};
-        iface.setTags(auth, photoId, tagsToAdd);
+        iface.setTags(photoId, tagsToAdd);
 
         Photo photo = iface.getInfo(photoId, null);
         Collection tags = photo.getTags();
@@ -176,7 +187,7 @@ public class PhotosInterfaceTest extends TestCase {
         }
 
         String[] tagsAfterRemove = {};
-        iface.setTags(auth, photoId, tagsAfterRemove);
+        iface.setTags(photoId, tagsAfterRemove);
 
         photo = iface.getInfo(photoId, null);
         tags = photo.getTags();

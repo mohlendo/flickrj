@@ -55,8 +55,10 @@ public class TestInterfaceTest extends TestCase {
     }
 
     public void testLogin() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         TestInterface iface = flickr.getTestInterface();
-        User user = iface.login(auth);
+        User user = iface.login();
         assertNotNull(user);
     }
 

@@ -9,9 +9,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
+import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.util.StringUtilities;
 import org.xml.sax.SAXException;
 
@@ -22,6 +25,23 @@ public class Uploader {
 
     private REST restInterface;
 
+    /**
+     * Construct an Uploader.
+     */
+    public Uploader() {
+        try {
+            this.restInterface = new REST(Flickr.DEFAULT_HOST);
+            this.restInterface.setResponseClass(UploaderResponse.class);
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Construct an uploader using the specified REST interface.
+     *
+     * @param restInterface The REST interface
+     */
     public Uploader(REST restInterface) {
         this.restInterface = restInterface;
         this.restInterface.setResponseClass(UploaderResponse.class);

@@ -46,12 +46,14 @@ public class PhotosetsInterfaceTest extends TestCase {
     }
 
     public void testCreateAndDelete() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
-        Photoset photoset = iface.create(auth, "test", "A test photoset", properties.getProperty("photoid"));
+        Photoset photoset = iface.create("test", "A test photoset", properties.getProperty("photoid"));
         assertNotNull(photoset);
         assertNotNull(photoset.getId());
         assertNotNull(photoset.getUrl());
-        iface.delete(auth, photoset.getId());
+        iface.delete(photoset.getId());
     }
 
     public void testEditMeta() {
@@ -63,8 +65,10 @@ public class PhotosetsInterfaceTest extends TestCase {
     }
 
     public void testGetContext() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
-        PhotoContext photoContext = iface.getContext(auth, properties.getProperty("photoid"), properties.getProperty("photosetid"));
+        PhotoContext photoContext = iface.getContext(properties.getProperty("photoid"), properties.getProperty("photosetid"));
         Photo previousPhoto = photoContext.getPreviousPhoto();
         Photo nextPhoto = photoContext.getNextPhoto();
         assertNotNull(previousPhoto);
@@ -93,9 +97,11 @@ public class PhotosetsInterfaceTest extends TestCase {
     }
 
     public void testOrderSets() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
         String[] photosetIds = {properties.getProperty("photosetid")};
-        iface.orderSets(auth, photosetIds);
+        iface.orderSets(photosetIds);
     }
 
 }

@@ -11,6 +11,7 @@ import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Response;
+import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.photos.Photo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -37,18 +38,22 @@ public class BlogsInterface {
     /**
      * Get the collection of configured blogs for the calling user.
      *
-     * @param auth The Authentication innformation.
      * @return The Collection of configured blogs
      * @throws IOException
      * @throws SAXException
      */
-    public Collection getList(Authentication auth) throws IOException, SAXException, FlickrException {
+    public Collection getList() throws IOException, SAXException, FlickrException {
         List blogs = new ArrayList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
@@ -72,21 +77,19 @@ public class BlogsInterface {
     /**
      * Post the specified photo to a blog.
      *
-     * @param auth The authentication object
      * @param photo The photo metadata
      * @param blogId The blog ID
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
      */
-    public void postPhoto(Authentication auth, Photo photo, String blogId) throws IOException, SAXException, FlickrException {
-        postPhoto(auth, photo, blogId, null);
+    public void postPhoto(Photo photo, String blogId) throws IOException, SAXException, FlickrException {
+        postPhoto(photo, blogId, null);
     }
 
     /**
      * Post the specified photo to a blog.
      *
-     * @param auth The authentication object
      * @param photo The photo metadata
      * @param blogId The blog ID
      * @param blogPassword The blog password
@@ -94,11 +97,16 @@ public class BlogsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public void postPhoto(Authentication auth, Photo photo, String blogId, String blogPassword) throws IOException, SAXException, FlickrException {
+    public void postPhoto(Photo photo, String blogId, String blogPassword) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_POST_PHOTO));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("blog_id", blogId));
         parameters.add(new Parameter("photo_id", photo.getId()));

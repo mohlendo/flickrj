@@ -47,8 +47,8 @@ public class PoolsInterfaceTest extends TestCase {
         String photoId = properties.getProperty("photoid");
         String groupId = properties.getProperty("testgroupid");
         PoolsInterface iface = flickr.getPoolsInterface();
-        iface.add(auth, photoId, groupId);
-        iface.remove(auth, photoId, groupId);
+        iface.add(photoId, groupId);
+        iface.remove(photoId, groupId);
     }
 
     public void testGetContext() {
@@ -57,7 +57,7 @@ public class PoolsInterfaceTest extends TestCase {
 
     public void testGetGroups() throws FlickrException, IOException, SAXException {
         PoolsInterface iface = flickr.getPoolsInterface();
-        Collection groups = iface.getGroups(auth);
+        Collection groups = iface.getGroups();
         assertNotNull(groups);
         assertEquals(1, groups.size());
     }

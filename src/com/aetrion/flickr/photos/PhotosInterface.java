@@ -13,6 +13,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.tags.Tag;
@@ -57,12 +58,16 @@ public class PhotosInterface {
         this.restInterface = restInterface;
     }
 
-    public void addTags(Authentication auth, String photoId, String[] tags) throws IOException, SAXException,
-            FlickrException {
+    public void addTags(String photoId, String[] tags) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_ADD_TAGS));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("tags", StringUtilities.join(tags, " ")));
@@ -73,14 +78,19 @@ public class PhotosInterface {
         }
     }
 
-    public Collection getContactsPhotos(Authentication auth, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
+    public Collection getContactsPhotos(int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
             throws IOException, SAXException, FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_CONTACTS_PHOTOS));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         if (count > 0) {
             parameters.add(new Parameter("count", new Integer(count)));
@@ -131,6 +141,13 @@ public class PhotosInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_CONTACTS_PUBLIC_PHOTOS));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("user_id", userId));
 
         if (count > 0) {
@@ -175,7 +192,6 @@ public class PhotosInterface {
     /**
      * Gets a collection of photo counts for the given date ranges for the calling user.
      *
-     * @param auth
      * @param dates An array of dates, denoting the periods to return counts for. They should be specified smallest
      * first.
      * @param takenDates An array of dates, denoting the periods to return counts for. They should be specified smallest
@@ -183,14 +199,19 @@ public class PhotosInterface {
      * @return
      */
 
-    public Collection getCounts(Authentication auth, Date[] dates, Date[] takenDates) throws IOException, SAXException,
+    public Collection getCounts(Date[] dates, Date[] takenDates) throws IOException, SAXException,
             FlickrException {
         List photocounts = new ArrayList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_COUNTS));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         if (dates == null && takenDates == null) {
             throw new IllegalArgumentException("You must provide a value for either dates or takenDates");
@@ -244,6 +265,13 @@ public class PhotosInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_INFO));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("photo_id", photoId));
         if (secret != null) {
             parameters.add(new Parameter("secret", secret));
@@ -337,18 +365,22 @@ public class PhotosInterface {
     /**
      * Get the permission information for the specified photo.
      *
-     * @param auth The authorization date
      * @param photoId The photo id
      * @return The Permissions object
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
      */
-    public Permissions getPerms(Authentication auth, String photoId) throws IOException, SAXException, FlickrException {
+    public Permissions getPerms(String photoId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_PERMS));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
 
@@ -367,12 +399,28 @@ public class PhotosInterface {
         }
     }
 
+    /**
+     * Get a collection of recent photos.
+     *
+     * @param perPage The number of photos per page
+     * @param page The page offset
+     * @return A collection of Photo objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public Collection getRecent(int perPage, int page) throws IOException, SAXException, FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_RECENT));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         if (perPage > 0) {
             parameters.add(new Parameter("per_page", new Integer(perPage)));
@@ -424,6 +472,13 @@ public class PhotosInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_SIZES));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("photo_id", photoId));
 
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
@@ -446,14 +501,29 @@ public class PhotosInterface {
         }
     }
 
-    public Collection getUntagged(Authentication auth, int perPage, int page) throws IOException, SAXException,
+    /**
+     * Get the collection of untagged photos.
+     *
+     * @param perPage
+     * @param page
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public Collection getUntagged(int perPage, int page) throws IOException, SAXException,
             FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_UNTAGGED));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         if (perPage > 0) {
             parameters.add(new Parameter("per_page", new Integer(perPage)));
@@ -490,11 +560,24 @@ public class PhotosInterface {
         }
     }
 
-    public void removeTag(Authentication auth, String tagId) throws IOException, SAXException, FlickrException {
+    /**
+     * Remove a tag from a photo.
+     *
+     * @param tagId The tag ID
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void removeTag(String tagId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_REMOVE_TAG));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("tag_id", tagId));
 
@@ -504,6 +587,17 @@ public class PhotosInterface {
         }
     }
 
+    /**
+     * Search for photos which match the given search parameters.
+     *
+     * @param params The search parameters
+     * @param perPage The number of photos to show per page
+     * @param page The page offset
+     * @return A Collection of Photo objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public Collection search(SearchParameters params, int perPage, int page) throws IOException, SAXException,
             FlickrException {
         List photos = new ArrayList();
@@ -511,6 +605,13 @@ public class PhotosInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SEARCH));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.addAll(params.getAsParameters());
 
         if (perPage > 0) {
@@ -548,12 +649,28 @@ public class PhotosInterface {
         }
     }
 
-    public void setDates(Authentication auth, String photoId, Date datePosted, Date dateTaken, String dateTakenGranularity)
+    /**
+     * Set the dates for the specified photo.
+     *
+     * @param photoId The photo ID
+     * @param datePosted The date the photo was posted or null
+     * @param dateTaken The date the photo was taken or null
+     * @param dateTakenGranularity The granularity of the taken date or null
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void setDates(String photoId, Date datePosted, Date dateTaken, String dateTakenGranularity)
             throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_DATES));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
 
@@ -575,12 +692,27 @@ public class PhotosInterface {
         }
     }
 
-    public void setMeta(Authentication auth, String photoId, String title, String description) throws IOException,
+    /**
+     * Set the meta data for the photo.
+     *
+     * @param photoId The photo ID
+     * @param title The new title
+     * @param description The new description
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void setMeta(String photoId, String title, String description) throws IOException,
             SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_META));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("title", title));
@@ -592,12 +724,26 @@ public class PhotosInterface {
         }
     }
 
-    public void setPerms(Authentication auth, String photoId, Permissions permissions) throws IOException,
+    /**
+     * Set the permissions for the photo.
+     *
+     * @param photoId The photo ID
+     * @param permissions The permissions object
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void setPerms(String photoId, Permissions permissions) throws IOException,
             SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_META));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("is_public", permissions.isPublicFlag() ? "1" : "0"));
@@ -612,12 +758,26 @@ public class PhotosInterface {
         }
     }
 
-    public void setTags(Authentication auth, String photoId, String[] tags) throws IOException, SAXException,
+    /**
+     * Set the tags for a photo.
+     *
+     * @param photoId The photo ID
+     * @param tags The tag array
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void setTags(String photoId, String[] tags) throws IOException, SAXException,
             FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_TAGS));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("tags", StringUtilities.join(tags, " ")));

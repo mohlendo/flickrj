@@ -10,6 +10,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.RequestContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -38,20 +39,25 @@ public class GroupsInterface {
      * Browse groups for the given category ID.  If a null value is passed for the category then the root category is
      * used.
      *
-     * @param auth The Authentication innformation.
      * @param catId The optional category id.  Null value will be ignored.
      * @return The Collection of Photo objects
-     * @throws java.io.IOException
-     * @throws org.xml.sax.SAXException
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
      */
-    public Category browse(Authentication auth, String catId) throws IOException, SAXException, FlickrException {
+    public Category browse(String catId) throws IOException, SAXException, FlickrException {
         List subcategories = new ArrayList();
         List groups = new ArrayList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_BROWSE));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         if (catId != null) {
             parameters.add(new Parameter("cat_id", catId));
@@ -115,6 +121,12 @@ public class GroupsInterface {
         parameters.add(new Parameter("method", METHOD_GET_ACTIVE_LIST));
         parameters.add(new Parameter("api_key", apiKey));
 
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -147,6 +159,13 @@ public class GroupsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_INFO));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("group_id", groupId));
 
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);

@@ -46,7 +46,7 @@ public class ContactsInterfaceTest extends TestCase {
 
     public void testGetList() throws FlickrException, IOException, SAXException {
         ContactsInterface iface = flickr.getContactsInterface();
-        Collection contacts = iface.getList(auth);
+        Collection contacts = iface.getList();
         assertNotNull(contacts);
         assertEquals(1, contacts.size());
     }

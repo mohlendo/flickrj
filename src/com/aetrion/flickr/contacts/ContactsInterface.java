@@ -10,6 +10,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.RequestContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -36,18 +37,22 @@ public class ContactsInterface {
     /**
      * Get the collection of contacts for the calling user.
      *
-     * @param auth The Authentication innformation.
      * @return The Collection of Contact objects
      * @throws IOException
      * @throws SAXException
      */
-    public Collection getList(Authentication auth) throws IOException, SAXException, FlickrException {
+    public Collection getList() throws IOException, SAXException, FlickrException {
         List contacts = new ArrayList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
@@ -90,6 +95,13 @@ public class ContactsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_PUBLIC_LIST));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("user_id", userId));
 
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);

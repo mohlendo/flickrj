@@ -39,6 +39,15 @@ public class UrlsInterface {
         this.restInterface = restInterface;
     }
 
+    /**
+     * Get the group URL for the specified group ID
+     *
+     * @param groupId The group ID
+     * @return The group URL
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public String getGroup(String groupId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_GROUP));
@@ -55,6 +64,15 @@ public class UrlsInterface {
         }
     }
 
+    /**
+     * Get the URL for the user's photos.
+     *
+     * @param userId The user ID
+     * @return The user photo URL
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public String getUserPhotos(String userId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_USER_PHOTOS));
@@ -71,6 +89,15 @@ public class UrlsInterface {
         }
     }
 
+    /**
+     * Get the URL for the user's profile.
+     *
+     * @param userId The user ID
+     * @return The URL
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public String getUserProfile(String userId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_USER_PROFILE));
@@ -87,6 +114,15 @@ public class UrlsInterface {
         }
     }
 
+    /**
+     * Lookup the group name for the specified URL.
+     *
+     * @param url The url
+     * @return The group name
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public String lookupGroup(String url) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_LOOKUP_GROUP));
@@ -104,6 +140,15 @@ public class UrlsInterface {
         }
     }
 
+    /**
+     * Lookup the username for the specified User URL.
+     *
+     * @param url The user profile URL
+     * @return The username
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public String lookupUser(String url) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_LOOKUP_USER));

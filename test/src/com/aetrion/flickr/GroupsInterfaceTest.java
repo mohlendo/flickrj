@@ -46,8 +46,10 @@ public class GroupsInterfaceTest extends TestCase {
     }
 
     public void testBrowse() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         GroupsInterface iface = flickr.getGroupsInterface();
-        Category cat = iface.browse(auth, null);
+        Category cat = iface.browse(null);
         assertNotNull(cat);
         assertEquals("/", cat.getName());
 //        System.out.println("category path: " + cat.getPath());
@@ -74,8 +76,10 @@ public class GroupsInterfaceTest extends TestCase {
     }
 
     public void testBrowseWithId() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         GroupsInterface iface = flickr.getGroupsInterface();
-        Category cat = iface.browse(auth, "68"); // browse the Flickr category
+        Category cat = iface.browse("68"); // browse the Flickr category
         assertNotNull(cat);
         assertEquals("Flickr", cat.getName());
 

@@ -25,7 +25,6 @@ public class FavoritesInterfaceTest extends TestCase {
     Authentication auth = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
-
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -47,7 +46,7 @@ public class FavoritesInterfaceTest extends TestCase {
 
     public void testGetList() throws FlickrException, IOException, SAXException {
         FavoritesInterface iface = flickr.getFavoritesInterface();
-        Collection favorites = iface.getList(auth, null, 0, 0);
+        Collection favorites = iface.getList(null, 0, 0);
         assertNotNull(favorites);
         assertEquals(1, favorites.size());
     }
@@ -62,10 +61,10 @@ public class FavoritesInterfaceTest extends TestCase {
     public void testAddAndRemove() throws FlickrException, IOException, SAXException {
         String photoId = "2153378";
         FavoritesInterface iface = flickr.getFavoritesInterface();
-        iface.add(auth, photoId);
+        iface.add(photoId);
 
         Photo foundPhoto = null;
-        Iterator favorites = iface.getList(auth, null, 0, 0).iterator();
+        Iterator favorites = iface.getList(null, 0, 0).iterator();
         FIND_LOOP: while (favorites.hasNext()) {
             Photo photo = (Photo) favorites.next();
             if (photo.getId().equals(photoId)) {
@@ -75,7 +74,7 @@ public class FavoritesInterfaceTest extends TestCase {
         }
         assertNotNull(foundPhoto);
         assertEquals(photoId, foundPhoto.getId());
-        iface.remove(auth, photoId);
+        iface.remove(photoId);
     }
 
 }

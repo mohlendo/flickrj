@@ -11,6 +11,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
@@ -42,16 +43,20 @@ public class PoolsInterface {
     /**
      * Add a photo to a group's pool.
      *
-     * @param auth The Authentication object
      * @param photoId The photo ID
      * @param groupId The group ID
      */
-    public void add(Authentication auth, String photoId, String groupId) throws IOException, SAXException,
+    public void add(String photoId, String groupId) throws IOException, SAXException,
             FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_ADD));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("group_id", groupId));
@@ -64,10 +69,26 @@ public class PoolsInterface {
         }
     }
 
+    /**
+     * Get the context for a photo in the group pool.
+     *
+     * @param photoId The photo ID
+     * @param groupId The group ID
+     * @return The PhotoContext
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public PhotoContext getContext(String photoId, String groupId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_GROUPS));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("group_id", groupId));
@@ -98,13 +119,26 @@ public class PoolsInterface {
         }
     }
 
-    public Collection getGroups(Authentication auth) throws IOException, SAXException, FlickrException {
+    /**
+     * Get a collection of all of the user's groups.
+     *
+     * @return A Collection of Group objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public Collection getGroups() throws IOException, SAXException, FlickrException {
         List groups = new ArrayList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_GROUPS));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
         if (response.isError()) {
@@ -126,6 +160,18 @@ public class PoolsInterface {
         }
     }
 
+    /**
+     * Get the photos for the specified group pool, optionally filtering by taf.
+     *
+     * @param groupId The group ID
+     * @param tags The optional tags (may be null)
+     * @param perPage The number of photos per page (0 to ignore)
+     * @param page The page offset (0 to ignore)
+     * @return A Collection of Photo objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public Collection getPhotos(String groupId, String[] tags, int perPage, int page) throws IOException, SAXException,
             FlickrException {
         List photos = new ArrayList();
@@ -133,6 +179,12 @@ public class PoolsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_PHOTOS));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("group_id", groupId));
         if (tags != null) {
@@ -173,12 +225,26 @@ public class PoolsInterface {
         }
     }
 
-    public void remove(Authentication auth, String photoId, String groupId) throws IOException, SAXException,
+    /**
+     * Remove the specified photo from the group.
+     *
+     * @param photoId The photo ID
+     * @param groupId The group ID
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void remove(String photoId, String groupId) throws IOException, SAXException,
             FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_REMOVE));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("group_id", groupId));

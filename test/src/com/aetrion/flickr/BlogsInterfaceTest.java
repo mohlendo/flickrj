@@ -45,7 +45,7 @@ public class BlogsInterfaceTest extends TestCase {
 
     public void testGetList() throws FlickrException, IOException, SAXException {
         BlogsInterface blogsInterface = flickr.getBlogsInterface();
-        Collection blogs = blogsInterface.getList(auth);
+        Collection blogs = blogsInterface.getList();
         assertNotNull(blogs);
         assertEquals(1, blogs.size());
     }

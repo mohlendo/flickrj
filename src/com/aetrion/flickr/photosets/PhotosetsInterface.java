@@ -12,6 +12,7 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.Response;
+import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
@@ -49,7 +50,6 @@ public class PhotosetsInterface {
     /**
      * Create a new photoset.
      *
-     * @param auth The Authorization data
      * @param title The photoset title
      * @param description The photoset description
      * @param primaryPhotoId The primary photo id
@@ -58,11 +58,16 @@ public class PhotosetsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Photoset create(Authentication auth, String title, String description, String primaryPhotoId) throws IOException, SAXException, FlickrException {
+    public Photoset create(String title, String description, String primaryPhotoId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_CREATE));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("title", title));
         parameters.add(new Parameter("description", description));
@@ -83,17 +88,21 @@ public class PhotosetsInterface {
     /**
      * Delete the specified photoset.
      *
-     * @param auth The Authorization data
      * @param photosetId The photoset ID
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
      */
-    public void delete(Authentication auth, String photosetId) throws IOException, SAXException, FlickrException {
+    public void delete(String photosetId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_DELETE));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photoset_id", photosetId));
 
@@ -106,17 +115,21 @@ public class PhotosetsInterface {
     /**
      * Delete the specified photoset.
      *
-     * @param auth The Authorization data
      * @param photosetId The photoset ID
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
      */
-    public void editMeta(Authentication auth, String photosetId, String title, String description) throws IOException, SAXException, FlickrException {
+    public void editMeta(String photosetId, String title, String description) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_EDIT_META));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photoset_id", photosetId));
         parameters.add(new Parameter("title", title));
@@ -133,7 +146,6 @@ public class PhotosetsInterface {
     /**
      * Edit which photos are in the photoset.
      *
-     * @param auth The user authorization
      * @param photosetId The photoset ID
      * @param primaryPhotoId The primary photo Id
      * @param photoIds The photo IDs for the photos in the set
@@ -141,11 +153,16 @@ public class PhotosetsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public void editPhotos(Authentication auth, String photosetId, String primaryPhotoId, String[] photoIds) throws IOException, SAXException, FlickrException {
+    public void editPhotos(String photosetId, String primaryPhotoId, String[] photoIds) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_EDIT_PHOTOS));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photoset_id", photosetId));
         parameters.add(new Parameter("primary_photo_id", primaryPhotoId));
@@ -160,7 +177,6 @@ public class PhotosetsInterface {
     /**
      * Get a photo's context in the specified photo set.
      *
-     * @param auth The user authorization
      * @param photoId The photo ID
      * @param photosetId The photoset ID
      * @return The PhotoContext
@@ -168,11 +184,16 @@ public class PhotosetsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public PhotoContext getContext(Authentication auth, String photoId, String photosetId) throws IOException, SAXException, FlickrException {
+    public PhotoContext getContext(String photoId, String photosetId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_CONTEXT));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("photoset_id", photosetId));
@@ -217,6 +238,12 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("method", METHOD_GET_INFO));
         parameters.add(new Parameter("api_key", apiKey));
 
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("photoset_id", photosetId));
 
         RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
@@ -260,6 +287,12 @@ public class PhotosetsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("user_id", userId));
 
@@ -316,6 +349,12 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("method", METHOD_GET_PHOTOS));
         parameters.add(new Parameter("api_key", apiKey));
 
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("photoset_id", photosetId));
 
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
@@ -348,11 +387,16 @@ public class PhotosetsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public void orderSets(Authentication auth, String[] photosetIds) throws IOException, SAXException, FlickrException {
+    public void orderSets(String[] photosetIds) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_ORDER_SETS));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photoset_ids", StringUtilities.join(photosetIds, ",")));
 

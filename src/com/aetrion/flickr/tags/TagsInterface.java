@@ -9,6 +9,8 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.photos.Photo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -51,6 +53,12 @@ public class TagsInterface {
         parameters.add(new Parameter("method", METHOD_GET_LIST_PHOTO));
         parameters.add(new Parameter("api_key", apiKey));
 
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("photo_id", photoId));
 
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
@@ -91,6 +99,12 @@ public class TagsInterface {
         parameters.add(new Parameter("method", METHOD_GET_LIST_USER));
         parameters.add(new Parameter("api_key", apiKey));
 
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("user_id", userId));
 
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
@@ -125,6 +139,12 @@ public class TagsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST_USER_POPULAR));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("user_id", userId));
 

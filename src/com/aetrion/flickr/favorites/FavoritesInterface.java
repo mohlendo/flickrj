@@ -11,6 +11,7 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.Response;
+import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import org.w3c.dom.Element;
@@ -40,17 +41,22 @@ public class FavoritesInterface {
     /**
      * Add a photo to the user's favorites.
      *
-     * @param auth The Authorization object
      * @param photoId The photo ID
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
      */
-    public void add(Authentication auth, String photoId) throws IOException, SAXException, FlickrException {
+    public void add(String photoId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_ADD));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("photo_id", photoId));
 
         Response response = restInterface.post("/services/rest/", parameters);
@@ -62,7 +68,6 @@ public class FavoritesInterface {
     /**
      * Get the collection of favorites for the calling user or the specified user ID.
      *
-     * @param auth The Authentication innformation.
      * @param userId The optional user ID.  Null value will be ignored.
      * @param perPage The optional per page value.  Values <= 0 will be ignored.
      * @param page The page to view.  Values <= 0 will be ignored.
@@ -70,13 +75,18 @@ public class FavoritesInterface {
      * @throws IOException
      * @throws SAXException
      */
-    public Collection getList(Authentication auth, String userId, int perPage, int page) throws IOException, SAXException, FlickrException {
+    public Collection getList(String userId, int perPage, int page) throws IOException, SAXException, FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         if (userId != null) {
             parameters.add(new Parameter("user_id", userId));
@@ -133,6 +143,13 @@ public class FavoritesInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_PUBLIC_LIST));
         parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
         parameters.add(new Parameter("user_id", userId));
 
         if (perPage > 0) {
@@ -173,14 +190,18 @@ public class FavoritesInterface {
     /**
      * Remove the specified photo from the user's favorites.
      *
-     * @param auth The authentication inforation
      * @param photoId The photo id
      */
-    public void remove(Authentication auth, String photoId) throws IOException, SAXException, FlickrException {
+    public void remove(String photoId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_REMOVE));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.addAll(auth.getAsParameters());
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
 
         parameters.add(new Parameter("photo_id", photoId));
 
