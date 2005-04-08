@@ -12,6 +12,7 @@ import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import org.w3c.dom.Element;
@@ -76,6 +77,22 @@ public class FavoritesInterface {
      * @throws SAXException
      */
     public Collection getList(String userId, int perPage, int page) throws IOException, SAXException, FlickrException {
+        return getList(userId, perPage, page, null);
+    }
+
+    /**
+     * Get the collection of favorites for the calling user or the specified user ID.
+     *
+     * @param userId The optional user ID.  Null value will be ignored.
+     * @param perPage The optional per page value.  Values <= 0 will be ignored.
+     * @param page The page to view.  Values <= 0 will be ignored.
+     * @param extras An array of Strings representing extra parameters to send
+     * @return The Collection of Photo objects
+     * @throws IOException
+     * @throws SAXException
+     */
+    public Collection getList(String userId, int perPage, int page, String[] extras) throws IOException,
+            SAXException, FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
@@ -91,11 +108,14 @@ public class FavoritesInterface {
         if (userId != null) {
             parameters.add(new Parameter("user_id", userId));
         }
+        if (extras != null) {
+            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
+        }
         if (perPage > 0) {
-            parameters.add(new Parameter("user_id", new Integer(perPage)));
+            parameters.add(new Parameter("per_page", new Integer(perPage)));
         }
         if (page > 0) {
-            parameters.add(new Parameter("user_id", new Integer(page)));
+            parameters.add(new Parameter("page", new Integer(page)));
         }
 
         RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
@@ -137,7 +157,24 @@ public class FavoritesInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getPublicList(String userId, int perPage, int page) throws IOException, SAXException, FlickrException {
+    public Collection getPublicList(String userId, int perPage, int page) throws FlickrException, IOException,
+            SAXException {
+        return getPublicList(userId, perPage, page, null);
+    }
+
+    /**
+     * Get the specified user IDs public contacts.
+     *
+     * @param userId The user ID
+     * @param perPage The optional per page value.  Values <= 0 will be ignored.
+     * @param page The optional page to view.  Values <= 0 will be ignored
+     * @param extras A String array of extra parameters to send
+     * @return A Collection of Photo objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public Collection getPublicList(String userId, int perPage, int page, String[] extras) throws IOException, SAXException, FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
@@ -152,6 +189,9 @@ public class FavoritesInterface {
 
         parameters.add(new Parameter("user_id", userId));
 
+        if (extras != null) {
+            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
+        }
         if (perPage > 0) {
             parameters.add(new Parameter("per_page", new Integer(perPage)));
         }
@@ -172,14 +212,21 @@ public class FavoritesInterface {
 
                 User owner = new User();
                 owner.setId(photoElement.getAttribute("owner"));
+                owner.setRealname(photoElement.getAttribute("ownername"));
                 photo.setOwner(owner);
 
                 photo.setSecret(photoElement.getAttribute("secret"));
                 photo.setServer(photoElement.getAttribute("server"));
-                photo.setTitle(photoElement.getAttribute("name"));
+                photo.setTitle(photoElement.getAttribute("title"));
                 photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
                 photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
                 photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
+
+                photo.setLicense(photoElement.getAttribute("license"));
+                photo.setDatePosted(photoElement.getAttribute("dateupload"));
+                photo.setDateTaken(photoElement.getAttribute("datetaken"));
+                photo.setTakenGranularity(photoElement.getAttribute("datetakengranularity"));
+                photo.setIconServer(photoElement.getAttribute("iconserver"));
 
                 photos.add(photo);
             }

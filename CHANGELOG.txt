@@ -19,7 +19,13 @@ Release 1.0a5 (April 1, 2005):
  - Photo now includes methods for obtaining BufferedImage objects.
 
 Release 1.0a6
+ - Updated FavoritesInterfaceTest to use RequestContext for authentication
  - Bug in blogs interface: needpassword should be needspassword
  - Bug in ContactsInterface.getList(): id should be nsid
  - Added realName field to Contact
  - Bug in ContactsInterface.getPublicList(): id should be nsid
+ - Fixed bug in FavoritesInterface.getList(): per_page and page parameters were not correctly specified
+ - Added extras parameter to FavoritesInterface.getList() and getPublicList()
+ - Fixed bug in FavoritesInterface: returned attribute "name" should be "title"
+ - Photo.setDateTaken and Photo.setDatePosted now ignore empty and null Strings as values
+ - Added DebugInputStream for printing the responses sent from Flickr

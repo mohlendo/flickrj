@@ -12,6 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.favorites.FavoritesInterface;
 import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.util.IOUtilities;
 import junit.framework.TestCase;
 import org.xml.sax.SAXException;
@@ -45,8 +46,20 @@ public class FavoritesInterfaceTest extends TestCase {
     }
 
     public void testGetList() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         FavoritesInterface iface = flickr.getFavoritesInterface();
         Collection favorites = iface.getList(null, 0, 0);
+        assertNotNull(favorites);
+        assertEquals(1, favorites.size());
+    }
+
+    public void testGetListWithExtras() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        String[] extras = Extras.ALL;
+        FavoritesInterface iface = flickr.getFavoritesInterface();
+        Collection favorites = iface.getList(null, 0, 0, extras);
         assertNotNull(favorites);
         assertEquals(1, favorites.size());
     }
@@ -59,6 +72,8 @@ public class FavoritesInterfaceTest extends TestCase {
     }
 
     public void testAddAndRemove() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         String photoId = "2153378";
         FavoritesInterface iface = flickr.getFavoritesInterface();
         iface.add(photoId);

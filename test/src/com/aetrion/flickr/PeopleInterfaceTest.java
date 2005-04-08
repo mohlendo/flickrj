@@ -25,7 +25,6 @@ public class PeopleInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
-
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");

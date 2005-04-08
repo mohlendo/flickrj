@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.util.IOUtilities;
+import com.aetrion.flickr.util.DebugInputStream;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -110,7 +111,8 @@ public class REST {
 
         InputStream in = null;
         try {
-            in = conn.getInputStream();
+            in = new DebugInputStream(conn.getInputStream(), System.out);
+
             Document document = builder.parse(in);
             Response response = (Response) responseClass.newInstance();
             response.parse(document);

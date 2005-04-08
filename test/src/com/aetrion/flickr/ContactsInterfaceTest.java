@@ -24,7 +24,6 @@ public class ContactsInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
-
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -45,6 +44,8 @@ public class ContactsInterfaceTest extends TestCase {
     }
 
     public void testGetList() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         ContactsInterface iface = flickr.getContactsInterface();
         Collection contacts = iface.getList();
         assertNotNull(contacts);

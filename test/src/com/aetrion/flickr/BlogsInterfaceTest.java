@@ -23,7 +23,6 @@ public class BlogsInterfaceTest extends TestCase {
     Authentication auth = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
-
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -44,6 +43,8 @@ public class BlogsInterfaceTest extends TestCase {
     }
 
     public void testGetList() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         BlogsInterface blogsInterface = flickr.getBlogsInterface();
         Collection blogs = blogsInterface.getList();
         assertNotNull(blogs);
@@ -51,7 +52,8 @@ public class BlogsInterfaceTest extends TestCase {
     }
 
     public void testPostImage() {
-
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
     }
 
 }

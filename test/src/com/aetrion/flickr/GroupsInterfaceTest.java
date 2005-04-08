@@ -25,7 +25,6 @@ public class GroupsInterfaceTest extends TestCase {
     Authentication auth = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
-
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");

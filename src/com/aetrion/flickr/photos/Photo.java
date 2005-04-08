@@ -45,6 +45,7 @@ public class Photo {
     private int comments;
     private Collection notes;
     private Collection tags;
+    private String iconServer;
 
     public Photo() {
 
@@ -163,6 +164,7 @@ public class Photo {
     }
 
     public void setDatePosted(String datePosted) {
+        if (datePosted == null || "".equals(datePosted)) return;
         setDatePosted(Long.parseLong(datePosted));
     }
 
@@ -175,6 +177,7 @@ public class Photo {
     }
 
     public void setDateTaken(String dateTaken) {
+        if (dateTaken == null || "".equals(dateTaken)) return;
         try {
             setDateTaken(DF.parse(dateTaken));
         } catch (ParseException e) {
@@ -233,6 +236,14 @@ public class Photo {
 
     public void setTags(Collection tags) {
         this.tags = tags;
+    }
+
+    public String getIconServer() {
+        return iconServer;
+    }
+
+    public void setIconServer(String iconServer) {
+        this.iconServer = iconServer;
     }
 
     public BufferedImage getOriginalImage() throws IOException {
