@@ -63,8 +63,9 @@ public class ContactsInterface {
             for (int i = 0; i < contactNodes.getLength(); i++) {
                 Element contactElement = (Element) contactNodes.item(i);
                 Contact contact = new Contact();
-                contact.setId(contactElement.getAttribute("id"));
+                contact.setId(contactElement.getAttribute("nsid"));
                 contact.setUsername(contactElement.getAttribute("username"));
+                contact.setRealName(contactElement.getAttribute("realname"));
                 contact.setFriend("1".equals(contactElement.getAttribute("friend")));
                 contact.setFamily("1".equals(contactElement.getAttribute("family")));
                 contact.setIgnored("1".equals(contactElement.getAttribute("ignored")));
@@ -113,7 +114,7 @@ public class ContactsInterface {
             for (int i = 0; i < contactNodes.getLength(); i++) {
                 Element contactElement = (Element) contactNodes.item(i);
                 Contact contact = new Contact();
-                contact.setId(contactElement.getAttribute("id"));
+                contact.setId(contactElement.getAttribute("nsid"));
                 contact.setUsername(contactElement.getAttribute("username"));
                 contact.setIgnored("1".equals(contactElement.getAttribute("ignored")));
                 contact.setOnline(OnlineStatus.fromType(contactElement.getAttribute("online")));

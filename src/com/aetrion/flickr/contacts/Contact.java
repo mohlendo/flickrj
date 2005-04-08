@@ -9,6 +9,7 @@ public class Contact {
 
     private String id;
     private String username;
+    private String realName;
     private boolean friend;
     private boolean family;
     private boolean ignored;
@@ -33,6 +34,14 @@ public class Contact {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 
     public boolean isFriend() {

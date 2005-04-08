@@ -6,12 +6,12 @@ import java.util.Collection;
 import java.util.List;
 
 import com.aetrion.flickr.Authentication;
+import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.Response;
 import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.Response;
 import com.aetrion.flickr.photos.Photo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -66,7 +66,7 @@ public class BlogsInterface {
                 Blog blog = new Blog();
                 blog.setId(blogElement.getAttribute("id"));
                 blog.setName(blogElement.getAttribute("name"));
-                blog.setNeedPassword("1".equals(blogElement.getAttribute("needpassword")));
+                blog.setNeedPassword("1".equals(blogElement.getAttribute("needspassword")));
                 blog.setUrl(blogElement.getAttribute("url"));
                 blogs.add(blog);
             }
@@ -88,7 +88,8 @@ public class BlogsInterface {
     }
 
     /**
-     * Post the specified photo to a blog.
+     * Post the specified photo to a blog.  Note that the Photo.title and Photo.description are used for the blog entry
+     * title and body respectively.
      *
      * @param photo The photo metadata
      * @param blogId The blog ID
@@ -97,7 +98,8 @@ public class BlogsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public void postPhoto(Photo photo, String blogId, String blogPassword) throws IOException, SAXException, FlickrException {
+    public void postPhoto(Photo photo, String blogId, String blogPassword) throws IOException, SAXException,
+            FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_POST_PHOTO));
         parameters.add(new Parameter("api_key", apiKey));
