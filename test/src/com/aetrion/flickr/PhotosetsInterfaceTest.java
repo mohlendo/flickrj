@@ -9,6 +9,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
+import com.aetrion.flickr.photos.SearchParameters;
+import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photosets.Photoset;
 import com.aetrion.flickr.photosets.Photosets;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
@@ -102,6 +104,18 @@ public class PhotosetsInterfaceTest extends TestCase {
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
         String[] photosetIds = {properties.getProperty("photosetid")};
         iface.orderSets(photosetIds);
+    }
+
+    public void testSearch() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        SearchParameters searchParameters = new SearchParameters();
+        String[] tags = {"test"};
+        searchParameters.setTags(tags);
+        Collection photos = iface.search(searchParameters, -1, -1);
+        assertNotNull(photos);
+        
     }
 
 }
