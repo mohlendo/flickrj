@@ -40,10 +40,10 @@ public class PhotosInterfaceTest extends TestCase {
             properties = new Properties();
             properties.load(in);
 
-            REST rest = new REST();
-            rest.setHost(properties.getProperty("host"));
+//            REST rest = new REST();
+//            rest.setHost(properties.getProperty("host"));
 
-            flickr = new Flickr(properties.getProperty("apiKey"), rest);
+            flickr = new Flickr(properties.getProperty("apiKey"));
 
             auth = new Authentication();
             auth.setEmail(properties.getProperty("email"));
@@ -152,6 +152,18 @@ public class PhotosInterfaceTest extends TestCase {
         searchParams.setUserId(properties.getProperty("nsid"));
         Collection photos = iface.search(searchParams, 0, 0);
         assertNotNull(photos);
+    }
+
+    public void testTagSearch() throws FlickrException, IOException, SAXException {
+//        RequestContext requestContext = RequestContext.getRequestContext();
+//        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        SearchParameters searchParameters = new SearchParameters();
+        String[] tags = {"flowers"};
+        searchParameters.setTags(tags);
+        Collection photos = iface.search(searchParameters, -1, -1);
+        assertNotNull(photos);
+
     }
 
     public void testSetDates() {
@@ -277,5 +289,7 @@ public class PhotosInterfaceTest extends TestCase {
         assertEquals(375, image.getHeight());
         ImageIO.write(image, "jpg", new File("out.large.jpg"));
     }
+
+
 
 }

@@ -111,7 +111,11 @@ public class REST {
 
         InputStream in = null;
         try {
-            in = new DebugInputStream(conn.getInputStream(), System.out);
+            if (Flickr.debugStream) {
+                in = new DebugInputStream(conn.getInputStream(), System.out);
+            } else {
+                in = conn.getInputStream();
+            }
 
             Document document = builder.parse(in);
             Response response = (Response) responseClass.newInstance();
@@ -205,7 +209,11 @@ public class REST {
 
             InputStream in = null;
             try {
-                in = conn.getInputStream();
+                if (Flickr.debugStream) {
+                    in = new DebugInputStream(conn.getInputStream(), System.out);
+                } else {
+                    in = conn.getInputStream();
+                }
                 Document document = builder.parse(in);
                 Response response = (Response) responseClass.newInstance();
                 response.parse(document);

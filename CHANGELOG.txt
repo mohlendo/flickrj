@@ -18,7 +18,7 @@ Release 1.0a4 (March 31, 2005):
 Release 1.0a5 (April 1, 2005):
  - Photo now includes methods for obtaining BufferedImage objects.
 
-Release 1.0a6
+Release 1.0a6 (April 15, 2005):
  - Updated FavoritesInterfaceTest to use RequestContext for authentication
  - Bug in blogs interface: needpassword should be needspassword
  - Bug in ContactsInterface.getList(): id should be nsid

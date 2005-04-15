@@ -23,6 +23,11 @@ public class Flickr {
 
     public static final String DEFAULT_HOST = "www.flickr.com";
 
+    /**
+     * Set to true to enable stream debugging.
+     */
+    public static boolean debugStream = false;
+
     private String apiKey;
     private REST restInterface;
 
