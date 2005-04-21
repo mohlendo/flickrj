@@ -47,9 +47,26 @@ public class XMLUtilities {
         return null;
     }
 
+    /**
+     * Get the first child element with the given name.
+     *
+     * @param element The parent element
+     * @param name The child element name
+     * @return The child element or null
+     */
+    public static Element getChild(Element element, String name) {
+        return (Element) element.getElementsByTagName(name).item(0);
+    }
+
+    /**
+     * Get the value of the fist child element with the given name.
+     *
+     * @param element The parent element
+     * @param name The child element name
+     * @return The child element value or null
+     */
     public static String getChildValue(Element element, String name) {
-        Element child = (Element) element.getElementsByTagName(name).item(0);
-        return getValue(child);
+        return getValue(getChild(element, name));
     }
 
 }

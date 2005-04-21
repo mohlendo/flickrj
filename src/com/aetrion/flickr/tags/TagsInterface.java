@@ -11,6 +11,7 @@ import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Authentication;
+import com.aetrion.flickr.util.XMLUtilities;
 import com.aetrion.flickr.photos.Photo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -27,6 +28,7 @@ public class TagsInterface {
     public static final String METHOD_GET_LIST_PHOTO = "flickr.tags.getListPhoto";
     public static final String METHOD_GET_LIST_USER = "flickr.tags.getListUser";
     public static final String METHOD_GET_LIST_USER_POPULAR = "flickr.tags.getListUserPopular";
+    public static final String METHOD_GET_RELATED = "flickr.tags.getRelated";
 
     private String apiKey;
     private REST restInterface;
@@ -163,6 +165,47 @@ public class TagsInterface {
                 tag.setCount(tagElement.getAttribute("count"));
                 tag.setValue(((Text) tagElement.getFirstChild()).getData());
                 tags.add(tag);
+            }
+            return tags;
+        }
+    }
+
+    /**
+     * Get the related tags.
+     *
+     * @param tag The source tag
+     * @return A RelatedTagsList object
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public RelatedTagsList getRelated(String tag) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_RELATED));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
+        parameters.add(new Parameter("tag", tag));
+
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } else {
+            Element tagsElement = response.getPayload();
+
+            RelatedTagsList tags = new RelatedTagsList();
+            tags.setSource(tagsElement.getAttribute("source"));
+            NodeList tagElements = tagsElement.getElementsByTagName("tag");
+            for (int i = 0; i < tagElements.getLength(); i++) {
+                Element tagElement = (Element) tagElements.item(i);
+                Tag t = new Tag();
+                t.setValue(XMLUtilities.getValue(tagElement));
+                tags.add(t);
             }
             return tags;
         }

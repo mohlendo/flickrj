@@ -11,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.aetrion.flickr.util.IOUtilities;
 import com.aetrion.flickr.tags.TagsInterface;
 import com.aetrion.flickr.tags.Tag;
+import com.aetrion.flickr.tags.RelatedTagsList;
 import com.aetrion.flickr.photos.Photo;
 import org.xml.sax.SAXException;
 import junit.framework.TestCase;
@@ -71,6 +72,14 @@ public class TagsInterfaceTest extends TestCase {
             assertNotNull(tag.getValue());
             System.out.println(tag.getValue() + ":" + tag.getCount());
         }
+    }
+
+    public void testGetRelated() throws FlickrException, IOException, SAXException {
+        TagsInterface iface = flickr.getTagsInterface();
+        RelatedTagsList relatedTags = iface.getRelated("flower");
+        assertNotNull(relatedTags);
+        assertEquals("flower", relatedTags.getSource());
+        assertTrue("Number of related tags returned was 0", relatedTags.size() > 0);
     }
 
 }

@@ -13,6 +13,7 @@ import com.aetrion.flickr.photosets.PhotosetsInterface;
 import com.aetrion.flickr.tags.TagsInterface;
 import com.aetrion.flickr.test.TestInterface;
 import com.aetrion.flickr.urls.UrlsInterface;
+import com.aetrion.flickr.reflection.ReflectionInterface;
 
 /**
  * Main entry point for the Flickrj API.  This class is used to acquire Interface classes which wrap the Flickr API.
@@ -39,6 +40,7 @@ public class Flickr {
     private PeopleInterface peopleInterface;
     private PhotosInterface photosInterface;
     private PhotosetsInterface photosetsInterface;
+    private ReflectionInterface reflectionInterface;
     private TagsInterface tagsInterface;
     private TestInterface testInterface;
     private UrlsInterface urlsInterface;
@@ -164,6 +166,13 @@ public class Flickr {
             photosetsInterface = new PhotosetsInterface(apiKey, restInterface);
         }
         return photosetsInterface;
+    }
+
+    public ReflectionInterface getReflectionInterface() {
+        if (reflectionInterface == null) {
+            reflectionInterface = new ReflectionInterface(apiKey, restInterface);
+        }
+        return reflectionInterface;
     }
 
     /**
