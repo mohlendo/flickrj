@@ -36,3 +36,6 @@ Release 1.0a7 (April 21, 2005):
  - Started changing all element value retrieval to use the XMLUtilities class
  - Added reflection package which implements the flickr.reflection methods
  - Added implementation for flickr.tags.getRelated
+
+Release 1.0a8
+ - Added note about lack of thread safety in the README
