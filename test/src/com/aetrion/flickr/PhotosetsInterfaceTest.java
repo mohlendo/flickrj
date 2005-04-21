@@ -91,6 +91,12 @@ public class PhotosetsInterfaceTest extends TestCase {
         assertEquals(1, photosets.getPhotosets().size());
     }
 
+    public void testGetList2() throws FlickrException, IOException, SAXException {
+        PhotosetsInterface iface = flickr.getPhotosetsInterface();
+        Photosets photosets = iface.getList("26095690@N00");
+        assertNotNull(photosets);
+    }
+
     public void testGetPhotos() throws FlickrException, IOException, SAXException {
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
         Collection photos = iface.getPhotos(properties.getProperty("photosetid"));

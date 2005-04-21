@@ -47,4 +47,9 @@ public class XMLUtilities {
         return null;
     }
 
+    public static String getChildValue(Element element, String name) {
+        Element child = (Element) element.getElementsByTagName(name).item(0);
+        return getValue(child);
+    }
+
 }

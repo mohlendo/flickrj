@@ -17,6 +17,7 @@ import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
 import com.aetrion.flickr.util.StringUtilities;
+import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.w3c.dom.NodeList;
@@ -264,11 +265,8 @@ public class PhotosetsInterface {
 
             photoset.setPhotoCount(photosetElement.getAttribute("photos"));
 
-            Element titleElement = (Element) photosetElement.getElementsByTagName("title").item(0);
-            photoset.setTitle(((Text) titleElement.getFirstChild()).getData());
-
-            Element descriptionElement = (Element) photosetElement.getElementsByTagName("description").item(0);
-            photoset.setDescription(((Text) descriptionElement.getFirstChild()).getData());
+            photoset.setTitle(XMLUtilities.getChildValue(photosetElement, "title"));
+            photoset.setDescription(XMLUtilities.getChildValue(photosetElement, "description"));
 
             return photoset;
         }
@@ -321,11 +319,8 @@ public class PhotosetsInterface {
                 photoset.setServer(photosetElement.getAttribute("server"));
                 photoset.setPhotoCount(photosetElement.getAttribute("photos"));
 
-                Element titleElement = (Element) photosetElement.getElementsByTagName("title").item(0);
-                photoset.setTitle(((Text) titleElement.getFirstChild()).getData());
-
-                Element descriptionElement = (Element) photosetElement.getElementsByTagName("description").item(0);
-                photoset.setDescription(((Text) descriptionElement.getFirstChild()).getData());
+                photoset.setTitle(XMLUtilities.getChildValue(photosetElement, "title"));
+                photoset.setDescription(XMLUtilities.getChildValue(photosetElement, "description"));
 
                 photosets.add(photoset);
             }

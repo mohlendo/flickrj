@@ -26,7 +26,7 @@ public class Flickr {
     /**
      * Set to true to enable stream debugging.
      */
-    public static boolean debugStream = false;
+    public static boolean debugStream = true;
 
     private String apiKey;
     private REST restInterface;

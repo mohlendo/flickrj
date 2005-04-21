@@ -305,7 +305,7 @@ public class Photo {
         buffer.append(".flickr.com/");
         buffer.append(getId());
         buffer.append("_");
-        buffer.append(secret);
+        buffer.append(getSecret());
         return buffer;
     }
 

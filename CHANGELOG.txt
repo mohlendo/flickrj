@@ -29,3 +29,8 @@ Release 1.0a6 (April 15, 2005):
  - Fixed bug in FavoritesInterface: returned attribute "name" should be "title"
  - Photo.setDateTaken and Photo.setDatePosted now ignore empty and null Strings as values
  - Added DebugInputStream for printing the responses sent from Flickr
+
+Release 1.0a7
+ - Added fix for case where returned contact element has no online status attribute
+ - Fixed photosets cases where an empty description is returned
+ - Started changing all element value retrieval to use the XMLUtilities class

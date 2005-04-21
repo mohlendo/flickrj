@@ -10,10 +10,12 @@ public class OnlineStatus {
     public static final int OFFLINE_TYPE = 0;
     public static final int AWAY_TYPE = 1;
     public static final int ONLINE_TYPE = 2;
+    public static final int UNKNOWN_TYPE = 100;
 
     public static final OnlineStatus OFFLINE = new OnlineStatus(OFFLINE_TYPE);
     public static final OnlineStatus AWAY = new OnlineStatus(AWAY_TYPE);
     public static final OnlineStatus ONLINE = new OnlineStatus(ONLINE_TYPE);
+    public static final OnlineStatus UNKNOWN = new OnlineStatus(UNKNOWN_TYPE);
 
     private int type;
 
@@ -44,6 +46,8 @@ public class OnlineStatus {
                 return AWAY;
             case ONLINE_TYPE:
                 return ONLINE;
+            case UNKNOWN_TYPE:
+                return UNKNOWN;
             default:
                 throw new IllegalArgumentException("Unsupported online type: " + type);
         }
@@ -56,6 +60,10 @@ public class OnlineStatus {
      * @return The OnlineStatus object
      */
     public static OnlineStatus fromType(String type) {
-        return fromType(Integer.parseInt(type));
+        if (type == null || "".equals(type)) {
+            return UNKNOWN;
+        } else {
+            return fromType(Integer.parseInt(type));
+        }
     }
 }
