@@ -18,6 +18,7 @@ public class User {
     private String username;
     private boolean admin;
     private boolean pro;
+    private int iconServer;
     private String realname;
     private String location;
     private Date photosFirstDate;
@@ -60,6 +61,18 @@ public class User {
 
     public void setPro(boolean pro) {
         this.pro = pro;
+    }
+
+    public int getIconServer() {
+        return iconServer;
+    }
+
+    public void setIconServer(int iconServer) {
+        this.iconServer = iconServer;
+    }
+
+    public void setIconServer(String iconServer) {
+        if (iconServer != null) setIconServer(Integer.parseInt(iconServer));
     }
 
     public String getRealname() {

@@ -46,6 +46,7 @@ public class Photo {
     private Collection notes;
     private Collection tags;
     private String iconServer;
+    private String url;
 
     public Photo() {
 
@@ -244,6 +245,14 @@ public class Photo {
 
     public void setIconServer(String iconServer) {
         this.iconServer = iconServer;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public BufferedImage getOriginalImage() throws IOException {

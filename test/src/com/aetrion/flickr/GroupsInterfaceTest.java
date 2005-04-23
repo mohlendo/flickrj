@@ -25,6 +25,8 @@ public class GroupsInterfaceTest extends TestCase {
     Authentication auth = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
+        Flickr.debugStream = true;
+
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -93,12 +95,16 @@ public class GroupsInterfaceTest extends TestCase {
     }
 
     public void testGetActiveList() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         GroupsInterface iface = flickr.getGroupsInterface();
         Collection groups = iface.getActiveList();
         assertNotNull(groups);
     }
 
     public void testGetInfo() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
         GroupsInterface iface = flickr.getGroupsInterface();
         Group group = iface.getInfo("34427469792@N01");
         assertNotNull(group);

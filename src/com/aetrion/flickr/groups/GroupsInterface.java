@@ -11,6 +11,7 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -176,23 +177,12 @@ public class GroupsInterface {
             Group group = new Group();
             group.setId(groupElement.getAttribute("id"));
 
-            Element nameElement = (Element) groupElement.getElementsByTagName("name").item(0);
-            group.setName(((Text) nameElement.getFirstChild()).getData());
-
-            Element membersElement = (Element) groupElement.getElementsByTagName("members").item(0);
-            group.setMembers(((Text) membersElement.getFirstChild()).getData());
-
-            Element onlineElement = (Element) groupElement.getElementsByTagName("online").item(0);
-            group.setOnline(((Text) onlineElement.getFirstChild()).getData());
-
-            Element privacyElement = (Element) groupElement.getElementsByTagName("privacy").item(0);
-            group.setPrivacy(((Text) privacyElement.getFirstChild()).getData());
-
-            Element chatIdElement = (Element) groupElement.getElementsByTagName("chatid").item(0);
-            group.setChatId(((Text) chatIdElement.getFirstChild()).getData());
-
-            Element chatCountElement = (Element) groupElement.getElementsByTagName("chatcount").item(0);
-            group.setInChat(((Text) chatCountElement.getFirstChild()).getData());
+            group.setName(XMLUtilities.getChildValue(groupElement, "name"));
+            group.setMembers(XMLUtilities.getChildValue(groupElement, "members"));
+            group.setOnline(XMLUtilities.getChildValue(groupElement, "online"));
+            group.setPrivacy(XMLUtilities.getChildValue(groupElement, "privacy"));
+            group.setChatId(XMLUtilities.getChildValue(groupElement, "chatid"));
+            group.setInChat(XMLUtilities.getChildValue(groupElement, "chatcount"));
 
             return group;
         }

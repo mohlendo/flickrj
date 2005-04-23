@@ -16,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.photos.Permissions;
 import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.PhotoContext;
 import com.aetrion.flickr.photos.Photocount;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.SearchParameters;
@@ -34,6 +35,8 @@ public class PhotosInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
+        Flickr.debugStream = true;
+
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -101,6 +104,14 @@ public class PhotosInterfaceTest extends TestCase {
         assertTrue(photos.size() > 0);
     }
 
+    public void testGetContext() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        PhotoContext photoContext = iface.getContext(properties.getProperty("photoid"));
+        assertNotNull(photoContext);
+    }
+
     public void testGetCounts() throws FlickrException, IOException, SAXException {
         RequestContext requestContext = RequestContext.getRequestContext();
         requestContext.setAuthentication(auth);
@@ -116,6 +127,22 @@ public class PhotosInterfaceTest extends TestCase {
             Photocount photocount = (Photocount) countsIter.next();
             System.out.println("count: " + photocount.getCount());
         }
+    }
+
+    public void testGetExif() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        Collection exifs = iface.getExif(properties.getProperty("photoid"), null);
+        assertNotNull(exifs);
+    }
+
+    public void testGetNotInSet() throws FlickrException, IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        requestContext.setAuthentication(auth);
+        PhotosInterface iface = flickr.getPhotosInterface();
+        Collection photos = iface.getNotInSet(-1, -1);
+        assertNotNull(photos);
     }
 
     public void testGetPerms() throws FlickrException, IOException, SAXException {
@@ -289,7 +316,6 @@ public class PhotosInterfaceTest extends TestCase {
         assertEquals(375, image.getHeight());
         ImageIO.write(image, "jpg", new File("out.large.jpg"));
     }
-
 
 
 }

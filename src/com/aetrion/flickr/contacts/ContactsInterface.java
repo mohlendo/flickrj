@@ -11,9 +11,9 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 /**
@@ -72,8 +72,7 @@ public class ContactsInterface {
                 contact.setOnline(OnlineStatus.fromType(contactElement.getAttribute("online")));
                 if (contact.getOnline() == OnlineStatus.AWAY) {
                     contactElement.normalize();
-                    Text awayMessageNode = (Text) contactElement.getFirstChild();
-                    contact.setAwayMessage(awayMessageNode.getData());
+                    contact.setAwayMessage(XMLUtilities.getValue(contactElement));
                 }
                 contacts.add(contact);
             }
@@ -120,8 +119,7 @@ public class ContactsInterface {
                 contact.setOnline(OnlineStatus.fromType(contactElement.getAttribute("online")));
                 if (contact.getOnline() == OnlineStatus.AWAY) {
                     contactElement.normalize();
-                    Text awayMessageNode = (Text) contactElement.getFirstChild();
-                    contact.setAwayMessage(awayMessageNode.getData());
+                    contact.setAwayMessage(XMLUtilities.getValue(contactElement));
                 }
                 contacts.add(contact);
             }

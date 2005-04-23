@@ -2,6 +2,9 @@
 
 package com.aetrion.flickr;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * A thread local variable used to hold contextual information used in requests.  To get an instance of this class use
  * RequestContext.getRequestContext().  The method will return a RequestContext object which is only usable within the
@@ -15,6 +18,7 @@ public class RequestContext {
             new RequestContextThreadLocal();
 
     private Authentication authentication;
+    private List extras;
 
     /**
      * Get the RequestContext instance for the current Thread.
@@ -41,6 +45,20 @@ public class RequestContext {
      */
     public void setAuthentication(Authentication authentication) {
         this.authentication = authentication;
+    }
+
+    /**
+     * Get the List of extra return values requested.
+     *
+     * @return
+     */
+    public List getExtras() {
+        if (extras == null) extras = new ArrayList();
+        return extras;
+    }
+
+    public void setExtras(List extras) {
+        this.extras = extras;
     }
 
     private static class RequestContextThreadLocal extends ThreadLocal {

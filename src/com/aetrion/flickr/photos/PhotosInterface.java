@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import com.aetrion.flickr.Authentication;
@@ -34,11 +35,11 @@ public class PhotosInterface {
     public static final String METHOD_ADD_TAGS = "flickr.photos.addTags";
     public static final String METHOD_GET_CONTACTS_PHOTOS = "flickr.photos.getContactsPhotos";
     public static final String METHOD_GET_CONTACTS_PUBLIC_PHOTOS = "flickr.photos.getContactsPublicPhotos";
-    public static final String METHOD_GET_CONTEXT = "flickr.photos.getContext"; // NYI
+    public static final String METHOD_GET_CONTEXT = "flickr.photos.getContext";
     public static final String METHOD_GET_COUNTS = "flickr.photos.getCounts";
-    public static final String METHOD_GET_EXIF = "flickr.photos.getExif"; // NYI
+    public static final String METHOD_GET_EXIF = "flickr.photos.getExif";
     public static final String METHOD_GET_INFO = "flickr.photos.getInfo";
-    public static final String METHOD_GET_NOT_IN_SET = "flickr.photos.getNotInSet"; // NYI
+    public static final String METHOD_GET_NOT_IN_SET = "flickr.photos.getNotInSet";
     public static final String METHOD_GET_PERMS = "flickr.photos.getPerms";
     public static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
     public static final String METHOD_GET_SIZES = "flickr.photos.getSizes";
@@ -189,6 +190,49 @@ public class PhotosInterface {
         }
     }
 
+    public PhotoContext getContext(String photoId) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_CONTEXT));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
+        parameters.add(new Parameter("photo_id", photoId));
+
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } else {
+            PhotoContext photoContext = new PhotoContext();
+            Collection payload = response.getPayloadCollection();
+            Iterator iter = payload.iterator();
+            while (iter.hasNext()) {
+                Element payloadElement = (Element) iter.next();
+                String tagName = payloadElement.getTagName();
+                if (tagName.equals("prevphoto")) {
+                    Photo photo = new Photo();
+                    photo.setId(payloadElement.getAttribute("id"));
+                    photo.setSecret(payloadElement.getAttribute("secret"));
+                    photo.setTitle(payloadElement.getAttribute("title"));
+                    photo.setUrl(payloadElement.getAttribute("url"));
+                    photoContext.setPreviousPhoto(photo);
+                } else if (tagName.equals("nextphoto")) {
+                    Photo photo = new Photo();
+                    photo.setId(payloadElement.getAttribute("id"));
+                    photo.setSecret(payloadElement.getAttribute("secret"));
+                    photo.setTitle(payloadElement.getAttribute("title"));
+                    photo.setUrl(payloadElement.getAttribute("url"));
+                    photoContext.setNextPhoto(photo);
+                }
+            }
+            return photoContext;
+        }
+    }
+
     /**
      * Gets a collection of photo counts for the given date ranges for the calling user.
      *
@@ -252,6 +296,54 @@ public class PhotosInterface {
     }
 
     /**
+     * Get the Exif data for the photo.
+     *
+     * @param photoId The photo ID
+     * @param secret The secret
+     * @return A collection of Exif objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public Collection getExif(String photoId, String secret) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_EXIF));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
+        parameters.add(new Parameter("photo_id", photoId));
+        if (secret != null) {
+            parameters.add(new Parameter("secret", secret));
+        }
+
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } else {
+            List exifs = new ArrayList();
+            Element photoElement = (Element) response.getPayload();
+            NodeList exifElements = photoElement.getElementsByTagName("exif");
+            for (int i = 0; i < exifElements.getLength(); i++) {
+                Element exifElement = (Element) exifElements.item(i);
+                Exif exif = new Exif();
+                exif.setTagspace(exifElement.getAttribute("tagspace"));
+                exif.setTagspaceId(exifElement.getAttribute("tagspaceid"));
+                exif.setTag(exifElement.getAttribute("tag"));
+                exif.setLabel(exifElement.getAttribute("label"));
+                exif.setRaw(XMLUtilities.getChildValue(exifElement, "raw"));
+                exif.setClean(XMLUtilities.getChildValue(exifElement, "clean"));
+                exifs.add(exif);
+            }
+            return exifs;
+        }
+    }
+
+    /**
      * Get all info for the specified photo.
      *
      * @param photoId The photo Id
@@ -297,18 +389,15 @@ public class PhotosInterface {
             owner.setLocation(ownerElement.getAttribute("location"));
             photo.setOwner(owner);
 
-            Element titleElement = (Element) photoElement.getElementsByTagName("title").item(0);
-            photo.setTitle(XMLUtilities.getValue(titleElement));
-
-            Element descriptionElement = (Element) photoElement.getElementsByTagName("description").item(0);
-            photo.setDescription(XMLUtilities.getValue(descriptionElement));
+            photo.setTitle(XMLUtilities.getChildValue(photoElement, "title"));
+            photo.setDescription(XMLUtilities.getChildValue(photoElement, "description"));
 
             Element visibilityElement = (Element) photoElement.getElementsByTagName("visibility").item(0);
             photo.setPublicFlag("1".equals(visibilityElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(visibilityElement.getAttribute("isfriend")));
             photo.setFamilyFlag("1".equals(visibilityElement.getAttribute("isfamily")));
 
-            Element datesElement = (Element) photoElement.getElementsByTagName("dates").item(0);
+            Element datesElement = XMLUtilities.getChild(photoElement, "dates");
             photo.setDatePosted(datesElement.getAttribute("posted"));
             photo.setDateTaken(datesElement.getAttribute("taken"));
             photo.setTakenGranularity(datesElement.getAttribute("takengranularity"));
@@ -359,6 +448,69 @@ public class PhotosInterface {
             photo.setTags(tags);
 
             return photo;
+        }
+    }
+
+    /**
+     * Return a collection of Photo objects not in part of any sets.
+     *
+     * @param perPage The per page
+     * @param page The page
+     * @return The collection of Photo objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public Collection getNotInSet(int perPage, int page) throws IOException, SAXException, FlickrException {
+        List photos = new ArrayList();
+
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_RECENT));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+
+        List extras = requestContext.getExtras();
+        if (extras.size() > 0) {
+            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
+        }
+
+        if (perPage > 0) {
+            parameters.add(new Parameter("per_page", new Integer(perPage)));
+        }
+        if (page > 0) {
+            parameters.add(new Parameter("page", new Integer(page)));
+        }
+
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } else {
+            Element photosElement = response.getPayload();
+            NodeList photoElements = photosElement.getElementsByTagName("photo");
+            for (int i = 0; i < photoElements.getLength(); i++) {
+                Element photoElement = (Element) photoElements.item(i);
+                Photo photo = new Photo();
+                photo.setId(photoElement.getAttribute("id"));
+                photo.setSecret(photoElement.getAttribute("secret"));
+                photo.setServer(photoElement.getAttribute("server"));
+                photo.setTitle(photoElement.getAttribute("title"));
+                photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
+                photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
+                photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
+
+                User user = new User();
+                user.setId(photoElement.getAttribute("owner"));
+                photo.setOwner(user);
+
+                photos.add(photo);
+            }
+
+            return photos;
         }
     }
 

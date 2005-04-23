@@ -38,4 +38,8 @@ Release 1.0a7 (April 21, 2005):
  - Added implementation for flickr.tags.getRelated
 
 Release 1.0a8
+ - Implemented PhotosInterface methods: getContext(), getExif(), getNotInSet()
+ - Fixed problem in UserIterface with empty returned elements
+ - Fixed problem in GroupsIterface with empty returned elements
+ - Updated test cases
  - Added note about lack of thread safety in the README

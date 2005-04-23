@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.contacts.OnlineStatus;
 import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -68,10 +69,7 @@ public class PeopleInterface {
             Element userElement = (Element) response.getPayload();
             User user = new User();
             user.setId(userElement.getAttribute("nsid"));
-
-            Element nameElement = (Element) userElement.getElementsByTagName("username").item(0);
-            user.setUsername(((Text) nameElement.getFirstChild()).getData());
-
+            user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
             return user;
         }
     }
@@ -105,10 +103,7 @@ public class PeopleInterface {
             Element userElement = (Element) response.getPayload();
             User user = new User();
             user.setId(userElement.getAttribute("nsid"));
-
-            Element usernameElement = (Element) userElement.getElementsByTagName("username").item(0);
-            user.setUsername(((Text) usernameElement.getFirstChild()).getData());
-
+            user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
             return user;
         }
     }
@@ -144,36 +139,15 @@ public class PeopleInterface {
             user.setId(userElement.getAttribute("nsid"));
             user.setAdmin("1".equals(userElement.getAttribute("isadmin")));
             user.setPro("1".equals(userElement.getAttribute("ispro")));
+            user.setIconServer(userElement.getAttribute("iconserver"));
+            user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
+            user.setRealname(XMLUtilities.getChildValue(userElement, "realname"));
+            user.setLocation(XMLUtilities.getChildValue(userElement, "location"));
 
-            Element usernameElement = (Element) userElement.getElementsByTagName("username").item(0);
-            user.setUsername(((Text) usernameElement.getFirstChild()).getData());
-
-            Element realnameElement = (Element) userElement.getElementsByTagName("realname").item(0);
-            Text realnameText = (Text) realnameElement.getFirstChild();
-            if (realnameText != null)
-                user.setRealname(realnameText.getData());
-
-            Element locationElement = (Element) userElement.getElementsByTagName("location").item(0);
-            Text locationText = (Text) locationElement.getFirstChild();
-            if (locationText != null)
-                user.setLocation(locationText.getData());
-
-            Element photosElement = (Element) userElement.getElementsByTagName("photos").item(0);
-
-            Element firstdateElement = (Element) photosElement.getElementsByTagName("firstdate").item(0);
-            Text firstdateText = (Text) firstdateElement.getFirstChild();
-            if (firstdateText != null)
-                user.setPhotosFirstDate(firstdateText.getData());
-
-            Element firstdateTakenElement = (Element) photosElement.getElementsByTagName("firstdatetaken").item(0);
-            Text firstdateTakenText = (Text) firstdateTakenElement.getFirstChild();
-            if (firstdateTakenText != null)
-                user.setPhotosFirstDateTaken(firstdateTakenText.getData());
-
-            Element countElement = (Element) photosElement.getElementsByTagName("count").item(0);
-            Text countText = (Text) countElement.getFirstChild();
-            if (countElement != null)
-                user.setPhotosCount(countText.getData());
+            Element photosElement = XMLUtilities.getChild(userElement, "photos");
+            user.setPhotosFirstDate(XMLUtilities.getChildValue(photosElement, "firstdate"));
+            user.setPhotosFirstDateTaken(XMLUtilities.getChildValue(photosElement, "firstdatetaken"));
+            user.setPhotosCount(XMLUtilities.getChildValue(photosElement, "count"));
 
             return user;
         }
@@ -235,7 +209,8 @@ public class PeopleInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getPublicPhotos(String userId, int perPage, int page) throws IOException, SAXException, FlickrException {
+    public Collection getPublicPhotos(String userId, int perPage, int page) throws IOException, SAXException,
+            FlickrException {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();

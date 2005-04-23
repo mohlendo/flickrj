@@ -25,6 +25,8 @@ public class PeopleInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
+        Flickr.debugStream = true;
+
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
