@@ -385,7 +385,7 @@ public class PhotosInterface {
             User owner = new User();
             owner.setId(ownerElement.getAttribute("nsid"));
             owner.setUsername(ownerElement.getAttribute("username"));
-            owner.setRealname(ownerElement.getAttribute("realname"));
+            owner.setRealName(ownerElement.getAttribute("realname"));
             owner.setLocation(ownerElement.getAttribute("location"));
             photo.setOwner(owner);
 

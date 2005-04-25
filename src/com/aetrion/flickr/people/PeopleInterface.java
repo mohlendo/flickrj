@@ -141,7 +141,7 @@ public class PeopleInterface {
             user.setPro("1".equals(userElement.getAttribute("ispro")));
             user.setIconServer(userElement.getAttribute("iconserver"));
             user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
-            user.setRealname(XMLUtilities.getChildValue(userElement, "realname"));
+            user.setRealName(XMLUtilities.getChildValue(userElement, "realname"));
             user.setLocation(XMLUtilities.getChildValue(userElement, "location"));
 
             Element photosElement = XMLUtilities.getChild(userElement, "photos");

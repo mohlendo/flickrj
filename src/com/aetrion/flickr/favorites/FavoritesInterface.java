@@ -212,7 +212,7 @@ public class FavoritesInterface {
 
                 User owner = new User();
                 owner.setId(photoElement.getAttribute("owner"));
-                owner.setRealname(photoElement.getAttribute("ownername"));
+                owner.setRealName(photoElement.getAttribute("ownername"));
                 photo.setOwner(owner);
 
                 photo.setSecret(photoElement.getAttribute("secret"));
