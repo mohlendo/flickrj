@@ -9,6 +9,7 @@ import com.aetrion.flickr.groups.GroupsInterface;
 import com.aetrion.flickr.groups.pools.PoolsInterface;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotosInterface;
+import com.aetrion.flickr.photos.licenses.LicensesInterface;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
 import com.aetrion.flickr.tags.TagsInterface;
 import com.aetrion.flickr.test.TestInterface;
@@ -36,6 +37,7 @@ public class Flickr {
     private ContactsInterface contactsInterface;
     private FavoritesInterface favoritesInterface;
     private GroupsInterface groupsInterface;
+    private LicensesInterface licensesInterface;
     private PoolsInterface poolsInterface;
     private PeopleInterface peopleInterface;
     private PhotosInterface photosInterface;
@@ -138,6 +140,13 @@ public class Flickr {
             groupsInterface = new GroupsInterface(apiKey, restInterface);
         }
         return groupsInterface;
+    }
+
+    public LicensesInterface getLicensesInterface() {
+        if (licensesInterface == null) {
+            licensesInterface = new LicensesInterface(apiKey, restInterface);
+        }
+        return licensesInterface;
     }
 
     public PoolsInterface getPoolsInterface() {
