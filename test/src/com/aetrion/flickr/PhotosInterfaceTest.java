@@ -17,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.aetrion.flickr.photos.Permissions;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
+import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.Photocount;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.SearchParameters;
@@ -177,8 +178,12 @@ public class PhotosInterfaceTest extends TestCase {
         PhotosInterface iface = flickr.getPhotosInterface();
         SearchParameters searchParams = new SearchParameters();
         searchParams.setUserId(properties.getProperty("nsid"));
-        Collection photos = iface.search(searchParams, 0, 0);
+        PhotoList photos = iface.search(searchParams, 0, 0);
         assertNotNull(photos);
+        assertEquals(1, photos.getPage());
+        assertEquals(1, photos.getPages());
+        assertEquals(100, photos.getPerPage());
+        assertEquals(3, photos.getTotal());
     }
 
     public void testTagSearch() throws FlickrException, IOException, SAXException {
@@ -218,15 +223,15 @@ public class PhotosInterfaceTest extends TestCase {
         assertNotNull(tags);
         assertEquals(1, tags.size());
 
-        String tagId = null;
-        Iterator tagsIter = tags.iterator();
-        TAG_LOOP: while (tagsIter.hasNext()) {
-            Tag tag = (Tag) tagsIter.next();
-            if (tag.getValue().equals("test")) {
-                tagId = tag.getId();
-                break TAG_LOOP;
-            }
-        }
+//        String tagId = null;
+//        Iterator tagsIter = tags.iterator();
+//        TAG_LOOP: while (tagsIter.hasNext()) {
+//            Tag tag = (Tag) tagsIter.next();
+//            if (tag.getValue().equals("test")) {
+//                tagId = tag.getId();
+//                break TAG_LOOP;
+//            }
+//        }
 
         String[] tagsAfterRemove = {};
         iface.setTags(photoId, tagsAfterRemove);

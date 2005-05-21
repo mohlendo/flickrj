@@ -745,14 +745,14 @@ public class PhotosInterface {
      * @param params The search parameters
      * @param perPage The number of photos to show per page
      * @param page The page offset
-     * @return A Collection of Photo objects
+     * @return A PhotoList
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection search(SearchParameters params, int perPage, int page) throws IOException, SAXException,
+    public PhotoList search(SearchParameters params, int perPage, int page) throws IOException, SAXException,
             FlickrException {
-        List photos = new ArrayList();
+        PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SEARCH));
@@ -778,6 +778,11 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } else {
             Element photosElement = (Element) response.getPayload();
+            photos.setPage(photosElement.getAttribute("page"));
+            photos.setPages(photosElement.getAttribute("pages"));
+            photos.setPerPage(photosElement.getAttribute("perpage"));
+            photos.setTotal(photosElement.getAttribute("total"));
+
             NodeList photoNodes = photosElement.getElementsByTagName("photo");
             for (int i = 0; i < photoNodes.getLength(); i++) {
                 Element photoElement = (Element) photoNodes.item(i);
