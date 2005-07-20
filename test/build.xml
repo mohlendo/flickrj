@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<project name="EdenLib-Test" default="test" basedir=".">
+<project name="flickrj-Test" default="test" basedir=".">
 
    <property file="build.properties"/>
 
@@ -8,16 +8,16 @@
       <pathelement location="${api.dir}/flickrapi-${version}.jar"/>
       <pathelement location="${lib.dir}/${junit.jar}"/>
    </path>
-   
+
    <!-- ==================================================== -->
    <!-- Initialize Ant                                       -->
    <!-- ==================================================== -->
-   
+
    <target name="init">
       <ant dir="${root.dir}" inheritAll="false"/>
       <tstamp/>
    </target>
-   
+
    <!-- ==================================================== -->
    <!-- Compile the source code.                             -->
    <!-- ==================================================== -->
@@ -26,12 +26,12 @@
       <copy todir="${build.src}" filtering="true">
          <fileset dir="${src.dir}"/>
       </copy>
-      
+
       <mkdir dir="${build.dir}"/>
       <mkdir dir="${build.classes}"/>
-      
+
       <javac
-         srcdir="${src.dir}" 
+         srcdir="${src.dir}"
          destdir="${build.classes}"
          classpathref="build.classpath"
          debug="${javac.debug}"
@@ -46,7 +46,7 @@
          </fileset>
       </copy>
    </target>
-   
+
    <!-- ==================================================== -->
    <!-- Create the JAR archive.                              -->
    <!-- ==================================================== -->
@@ -57,11 +57,11 @@
          <include name="**/*"/>
       </jar>
    </target>
-   
+
    <!-- ==================================================== -->
    <!-- Generate the API documentation.                      -->
    <!-- ==================================================== -->
-   
+
    <target	name="javadocs"	depends="init">
       <mkdir dir="${build.javadocs}"/>
       <javadoc
@@ -76,29 +76,29 @@
          doctitle="${vName}"
          bottom="${copyright}"/>
    </target>
-   
+
    <!-- ==================================================== -->
    <!-- Generate the API documentation and compress to ZIP   -->
    <!-- ==================================================== -->
-   
+
    <target name="javadocs-zip" depends="javadocs">
       <zip zipfile="${vName}-javadocs.zip" basedir="${build.javadocs}"/>
    </target>
-   
+
    <!-- ==================================================== -->
    <!-- Build the application.                               -->
    <!-- ==================================================== -->
-   
+
    <target name="build" depends="jar">
       <copy todir="${build.lib}">
          <fileset dir="${lib.dir}"/>
       </copy>
    </target>
-   
+
    <!-- ==================================================== -->
    <!-- Execute the JUnit tests                              -->
    <!-- ==================================================== -->
-   
+
    <target name="test" depends="build, testclean">
       <mkdir dir="${test.reports}"/>
       <echo message="${api.dir}/flickrapi-${version}.jar"/>
@@ -118,20 +118,20 @@
       </junit>
       <echo message="Test reports are in ${test.reports}"/>
    </target>
-   
+
    <!-- ==================================================== -->
    <!-- Create the distribution                              -->
    <!-- ==================================================== -->
 
    <target name="dist" depends="clean, build, javadocs">
       <copy file="README.txt" todir="${build.dir}"/>
-      
+
       <copy todir="${build.docs}">
          <fileset dir="${docs.dir}"/>
       </copy>
-      
+
       <delete dir="${build.classes}"/>
-      
+
       <mkdir dir="zip/${vName}"/>
       <copy todir="zip/${vName}">
          <fileset dir="${build.dir}"/>
@@ -142,7 +142,7 @@
       <delete file="${Name}-${version}.tar"/>
       <delete dir="zip"/>
    </target>
-   
+
    <!-- ==================================================== -->
    <!-- Clean up generated stuff                             -->
    <!-- ==================================================== -->
@@ -150,7 +150,7 @@
    <target name="clean">
       <delete dir="${build.dir}"/>
    </target>
-   
+
    <target name="testclean">
       <delete dir="${test.reports}"/>
    </target>

@@ -33,6 +33,8 @@ public class TestInterfaceTest extends TestCase {
             properties = new Properties();
             properties.load(in);
 
+            Flickr.debugStream = true;
+
             REST rest = new REST();
             rest.setHost(properties.getProperty("host"));
 
