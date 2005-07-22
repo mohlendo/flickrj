@@ -76,11 +76,22 @@ public class PeopleInterfaceTest extends TestCase {
         assertNotNull(onlineList);
     }
 
+    public void testGetPublicGroups() throws FlickrException, IOException, SAXException {
+        PeopleInterface iface = flickr.getPeopleInterface();
+        Collection groups = iface.getPublicGroups(properties.getProperty("nsid"));
+        assertNotNull(groups);
+        assertEquals(0, groups.size());
+    }
+
     public void testGetPublicPhotos() throws FlickrException, IOException, SAXException {
         PeopleInterface iface = flickr.getPeopleInterface();
         Collection photos = iface.getPublicPhotos(properties.getProperty("nsid"), 0, 0);
         assertNotNull(photos);
         assertEquals(3, photos.size());
+    }
+
+    public void testGetUploadStatus() {
+
     }
 
 }

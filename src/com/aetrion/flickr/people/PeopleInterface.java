@@ -14,6 +14,7 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.contacts.OnlineStatus;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.util.XMLUtilities;
@@ -33,7 +34,9 @@ public class PeopleInterface {
     public static final String METHOD_FIND_BY_USERNAME = "flickr.people.findByUsername";
     public static final String METHOD_GET_INFO = "flickr.people.getInfo";
     public static final String METHOD_GET_ONLINE_LIST = "flickr.people.getOnlineList";
+    public static final String METHOD_GET_PUBLIC_GROUPS = "flickr.people.getPublicGroups";
     public static final String METHOD_GET_PUBLIC_PHOTOS = "flickr.people.getPublicPhotos";
+    public static final String METHOD_GET_UPLOAD_STATUS = "flickr.people.getUploadStatus";
 
     private String apiKey;
     private REST restInterface;
@@ -200,6 +203,43 @@ public class PeopleInterface {
         }
     }
 
+    /**
+     * Get a collection of public groups for the user.
+     *
+     * @param userId The user ID
+     * @return The public groups
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public Collection getPublicGroups(String userId) throws IOException, SAXException, FlickrException {
+        List groups = new ArrayList();
+
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_PUBLIC_GROUPS));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("user_id", userId));
+
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } else {
+            Element groupsElement = (Element) response.getPayload();
+            NodeList groupNodes = groupsElement.getElementsByTagName("photo");
+            for (int i = 0; i < groupNodes.getLength(); i++) {
+                Element groupElement = (Element) groupNodes.item(i);
+                Group group = new Group();
+                group.setId(groupElement.getAttribute("nsid"));
+                group.setName(groupElement.getAttribute("name"));
+                group.setAdmin("1".equals(groupElement.getAttribute("admin")));
+                group.setEighteenPlus("1".equals(groupElement.getAttribute("eighteenplus")));
+                groups.add(group);
+            }
+        }
+
+        return groups;
+    }
 
     /**
      * Get a collection of public photos for the specified user ID.
@@ -260,6 +300,42 @@ public class PeopleInterface {
                 photos.add(photo);
             }
             return photos;
+        }
+    }
+
+    /**
+     * Get upload status for the currently authenticated user.
+     *
+     * Note: Requires authentication with 'read' permission using the new authentication API.
+     *
+     * @return A User object with upload status data fields filled
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public User getUploadStatus() throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_PUBLIC_PHOTOS));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } else {
+            Element userElement = (Element) response.getPayload();
+            User user = new User();
+            user.setId(userElement.getAttribute("id"));
+            user.setPro("1".equals(userElement.getAttribute("ispro")));
+            user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
+
+            Element bandwidthElement = XMLUtilities.getChild(userElement, "bandwidth");
+            user.setBandwidthMax(bandwidthElement.getAttribute("max"));
+            user.setBandwidthUsed(bandwidthElement.getAttribute("used"));
+
+            Element filesizeElement = XMLUtilities.getChild(userElement, "filesize");
+            user.setFilesizeMax(filesizeElement.getAttribute("max"));
+
+            return user;
         }
     }
 

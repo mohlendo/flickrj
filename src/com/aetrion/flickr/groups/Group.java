@@ -19,6 +19,7 @@ public class Group {
     private String privacy;
     private boolean admin;
     private int photoCount;
+    private boolean eighteenPlus;
 
     public Group() {
 
@@ -112,6 +113,14 @@ public class Group {
         if (photoCount != null) {
             setPhotoCount(Integer.parseInt(photoCount));
         }
+    }
+
+    public boolean isEighteenPlus() {
+        return eighteenPlus;
+    }
+
+    public void setEighteenPlus(boolean eighteenPlus) {
+        this.eighteenPlus = eighteenPlus;
     }
 
 }

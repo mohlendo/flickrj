@@ -29,6 +29,9 @@ public class User {
     private int photosCount;
     private OnlineStatus online;
     private String awayMessage;
+    private int bandwidthMax;
+    private int bandwidthUsed;
+    private int filesizeMax;
 
     public User() {
 
@@ -122,8 +125,7 @@ public class User {
         try {
             setPhotosFirstDateTaken(DF.parse(photosFirstDateTaken));
         } catch (ParseException e) {
-            // TODO: figure out what to do with this error
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -155,6 +157,48 @@ public class User {
 
     public void setAwayMessage(String awayMessage) {
         this.awayMessage = awayMessage;
+    }
+
+    public int getBandwidthMax() {
+        return bandwidthMax;
+    }
+
+    public void setBandwidthMax(int bandwidthMax) {
+        this.bandwidthMax = bandwidthMax;
+    }
+
+    public void setBandwidthMax(String bandwidthMax) {
+        if (bandwidthMax != null) {
+            setBandwidthMax(Integer.parseInt(bandwidthMax));
+        }
+    }
+
+    public int getBandwidthUsed() {
+        return bandwidthUsed;
+    }
+
+    public void setBandwidthUsed(int bandwidthUsed) {
+        this.bandwidthUsed = bandwidthUsed;
+    }
+
+    public void setBandwidthUsed(String bandwidthUsed) {
+        if (bandwidthUsed != null) {
+            setBandwidthUsed(Integer.parseInt(bandwidthUsed));
+        }
+    }
+
+    public int getFilesizeMax() {
+        return filesizeMax;
+    }
+
+    public void setFilesizeMax(int filesizeMax) {
+        this.filesizeMax = filesizeMax;
+    }
+
+    public void setFilesizeMax(String filesizeMax) {
+        if (filesizeMax != null) {
+            setFilesizeMax(Integer.parseInt(filesizeMax));
+        }
     }
 
 }
