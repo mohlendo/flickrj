@@ -8,11 +8,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.swing.JDialog;
+import javax.swing.JButton;
 
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.auth.Permission;
+import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.util.IOUtilities;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.BrowserLauncherRunner;
@@ -57,12 +62,32 @@ public class AuthInterfaceTest extends TestCase {
             BrowserLaunchingInitializingException, UnsupportedOperatingSystemException {
         AuthInterface authInterface = flickr.getAuthInterface();
         String frob = authInterface.getFrob();
-        URL url = authInterface.buildAuthenticationUrl(Permission.READ, frob);
+        Permission permission = Permission.READ;
+        URL url = authInterface.buildAuthenticationUrl(permission, frob);
 
         BrowserLauncher launcher = new BrowserLauncher(null);
         BrowserLauncherRunner runner = new BrowserLauncherRunner(launcher, url.toExternalForm(), null);
         Thread launcherThread = new Thread(runner);
         launcherThread.start();
+
+        // display a dialog
+        final JDialog d = new JDialog();
+        JButton continueButton = new JButton("Continue");
+        continueButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                d.dispose();
+            }
+        });
+        d.getContentPane().add(continueButton);
+        d.setModal(true);
+        d.pack();
+        d.setVisible(true);
+
+        Auth auth = authInterface.getToken(frob);
+//        System.out.println("Token: " + auth.getToken());
+//        System.out.println("Permission: " + auth.getPermission());
+        assertNotNull(auth.getToken());
+        assertEquals(auth.getPermission(), permission);
     }
 
 }
