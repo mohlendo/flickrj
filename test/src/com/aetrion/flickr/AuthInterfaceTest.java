@@ -87,7 +87,11 @@ public class AuthInterfaceTest extends TestCase {
 //        System.out.println("Token: " + auth.getToken());
 //        System.out.println("Permission: " + auth.getPermission());
         assertNotNull(auth.getToken());
-        assertEquals(auth.getPermission(), permission);
+        assertEquals(permission, auth.getPermission());
+
+        Auth checkedAuth = authInterface.checkToken(auth.getToken());
+        assertEquals(auth.getToken(), checkedAuth.getToken());
+        assertEquals(auth.getPermission(), checkedAuth.getPermission());
     }
 
 }
