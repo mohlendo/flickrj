@@ -30,6 +30,7 @@ public class GroupsInterface {
     public static final String METHOD_BROWSE = "flickr.groups.browse";
     public static final String METHOD_GET_ACTIVE_LIST = "flickr.groups.getActiveList";
     public static final String METHOD_GET_INFO = "flickr.groups.getInfo";
+    public static final String METHOD_SEARCH = "flickr.groups.search";
 
     private String apiKey;
     private REST restInterface;
@@ -188,6 +189,51 @@ public class GroupsInterface {
             group.setInChat(XMLUtilities.getChildValue(groupElement, "chatcount"));
 
             return group;
+        }
+    }
+
+    /**
+     * Search for groups.
+     *
+     * @param text The text
+     * @param perPage The number of groups per page
+     * @param page The number of pages
+     * @return A collection of Group objects
+     * @throws IOException A collection of Group objects
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public Collection search(String text, int perPage, int page) throws IOException, SAXException, FlickrException {
+        List groups = new ArrayList();
+
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_SEARCH));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("text", text));
+
+        if (perPage > 0) {
+            parameters.add(new Parameter("per_page", new Integer(perPage)));
+        }
+        if (page > 0) {
+            parameters.add(new Parameter("page", new Integer(page)));
+        }
+
+        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } else {
+            Element groupsElement = (Element) response.getPayload();
+            NodeList groupNodes = groupsElement.getElementsByTagName("group");
+            for (int i = 0; i < groupNodes.getLength(); i++) {
+                Element groupElement = (Element) groupNodes.item(i);
+                Group group = new Group();
+                group.setId(groupElement.getAttribute("nsid"));
+                group.setName(groupElement.getAttribute("name"));
+                group.setEighteenPlus("1".equals(groupElement.getAttribute("eighteenplus")));
+                groups.add(group);
+            }
+            return groups;
         }
     }
 

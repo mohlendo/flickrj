@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
  */
 public class PhotosetsInterface {
 
+    public static final String METHOD_ADD_PHOTO = "flickr.photos.addPhoto";
     public static final String METHOD_CREATE = "flickr.photosets.create";
     public static final String METHOD_DELETE = "flickr.photosets.delete";
     public static final String METHOD_EDIT_META = "flickr.photosets.editMeta";
@@ -42,6 +43,7 @@ public class PhotosetsInterface {
     public static final String METHOD_GET_LIST = "flickr.photosets.getList";
     public static final String METHOD_GET_PHOTOS = "flickr.photosets.getPhotos";
     public static final String METHOD_ORDER_SETS = "flickr.photosets.orderSets";
+    public static final String METHOD_REMOVE_PHOTO = "flickr.photosets.removePhoto";
 
     private String apiKey;
     private REST restInterface;
@@ -49,6 +51,28 @@ public class PhotosetsInterface {
     public PhotosetsInterface(String apiKey, REST restInterface) {
         this.apiKey = apiKey;
         this.restInterface = restInterface;
+    }
+
+    /**
+     * Add a photo to the end of the photoset.
+     *
+     * Note: requires authentication with the new authentication API with 'write' permission.
+     *
+     * @param photosetId The photoset ID
+     * @param photoId The photo ID
+     */
+    public void addPhoto(String photosetId, String photoId) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_ADD_PHOTO));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photoset_id", photosetId));
+        parameters.add(new Parameter("photo_id", photoId));
+
+         RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
     }
 
     /**
@@ -399,6 +423,29 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("photoset_ids", StringUtilities.join(photosetIds, ",")));
 
         Response response = restInterface.post("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+    }
+
+    /**
+     * Remove a photo from the set.
+     *
+     * @param photosetId The photoset ID
+     * @param photoId The photo ID
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void removePhoto(String photosetId, String photoId) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_REMOVE_PHOTO));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photoset_id", photosetId));
+        parameters.add(new Parameter("photo_id", photoId));
+
+         RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

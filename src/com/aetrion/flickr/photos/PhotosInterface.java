@@ -62,6 +62,15 @@ public class PhotosInterface {
         this.restInterface = restInterface;
     }
 
+    /**
+     * Add tags to a photo.
+     *
+     * @param photoId The photo ID
+     * @param tags The tags
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public void addTags(String photoId, String[] tags) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_ADD_TAGS));
@@ -82,6 +91,18 @@ public class PhotosInterface {
         }
     }
 
+    /**
+     * Get photos from the user's contacts.
+     *
+     * @param count The number of photos to return
+     * @param justFriends Set to true to only show friends photos
+     * @param singlePhoto Set to true to get a single photo
+     * @param includeSelf Set to true to include self
+     * @return The Collection of photos
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public Collection getContactsPhotos(int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
             throws IOException, SAXException, FlickrException {
         List photos = new ArrayList();
@@ -138,6 +159,19 @@ public class PhotosInterface {
         }
     }
 
+    /**
+     * Get public photos from the user's contacts.
+     *
+     * @param userId The user ID
+     * @param count The number of photos to return
+     * @param justFriends True to include friends
+     * @param singlePhoto True to get a single photo
+     * @param includeSelf True to include self
+     * @return A collection of Photo objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public Collection getContactsPublicPhotos(String userId, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
             throws IOException, SAXException, FlickrException {
         List photos = new ArrayList();
@@ -193,6 +227,15 @@ public class PhotosInterface {
         }
     }
 
+    /**
+     * Get the context for the specified photo.
+     *
+     * @param photoId The photo ID
+     * @return The PhotoContext
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public PhotoContext getContext(String photoId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_CONTEXT));

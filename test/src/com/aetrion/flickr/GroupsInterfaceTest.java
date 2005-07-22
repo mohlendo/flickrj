@@ -113,4 +113,11 @@ public class GroupsInterfaceTest extends TestCase {
         System.out.println("group members: " + group.getMembers());
     }
 
+    public void testSearch() throws FlickrException, IOException, SAXException {
+        GroupsInterface iface = flickr.getGroupsInterface();
+        Collection groups = iface.search("java", -1, -1);
+        System.out.println("Group count: " + groups.size());
+        assertTrue(groups.size() > 0);
+    }
+
 }
