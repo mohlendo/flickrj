@@ -1,4 +1,6 @@
-/* Copyright 2004, Aetrion LLC.  All Rights Reserved. */
+/*
+ * Copyright (c) 2005 Aetrion LLC.
+ */
 
 package com.aetrion.flickr.util;
 

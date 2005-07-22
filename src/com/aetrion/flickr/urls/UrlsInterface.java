@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2005 Aetrion LLC.
+ */
 package com.aetrion.flickr.urls;
 
 import java.util.List;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005 Your Corporation. All Rights Reserved.
+ * Copyright (c) 2005 Aetrion LLC.
  */
 
 package com.aetrion.flickr.photos.licenses;

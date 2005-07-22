@@ -1,4 +1,6 @@
-/* Copyright 2004, Aetrion LLC.  All Rights Reserved. */
+/*
+ * Copyright (c) 2005 Aetrion LLC.
+ */
 
 package com.aetrion.flickr;
 
@@ -18,6 +20,7 @@ public class RequestContext {
             new RequestContextThreadLocal();
 
     private Authentication authentication;
+    private String sharedSecret;
     private List extras;
 
     /**
@@ -33,6 +36,7 @@ public class RequestContext {
      * Get the authentication object.
      *
      * @return The Authentication object
+     * @deprecated Use new authentication API
      */
     public Authentication getAuthentication() {
         return authentication;
@@ -42,9 +46,28 @@ public class RequestContext {
      * Set the authentication object.
      *
      * @param authentication The Authentication object
+     * @deprecated Use new authentication API
      */
     public void setAuthentication(Authentication authentication) {
         this.authentication = authentication;
+    }
+
+    /**
+     * Get a shared secret which is used for any calls which require signing.
+     *
+     * @return The shared secret
+     */
+    public String getSharedSecret() {
+        return sharedSecret;
+    }
+
+    /**
+     * Set the shared secret which is used for any calls which require signing.
+     *
+     * @param sharedSecret The shared secret
+     */
+    public void setSharedSecret(String sharedSecret) {
+        this.sharedSecret = sharedSecret;
     }
 
     /**

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2005 Aetrion LLC.
+ */
 package com.aetrion.flickr.test;
 
 import java.io.IOException;
