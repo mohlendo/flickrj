@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Collections;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.util.IOUtilities;
 import com.aetrion.flickr.util.DebugInputStream;
+import com.aetrion.flickr.util.UrlUtilities;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -80,34 +83,8 @@ public class REST {
      * @throws IOException
      * @throws SAXException
      */
-    public Response get(String path, Collection parameters) throws IOException, SAXException {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("http://");
-        buffer.append(host);
-        if (port > 0) {
-            buffer.append(":");
-            buffer.append(port);
-        }
-        if (path == null) {
-            path = "/";
-        }
-        buffer.append(path);
-
-        Iterator iter = parameters.iterator();
-        if (iter.hasNext()) {
-            buffer.append("?");
-        }
-        while (iter.hasNext()) {
-            Parameter p = (Parameter) iter.next();
-            buffer.append(p.getName());
-            buffer.append("=");
-            buffer.append(p.getValue());
-            if (iter.hasNext()) buffer.append("&");
-        }
-
-//        System.out.println("Executing GET: " + buffer);
-
-        URL url = new URL(buffer.toString());
+    public Response get(String path, List parameters) throws IOException, SAXException {
+        URL url = UrlUtilities.buildUrl(host, port, path, parameters);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.connect();
@@ -157,18 +134,7 @@ public class REST {
      * @throws SAXException
      */
     public Response post(String path, Collection parameters, boolean multipart) throws IOException, SAXException {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("http://");
-        buffer.append(host);
-        if (port > 0) {
-            buffer.append(":");
-            buffer.append(port);
-        }
-        if (path == null) {
-            path = "/";
-        }
-        buffer.append(path);
-        URL url = new URL(buffer.toString());
+        URL url = UrlUtilities.buildUrl(host, port, path, Collections.EMPTY_LIST);
 
         HttpURLConnection conn = null;
         try {

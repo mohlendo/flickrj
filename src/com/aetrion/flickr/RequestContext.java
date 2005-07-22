@@ -7,6 +7,8 @@ package com.aetrion.flickr;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.aetrion.flickr.auth.Auth;
+
 /**
  * A thread local variable used to hold contextual information used in requests.  To get an instance of this class use
  * RequestContext.getRequestContext().  The method will return a RequestContext object which is only usable within the
@@ -20,6 +22,7 @@ public class RequestContext {
             new RequestContextThreadLocal();
 
     private Authentication authentication;
+    private Auth auth;
     private String sharedSecret;
     private List extras;
 
@@ -50,6 +53,14 @@ public class RequestContext {
      */
     public void setAuthentication(Authentication authentication) {
         this.authentication = authentication;
+    }
+
+    public Auth getAuth() {
+        return auth;
+    }
+
+    public void setAuth(Auth auth) {
+        this.auth = auth;
     }
 
     /**
