@@ -18,6 +18,7 @@ import com.aetrion.flickr.tags.TagsInterface;
 import com.aetrion.flickr.test.TestInterface;
 import com.aetrion.flickr.urls.UrlsInterface;
 import com.aetrion.flickr.reflection.ReflectionInterface;
+import com.aetrion.flickr.auth.AuthInterface;
 
 /**
  * Main entry point for the Flickrj API.  This class is used to acquire Interface classes which wrap the Flickr API.
@@ -36,6 +37,7 @@ public class Flickr {
     private String apiKey;
     private REST restInterface;
 
+    private AuthInterface authInterface;
     private BlogsInterface blogsInterface;
     private ContactsInterface contactsInterface;
     private FavoritesInterface favoritesInterface;
@@ -115,6 +117,18 @@ public class Flickr {
             throw new IllegalArgumentException("REST interface must not be null");
         }
         this.restInterface = restInterface;
+    }
+
+    /**
+     * Get the AuthInterface.
+     *
+     * @return The AuthInterface
+     */
+    public AuthInterface getAuthInterface() {
+        if (authInterface == null) {
+            authInterface = new AuthInterface(apiKey, restInterface);
+        }
+        return authInterface;
     }
 
     public synchronized BlogsInterface getBlogsInterface() {

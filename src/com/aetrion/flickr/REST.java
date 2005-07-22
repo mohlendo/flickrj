@@ -85,6 +85,7 @@ public class REST {
      */
     public Response get(String path, List parameters) throws IOException, SAXException {
         URL url = UrlUtilities.buildUrl(host, port, path, parameters);
+        System.out.println("GET: " + url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.connect();

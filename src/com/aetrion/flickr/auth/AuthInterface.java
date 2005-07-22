@@ -7,6 +7,8 @@ package com.aetrion.flickr.auth;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
@@ -14,6 +16,7 @@ import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.util.XMLUtilities;
+import com.aetrion.flickr.util.UrlUtilities;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -91,7 +94,7 @@ public class AuthInterface {
      */
     public String getFrob() throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_CHECK_TOKEN));
+        parameters.add(new Parameter("method", METHOD_GET_FROB));
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
@@ -115,7 +118,7 @@ public class AuthInterface {
      */
     public Auth getToken(String frob) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_CHECK_TOKEN));
+        parameters.add(new Parameter("method", METHOD_GET_TOKEN));
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("frob", frob));
@@ -141,6 +144,29 @@ public class AuthInterface {
 
             return auth;
         }
+    }
+
+    /**
+     * Build the authentication URL using the given permission and frob.
+     *
+     * @param permission The Permission
+     * @param frob The frob returned from getFrob()
+     * @return The URL
+     * @throws MalformedURLException
+     */
+    public URL buildAuthenticationUrl(Permission permission, String frob) throws MalformedURLException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(new Parameter("perms", permission.toString()));
+        parameters.add(new Parameter("frob", frob));
+
+        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
+
+        String host = restInterface.getHost();
+        int port = restInterface.getPort();
+        String path = "/services/auth";
+
+        return UrlUtilities.buildUrl(host, port, path, parameters);
     }
 
 }
