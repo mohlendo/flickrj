@@ -8,16 +8,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.aetrion.flickr.Authentication;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.RESTResponse;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.Authentication;
+import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * Interface for working with Flickr tags.
@@ -30,7 +31,7 @@ public class ReflectionInterface {
     public static final String METHOD_GET_METHODS = "flickr.reflection.getMethods";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport restInterface;
 
     /**
      * Construct a ReflectionInterface.
@@ -38,7 +39,7 @@ public class ReflectionInterface {
      * @param apiKey The API key
      * @param restInterface The REST interface
      */
-    public ReflectionInterface(String apiKey, REST restInterface) {
+    public ReflectionInterface(String apiKey, Transport restInterface) {
         this.apiKey = apiKey;
         this.restInterface = restInterface;
     }

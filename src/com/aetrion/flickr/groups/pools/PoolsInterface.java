@@ -6,9 +6,14 @@ package com.aetrion.flickr.groups.pools;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
@@ -20,9 +25,6 @@ import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
 import com.aetrion.flickr.util.StringUtilities;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
@@ -36,9 +38,9 @@ public class PoolsInterface {
     public static final String METHOD_REMOVE = "flickr.groups.pools.remove";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport restInterface;
 
-    public PoolsInterface(String apiKey, REST restInterface) {
+    public PoolsInterface(String apiKey, Transport restInterface) {
         this.apiKey = apiKey;
         this.restInterface = restInterface;
     }

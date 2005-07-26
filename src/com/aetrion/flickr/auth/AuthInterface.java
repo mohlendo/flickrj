@@ -5,20 +5,21 @@
 package com.aetrion.flickr.auth;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.net.URL;
-import java.net.MalformedURLException;
 
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.RESTResponse;
-import com.aetrion.flickr.people.User;
-import com.aetrion.flickr.util.XMLUtilities;
-import com.aetrion.flickr.util.UrlUtilities;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.people.User;
+import com.aetrion.flickr.util.UrlUtilities;
+import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * Authentication interface.
@@ -32,7 +33,7 @@ public class AuthInterface {
     public static final String METHOD_GET_TOKEN = "flickr.auth.getToken";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport restInterface;
 
     /**
      * Construct the AuthInterface.
@@ -40,7 +41,7 @@ public class AuthInterface {
      * @param apiKey The API key
      * @param restInterface The REST interface
      */
-    public AuthInterface(String apiKey, REST restInterface) {
+    public AuthInterface(String apiKey, Transport restInterface) {
         this.apiKey = apiKey;
         this.restInterface = restInterface;
     }

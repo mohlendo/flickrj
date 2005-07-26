@@ -8,17 +8,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.photos.Photo;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Interface for working with Flickr blog configurations.
@@ -31,9 +32,9 @@ public class BlogsInterface {
     public static final String METHOD_POST_PHOTO = "flickr.blogs.postPhoto";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport restInterface;
 
-    public BlogsInterface(String apiKey, REST restInterface) {
+    public BlogsInterface(String apiKey, Transport restInterface) {
         this.apiKey = apiKey;
         this.restInterface = restInterface;
     }

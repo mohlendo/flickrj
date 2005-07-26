@@ -12,10 +12,15 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Response;
@@ -23,10 +28,6 @@ import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.tags.Tag;
 import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
@@ -55,9 +56,9 @@ public class PhotosInterface {
     public static final String METHOD_SET_TAGS = "flickr.photos.setTags";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport restInterface;
 
-    public PhotosInterface(String apiKey, REST restInterface) {
+    public PhotosInterface(String apiKey, Transport restInterface) {
         this.apiKey = apiKey;
         this.restInterface = restInterface;
     }

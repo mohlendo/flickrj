@@ -8,20 +8,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.aetrion.flickr.Authentication;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.RESTResponse;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.groups.Group;
-import com.aetrion.flickr.contacts.OnlineStatus;
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.Authentication;
+import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.contacts.OnlineStatus;
+import com.aetrion.flickr.groups.Group;
+import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * Interface for finding Flickr users.
@@ -39,9 +40,9 @@ public class PeopleInterface {
     public static final String METHOD_GET_UPLOAD_STATUS = "flickr.people.getUploadStatus";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport restInterface;
 
-    public PeopleInterface(String apiKey, REST restInterface) {
+    public PeopleInterface(String apiKey, Transport restInterface) {
         this.apiKey = apiKey;
         this.restInterface = restInterface;
     }

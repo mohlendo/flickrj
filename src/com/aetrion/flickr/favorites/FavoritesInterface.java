@@ -8,19 +8,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.aetrion.flickr.Authentication;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.RESTResponse;
-import com.aetrion.flickr.Response;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.util.StringUtilities;
-import com.aetrion.flickr.people.User;
-import com.aetrion.flickr.photos.Photo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.Authentication;
+import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.Response;
+import com.aetrion.flickr.people.User;
+import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * Interface for working with Flickr favorites.
@@ -35,9 +36,9 @@ public class FavoritesInterface {
     public static final String METHOD_REMOVE = "flickr.favorites.remove";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport restInterface;
 
-    public FavoritesInterface(String apiKey, REST restInterface) {
+    public FavoritesInterface(String apiKey, Transport restInterface) {
         this.apiKey = apiKey;
         this.restInterface = restInterface;
     }

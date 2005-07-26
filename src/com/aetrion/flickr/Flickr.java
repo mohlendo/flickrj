@@ -35,7 +35,7 @@ public class Flickr {
     public static boolean debugStream = false;
 
     private String apiKey;
-    private REST restInterface;
+    private Transport transport;
 
     private AuthInterface authInterface;
     private BlogsInterface blogsInterface;
@@ -53,14 +53,14 @@ public class Flickr {
     private UrlsInterface urlsInterface;
 
     /**
-     * Construct a new Flickr gateway instance.
+     * Construct a new Flickr gateway instance.  Defaults to a REST transport.
      *
      * @param apiKey The API key.
      */
     public Flickr(String apiKey) {
         setApiKey(apiKey);
         try {
-            setRestInterface(new REST(DEFAULT_HOST));
+            setTransport(new REST(DEFAULT_HOST));
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -70,11 +70,11 @@ public class Flickr {
      * Construct a new Flickr gateway instance.
      *
      * @param apiKey The API key, must be non-null
-     * @param restInterface The REST interface, must be non-null
+     * @param transport The transport (REST or SOAP), must be non-null
      */
-    public Flickr(String apiKey, REST restInterface) {
+    public Flickr(String apiKey, Transport transport) {
         setApiKey(apiKey);
-        setRestInterface(restInterface);
+        setTransport(transport);
     }
 
     /**
@@ -99,24 +99,24 @@ public class Flickr {
     }
 
     /**
-     * Get the REST interface.
+     * Get the Transport interface
      *
-     * @return The REST interface
+     * @return The Tranport interface
      */
-    public REST getRestInterface() {
-        return restInterface;
+    public Transport getTransport() {
+        return transport;
     }
 
     /**
-     * Set the REST interface which must not be null.
+     * Set the Transport which must not be null.
      *
-     * @param restInterface
+     * @param transport
      */
-    public void setRestInterface(REST restInterface) {
-        if (restInterface == null) {
-            throw new IllegalArgumentException("REST interface must not be null");
+    public void setTransport(Transport transport) {
+        if (transport == null) {
+            throw new IllegalArgumentException("Transport must not be null");
         }
-        this.restInterface = restInterface;
+        this.transport = transport;
     }
 
     /**
@@ -126,77 +126,77 @@ public class Flickr {
      */
     public AuthInterface getAuthInterface() {
         if (authInterface == null) {
-            authInterface = new AuthInterface(apiKey, restInterface);
+            authInterface = new AuthInterface(apiKey, transport);
         }
         return authInterface;
     }
 
     public synchronized BlogsInterface getBlogsInterface() {
         if (blogsInterface == null) {
-            blogsInterface = new BlogsInterface(apiKey, restInterface);
+            blogsInterface = new BlogsInterface(apiKey, transport);
         }
         return blogsInterface;
     }
 
     public ContactsInterface getContactsInterface() {
         if (contactsInterface == null) {
-            contactsInterface = new ContactsInterface(apiKey, restInterface);
+            contactsInterface = new ContactsInterface(apiKey, transport);
         }
         return contactsInterface;
     }
 
     public FavoritesInterface getFavoritesInterface() {
         if (favoritesInterface == null) {
-            favoritesInterface = new FavoritesInterface(apiKey, restInterface);
+            favoritesInterface = new FavoritesInterface(apiKey, transport);
         }
         return favoritesInterface;
     }
 
     public GroupsInterface getGroupsInterface() {
         if (groupsInterface == null) {
-            groupsInterface = new GroupsInterface(apiKey, restInterface);
+            groupsInterface = new GroupsInterface(apiKey, transport);
         }
         return groupsInterface;
     }
 
     public LicensesInterface getLicensesInterface() {
         if (licensesInterface == null) {
-            licensesInterface = new LicensesInterface(apiKey, restInterface);
+            licensesInterface = new LicensesInterface(apiKey, transport);
         }
         return licensesInterface;
     }
 
     public PoolsInterface getPoolsInterface() {
         if (poolsInterface == null) {
-            poolsInterface = new PoolsInterface(apiKey, restInterface);
+            poolsInterface = new PoolsInterface(apiKey, transport);
         }
         return poolsInterface;
     }
 
     public PeopleInterface getPeopleInterface() {
         if (peopleInterface == null) {
-            peopleInterface = new PeopleInterface(apiKey, restInterface);
+            peopleInterface = new PeopleInterface(apiKey, transport);
         }
         return peopleInterface;
     }
 
     public PhotosInterface getPhotosInterface() {
         if (photosInterface == null) {
-            photosInterface = new PhotosInterface(apiKey, restInterface);
+            photosInterface = new PhotosInterface(apiKey, transport);
         }
         return photosInterface;
     }
 
     public PhotosetsInterface getPhotosetsInterface() {
         if (photosetsInterface == null) {
-            photosetsInterface = new PhotosetsInterface(apiKey, restInterface);
+            photosetsInterface = new PhotosetsInterface(apiKey, transport);
         }
         return photosetsInterface;
     }
 
     public ReflectionInterface getReflectionInterface() {
         if (reflectionInterface == null) {
-            reflectionInterface = new ReflectionInterface(apiKey, restInterface);
+            reflectionInterface = new ReflectionInterface(apiKey, transport);
         }
         return reflectionInterface;
     }
@@ -208,21 +208,21 @@ public class Flickr {
      */
     public TagsInterface getTagsInterface() {
         if (tagsInterface == null) {
-            tagsInterface = new TagsInterface(apiKey, restInterface);
+            tagsInterface = new TagsInterface(apiKey, transport);
         }
         return tagsInterface;
     }
 
     public TestInterface getTestInterface() {
         if (testInterface == null) {
-            testInterface = new TestInterface(apiKey, restInterface);
+            testInterface = TestInterface.getInterface(apiKey, transport);
         }
         return testInterface;
     }
 
     public UrlsInterface getUrlsInterface() {
         if (urlsInterface == null) {
-            urlsInterface = new UrlsInterface(apiKey, restInterface);
+            urlsInterface = new UrlsInterface(apiKey, transport);
         }
         return urlsInterface;
     }

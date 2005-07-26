@@ -26,10 +26,8 @@ import org.xml.sax.SAXException;
 /**
  * @author Anthony Eden
  */
-public class REST {
+public class REST extends Transport {
 
-    private String host;
-    private int port = 80;
     private Class responseClass = RESTResponse.class;
 
     private DocumentBuilder builder;
@@ -49,31 +47,15 @@ public class REST {
         setHost(host);
         setPort(port);
     }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
+    
     public Class getResponseClass() {
         return responseClass;
     }
-
+    
     public void setResponseClass(Class responseClass) {
         this.responseClass = responseClass;
     }
-
+    
     /**
      * Invoke an HTTP GET request on a remote host.  You must close the InputStream after you are done with.
      *
@@ -84,7 +66,7 @@ public class REST {
      * @throws SAXException
      */
     public Response get(String path, List parameters) throws IOException, SAXException {
-        URL url = UrlUtilities.buildUrl(host, port, path, parameters);
+        URL url = UrlUtilities.buildUrl(getHost(), getPort(), path, parameters);
         System.out.println("GET: " + url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -116,26 +98,13 @@ public class REST {
      *
      * @param path The request path
      * @param parameters The parameters (collection of Parameter objects)
-     * @return The Response object
-     * @throws IOException
-     * @throws SAXException
-     */
-    public Response post(String path, Collection parameters) throws IOException, SAXException {
-        return post(path, parameters, false);
-    }
-
-    /**
-     * Invoke an HTTP POST request on a remote host.
-     *
-     * @param path The request path
-     * @param parameters The parameters (collection of Parameter objects)
      * @param multipart Use multipart
      * @return The Response object
      * @throws IOException
      * @throws SAXException
      */
     public Response post(String path, Collection parameters, boolean multipart) throws IOException, SAXException {
-        URL url = UrlUtilities.buildUrl(host, port, path, Collections.EMPTY_LIST);
+        URL url = UrlUtilities.buildUrl(getHost(), getPort(), path, Collections.EMPTY_LIST);
 
         HttpURLConnection conn = null;
         try {

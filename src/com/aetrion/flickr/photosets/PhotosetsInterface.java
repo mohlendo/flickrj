@@ -9,22 +9,23 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
-import com.aetrion.flickr.Response;
 import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.Response;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
 import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Interface for working with photosets.
@@ -46,9 +47,9 @@ public class PhotosetsInterface {
     public static final String METHOD_REMOVE_PHOTO = "flickr.photosets.removePhoto";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport restInterface;
 
-    public PhotosetsInterface(String apiKey, REST restInterface) {
+    public PhotosetsInterface(String apiKey, Transport restInterface) {
         this.apiKey = apiKey;
         this.restInterface = restInterface;
     }

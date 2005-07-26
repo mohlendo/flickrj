@@ -3,17 +3,18 @@
  */
 package com.aetrion.flickr.urls;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.RESTResponse;
-import com.aetrion.flickr.FlickrException;
-import org.xml.sax.SAXException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.Transport;
 
 /**
  * Interface for testing Flickr connectivity.
@@ -29,7 +30,7 @@ public class UrlsInterface {
     public static final String METHOD_LOOKUP_USER = "flickr.urls.lookupUser";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport restInterface;
 
     /**
      * Construct a UrlsInterface.
@@ -37,7 +38,7 @@ public class UrlsInterface {
      * @param apiKey The API key
      * @param restInterface The REST interface
      */
-    public UrlsInterface(String apiKey, REST restInterface) {
+    public UrlsInterface(String apiKey, Transport restInterface) {
         this.apiKey = apiKey;
         this.restInterface = restInterface;
     }
