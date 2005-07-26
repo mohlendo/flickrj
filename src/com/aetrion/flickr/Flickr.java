@@ -5,6 +5,7 @@ package com.aetrion.flickr;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.blogs.BlogsInterface;
 import com.aetrion.flickr.contacts.ContactsInterface;
 import com.aetrion.flickr.favorites.FavoritesInterface;
@@ -14,11 +15,10 @@ import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.licenses.LicensesInterface;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
+import com.aetrion.flickr.reflection.ReflectionInterface;
 import com.aetrion.flickr.tags.TagsInterface;
 import com.aetrion.flickr.test.TestInterface;
 import com.aetrion.flickr.urls.UrlsInterface;
-import com.aetrion.flickr.reflection.ReflectionInterface;
-import com.aetrion.flickr.auth.AuthInterface;
 
 /**
  * Main entry point for the Flickrj API.  This class is used to acquire Interface classes which wrap the Flickr API.
@@ -27,6 +27,9 @@ import com.aetrion.flickr.auth.AuthInterface;
  */
 public class Flickr {
 
+    /**
+     * The default endpoint host.
+     */
     public static final String DEFAULT_HOST = "www.flickr.com";
 
     /**
@@ -55,7 +58,7 @@ public class Flickr {
     /**
      * Construct a new Flickr gateway instance.  Defaults to a REST transport.
      *
-     * @param apiKey The API key.
+     * @param apiKey The API key, must be non-null
      */
     public Flickr(String apiKey) {
         setApiKey(apiKey);
@@ -203,7 +206,7 @@ public class Flickr {
 
     /**
      * Get the TagsInterface for working with Flickr Tags.
-     * 
+     *
      * @return The TagsInterface
      */
     public TagsInterface getTagsInterface() {
