@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2005 Aetrion LLC.
+ */
 package com.aetrion.flickr;
 
 import java.io.IOException;
@@ -7,12 +10,18 @@ import java.util.List;
 import org.xml.sax.SAXException;
 
 /**
+ * The abstract Transport class provides a common interface for transporting requests to the Flickr servers. Flickr
+ * offers several transport methods including REST, SOAP and XML-RPC. FlickrJ currently implements the REST transport
+ * and work is being done to include the SOAP transport.
+ *
  * @author Matt Ray
+ * @author Anthony Eden
  */
 public abstract class Transport {
-    public static final String REST="REST";
-    public static final String SOAP="SOAP";
-    
+
+    public static final String REST = "REST";
+    public static final String SOAP = "SOAP";
+
     private String transportType;
 
     private String host;
@@ -41,7 +50,7 @@ public abstract class Transport {
     public void setTransportType(String transport) {
         this.transportType = transport;
     }
-    
+
     public abstract Class getResponseClass();
 
     public abstract void setResponseClass(Class responseClass);
@@ -80,6 +89,7 @@ public abstract class Transport {
      * @throws IOException
      * @throws SAXException
      */
-    public abstract Response post(String path, Collection parameters, boolean multipart) throws IOException, SAXException;
+    public abstract Response post(String path, Collection parameters, boolean multipart) throws IOException,
+            SAXException;
 
 }

@@ -24,6 +24,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
+ * Transport implementation using the REST interface.
+ *
  * @author Anthony Eden
  */
 public class REST extends Transport {
@@ -32,27 +34,58 @@ public class REST extends Transport {
 
     private DocumentBuilder builder;
 
+    /**
+     * Construct a new REST transport instance.
+     *
+     * @throws ParserConfigurationException
+     */
     public REST() throws ParserConfigurationException {
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         builder = builderFactory.newDocumentBuilder();
     }
 
+    /**
+     * Construct a new REST transport instance using the specified host endpoint.
+     *
+     * @param host The host endpoint
+     * @throws ParserConfigurationException
+     */
     public REST(String host) throws ParserConfigurationException {
         this();
         setHost(host);
     }
 
+    /**
+     * Construct a new REST transport instance using the specified host and port endpoint.
+     *
+     * @param host The host endpoint
+     * @param port The port
+     * @throws ParserConfigurationException
+     */
     public REST(String host, int port) throws ParserConfigurationException {
         this();
         setHost(host);
         setPort(port);
     }
-    
+
+    /**
+     * Get the response Class. By default the RESTResponse class is used.
+     *
+     * @return The response Class
+     */
     public Class getResponseClass() {
         return responseClass;
     }
-    
+
+    /**
+     * Set the response Class.
+     *
+     * @param responseClass The response Class
+     */
     public void setResponseClass(Class responseClass) {
+        if (responseClass == null) {
+            throw new IllegalArgumentException("The response Class cannot be null");
+        }
         this.responseClass = responseClass;
     }
     
