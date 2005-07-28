@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
 import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
@@ -16,8 +19,6 @@ import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.photos.Note;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
@@ -70,11 +71,11 @@ public class NotesInterface {
         RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element noteElement = (Element) response.getPayload();
+        } 
+        
+            Element noteElement = response.getPayload();
             note.setId(noteElement.getAttribute("id"));
             return note;
-        }
     }
 
     /**

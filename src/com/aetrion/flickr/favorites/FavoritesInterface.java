@@ -4,43 +4,32 @@
 package com.aetrion.flickr.favorites;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.Transport;
-import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.RESTResponse;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.Response;
-import com.aetrion.flickr.people.User;
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.util.StringUtilities;
+import com.aetrion.flickr.REST;
+import com.aetrion.flickr.Transport;
 
 /**
  * Interface for working with Flickr favorites.
  *
  * @author Anthony Eden
  */
-public class FavoritesInterface {
+public abstract class FavoritesInterface {
 
     public static final String METHOD_ADD = "flickr.favorites.add";
     public static final String METHOD_GET_LIST = "flickr.favorites.getList";
     public static final String METHOD_GET_PUBLIC_LIST = "flickr.favorites.getPublicList";
     public static final String METHOD_REMOVE = "flickr.favorites.remove";
 
-    private String apiKey;
-    private Transport restInterface;
-
-    public FavoritesInterface(String apiKey, Transport restInterface) {
-        this.apiKey = apiKey;
-        this.restInterface = restInterface;
+    public static FavoritesInterface getInterface(String apiKey, Transport transport) {
+        if (transport.getTransportType().equals(Transport.REST)) {
+            return new FavoritesInterfaceREST(apiKey, (REST)transport);
+        }
+        //put the SOAP version here
+        return null;
     }
 
     /**
@@ -51,24 +40,7 @@ public class FavoritesInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public void add(String photoId) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_ADD));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-
-        parameters.add(new Parameter("photo_id", photoId));
-
-        Response response = restInterface.post("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-    }
+    public abstract void add(String photoId) throws IOException, SAXException, FlickrException;
 
     /**
      * Get the collection of favorites for the calling user or the specified user ID.
@@ -95,60 +67,8 @@ public class FavoritesInterface {
      * @throws IOException
      * @throws SAXException
      */
-    public Collection getList(String userId, int perPage, int page, String[] extras) throws IOException,
-            SAXException, FlickrException {
-        List photos = new ArrayList();
-
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_LIST));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-
-        if (userId != null) {
-            parameters.add(new Parameter("user_id", userId));
-        }
-        if (extras != null) {
-            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
-        }
-        if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
-        }
-        if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
-        }
-
-        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element photosElement = (Element) response.getPayload();
-            NodeList photoNodes = photosElement.getElementsByTagName("photo");
-            for (int i = 0; i < photoNodes.getLength(); i++) {
-                Element photoElement = (Element) photoNodes.item(i);
-                Photo photo = new Photo();
-                photo.setId(photoElement.getAttribute("id"));
-
-                User owner = new User();
-                owner.setId(photoElement.getAttribute("owner"));
-                photo.setOwner(owner);
-
-                photo.setSecret(photoElement.getAttribute("secret"));
-                photo.setServer(photoElement.getAttribute("server"));
-                photo.setTitle(photoElement.getAttribute("title"));
-                photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-                photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-                photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-                photos.add(photo);
-            }
-            return photos;
-        }
-    }
+    public abstract Collection getList(String userId, int perPage, int page, String[] extras) throws IOException,
+            SAXException, FlickrException;
 
     /**
      * Get the specified user IDs public contacts.
@@ -178,88 +98,13 @@ public class FavoritesInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getPublicList(String userId, int perPage, int page, String[] extras) throws IOException, SAXException, FlickrException {
-        List photos = new ArrayList();
-
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_PUBLIC_LIST));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-
-        parameters.add(new Parameter("user_id", userId));
-
-        if (extras != null) {
-            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
-        }
-        if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
-        }
-        if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
-        }
-
-        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element photosElement = (Element) response.getPayload();
-            NodeList photoNodes = photosElement.getElementsByTagName("photo");
-            for (int i = 0; i < photoNodes.getLength(); i++) {
-                Element photoElement = (Element) photoNodes.item(i);
-                Photo photo = new Photo();
-                photo.setId(photoElement.getAttribute("id"));
-
-                User owner = new User();
-                owner.setId(photoElement.getAttribute("owner"));
-                owner.setRealName(photoElement.getAttribute("ownername"));
-                photo.setOwner(owner);
-
-                photo.setSecret(photoElement.getAttribute("secret"));
-                photo.setServer(photoElement.getAttribute("server"));
-                photo.setTitle(photoElement.getAttribute("title"));
-                photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-                photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-                photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-                photo.setLicense(photoElement.getAttribute("license"));
-                photo.setDatePosted(photoElement.getAttribute("dateupload"));
-                photo.setDateTaken(photoElement.getAttribute("datetaken"));
-                photo.setTakenGranularity(photoElement.getAttribute("datetakengranularity"));
-                photo.setIconServer(photoElement.getAttribute("iconserver"));
-
-                photos.add(photo);
-            }
-            return photos;
-        }
-    }
+    public abstract Collection getPublicList(String userId, int perPage, int page, String[] extras) throws IOException, SAXException, FlickrException;
 
     /**
      * Remove the specified photo from the user's favorites.
      *
      * @param photoId The photo id
      */
-    public void remove(String photoId) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_REMOVE));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-
-        parameters.add(new Parameter("photo_id", photoId));
-
-        Response response = restInterface.post("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-    }
+    public abstract void remove(String photoId) throws IOException, SAXException, FlickrException;
 
 }

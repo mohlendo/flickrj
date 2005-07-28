@@ -22,15 +22,13 @@ public abstract class TestInterface {
     public static final String METHOD_ECHO = "flickr.test.echo";
     public static final String METHOD_LOGIN = "flickr.test.login";
     
-    public static TestInterface getInterface(String apiKey, Transport api) {
-        if (api.getTransportType().equals(Transport.REST)) {
-            return new TestInterfaceREST(apiKey, (REST)api);
+    public static TestInterface getInterface(String apiKey, Transport transport) {
+        if (transport.getTransportType().equals(Transport.REST)) {
+            return new TestInterfaceREST(apiKey, (REST)transport);
         }
         //put the SOAP version here
         return null;
     }
-
-    
 
     /**
      * A testing method which echo's all paramaters back in the response.

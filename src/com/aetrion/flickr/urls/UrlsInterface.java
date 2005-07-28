@@ -4,16 +4,11 @@
 package com.aetrion.flickr.urls;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.REST;
 import com.aetrion.flickr.Transport;
 
 /**
@@ -21,7 +16,7 @@ import com.aetrion.flickr.Transport;
  *
  * @author Anthony Eden
  */
-public class UrlsInterface {
+public abstract class UrlsInterface {
 
     public static final String METHOD_GET_GROUP = "flickr.urls.getGroup";
     public static final String METHOD_GET_USER_PHOTOS = "flickr.urls.getUserPhotos";
@@ -29,18 +24,12 @@ public class UrlsInterface {
     public static final String METHOD_LOOKUP_GROUP = "flickr.urls.lookupGroup";
     public static final String METHOD_LOOKUP_USER = "flickr.urls.lookupUser";
 
-    private String apiKey;
-    private Transport restInterface;
-
-    /**
-     * Construct a UrlsInterface.
-     *
-     * @param apiKey The API key
-     * @param restInterface The REST interface
-     */
-    public UrlsInterface(String apiKey, Transport restInterface) {
-        this.apiKey = apiKey;
-        this.restInterface = restInterface;
+    public static UrlsInterface getInterface(String apiKey, Transport transport) {
+        if (transport.getTransportType().equals(Transport.REST)) {
+            return new UrlsInterfaceREST(apiKey, (REST)transport);
+        }
+        //put the SOAP version here
+        return null;
     }
 
     /**
@@ -52,21 +41,7 @@ public class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public String getGroup(String groupId) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_GROUP));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        parameters.add(new Parameter("group_id", groupId));
-
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element payload = response.getPayload();
-            return payload.getAttribute("url");
-        }
-    }
+    public abstract String getGroup(String groupId) throws IOException, SAXException, FlickrException;
 
     /**
      * Get the URL for the user's photos.
@@ -77,21 +52,7 @@ public class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public String getUserPhotos(String userId) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_USER_PHOTOS));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        parameters.add(new Parameter("user_id", userId));
-
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element payload = response.getPayload();
-            return payload.getAttribute("url");
-        }
-    }
+    public abstract String getUserPhotos(String userId) throws IOException, SAXException, FlickrException;
 
     /**
      * Get the URL for the user's profile.
@@ -102,21 +63,7 @@ public class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public String getUserProfile(String userId) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_USER_PROFILE));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        parameters.add(new Parameter("user_id", userId));
-
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element payload = response.getPayload();
-            return payload.getAttribute("url");
-        }
-    }
+    public abstract String getUserProfile(String userId) throws IOException, SAXException, FlickrException;
 
     /**
      * Lookup the group name for the specified URL.
@@ -127,22 +74,7 @@ public class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public String lookupGroup(String url) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_LOOKUP_GROUP));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        parameters.add(new Parameter("url", url));
-
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element payload = response.getPayload();
-            Element groupnameElement = (Element) payload.getElementsByTagName("groupname").item(0);
-            return (((Text)groupnameElement.getFirstChild()).getData()).toString();
-        }
-    }
+    public abstract String lookupGroup(String url) throws IOException, SAXException, FlickrException;
 
     /**
      * Lookup the username for the specified User URL.
@@ -153,21 +85,6 @@ public class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public String lookupUser(String url) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_LOOKUP_USER));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        parameters.add(new Parameter("url", url));
-
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element payload = response.getPayload();
-            Element groupnameElement = (Element) payload.getElementsByTagName("username").item(0);
-            return (((Text)groupnameElement.getFirstChild()).getData()).toString();
-        }
-    }
+    public abstract String lookupUser(String url) throws IOException, SAXException, FlickrException;
 
 }

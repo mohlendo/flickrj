@@ -4,33 +4,21 @@
 package com.aetrion.flickr.people;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.Transport;
-import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.RESTResponse;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.contacts.OnlineStatus;
-import com.aetrion.flickr.groups.Group;
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.util.XMLUtilities;
+import com.aetrion.flickr.REST;
+import com.aetrion.flickr.Transport;
 
 /**
  * Interface for finding Flickr users.
  *
  * @author Anthony Eden
  */
-public class PeopleInterface {
-
+public abstract class PeopleInterface {
+    
     public static final String METHOD_FIND_BY_EMAIL = "flickr.people.findByEmail";
     public static final String METHOD_FIND_BY_USERNAME = "flickr.people.findByUsername";
     public static final String METHOD_GET_INFO = "flickr.people.getInfo";
@@ -38,15 +26,16 @@ public class PeopleInterface {
     public static final String METHOD_GET_PUBLIC_GROUPS = "flickr.people.getPublicGroups";
     public static final String METHOD_GET_PUBLIC_PHOTOS = "flickr.people.getPublicPhotos";
     public static final String METHOD_GET_UPLOAD_STATUS = "flickr.people.getUploadStatus";
-
-    private String apiKey;
-    private Transport restInterface;
-
-    public PeopleInterface(String apiKey, Transport restInterface) {
-        this.apiKey = apiKey;
-        this.restInterface = restInterface;
+    
+    public static PeopleInterface getInterface(String apiKey, Transport transport) {
+        if (transport.getTransportType().equals(Transport.REST)) {
+            return new PeopleInterfaceREST(apiKey, (REST)transport);
+        }
+        //put the SOAP version here
+        return null;
     }
-
+    
+    
     /**
      * Find the user by their email address.
      *
@@ -56,31 +45,8 @@ public class PeopleInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public User findByEmail(String email) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_FIND_BY_EMAIL));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-
-        parameters.add(new Parameter("find_email", email));
-
-        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element userElement = (Element) response.getPayload();
-            User user = new User();
-            user.setId(userElement.getAttribute("nsid"));
-            user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
-            return user;
-        }
-    }
-
+    public abstract User findByEmail(String email) throws IOException, SAXException, FlickrException;
+    
     /**
      * Find a User by the username.
      *
@@ -90,31 +56,8 @@ public class PeopleInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public User findByUsername(String username) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_FIND_BY_USERNAME));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-
-        parameters.add(new Parameter("username", username));
-
-        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element userElement = (Element) response.getPayload();
-            User user = new User();
-            user.setId(userElement.getAttribute("nsid"));
-            user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
-            return user;
-        }
-    }
-
+    public abstract User findByUsername(String username) throws IOException, SAXException, FlickrException;
+    
     /**
      * Get info about the specified user.
      *
@@ -124,42 +67,8 @@ public class PeopleInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public User getInfo(String userId) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_INFO));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-
-        parameters.add(new Parameter("user_id", userId));
-
-        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element userElement = (Element) response.getPayload();
-            User user = new User();
-            user.setId(userElement.getAttribute("nsid"));
-            user.setAdmin("1".equals(userElement.getAttribute("isadmin")));
-            user.setPro("1".equals(userElement.getAttribute("ispro")));
-            user.setIconServer(userElement.getAttribute("iconserver"));
-            user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
-            user.setRealName(XMLUtilities.getChildValue(userElement, "realname"));
-            user.setLocation(XMLUtilities.getChildValue(userElement, "location"));
-
-            Element photosElement = XMLUtilities.getChild(userElement, "photos");
-            user.setPhotosFirstDate(XMLUtilities.getChildValue(photosElement, "firstdate"));
-            user.setPhotosFirstDateTaken(XMLUtilities.getChildValue(photosElement, "firstdatetaken"));
-            user.setPhotosCount(XMLUtilities.getChildValue(photosElement, "count"));
-
-            return user;
-        }
-    }
-
+    public abstract User getInfo(String userId) throws IOException, SAXException, FlickrException;
+    
     /**
      * Get the list of current online users.
      *
@@ -168,42 +77,8 @@ public class PeopleInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getOnlineList() throws IOException, SAXException, FlickrException {
-        List online = new ArrayList();
-
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_ONLINE_LIST));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-
-        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element onlineElement = (Element) response.getPayload();
-            NodeList userNodes = onlineElement.getElementsByTagName("user");
-            for (int i = 0; i < userNodes.getLength(); i++) {
-                Element userElement = (Element) userNodes.item(i);
-                User user = new User();
-                user.setId(userElement.getAttribute("nsid"));
-                user.setUsername(userElement.getAttribute("username"));
-                user.setOnline(OnlineStatus.fromType(userElement.getAttribute("online")));
-                if (user.getOnline() == OnlineStatus.AWAY) {
-                    Text awayMessageElement = (Text) userElement.getFirstChild();
-                    if (awayMessageElement != null)
-                        user.setAwayMessage(awayMessageElement.getData());
-                }
-                online.add(user);
-            }
-            return online;
-        }
-    }
-
+    public abstract Collection getOnlineList() throws IOException, SAXException, FlickrException;
+    
     /**
      * Get a collection of public groups for the user.
      *
@@ -213,35 +88,8 @@ public class PeopleInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getPublicGroups(String userId) throws IOException, SAXException, FlickrException {
-        List groups = new ArrayList();
-
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_PUBLIC_GROUPS));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        parameters.add(new Parameter("user_id", userId));
-
-        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element groupsElement = (Element) response.getPayload();
-            NodeList groupNodes = groupsElement.getElementsByTagName("photo");
-            for (int i = 0; i < groupNodes.getLength(); i++) {
-                Element groupElement = (Element) groupNodes.item(i);
-                Group group = new Group();
-                group.setId(groupElement.getAttribute("nsid"));
-                group.setName(groupElement.getAttribute("name"));
-                group.setAdmin("1".equals(groupElement.getAttribute("admin")));
-                group.setEighteenPlus("1".equals(groupElement.getAttribute("eighteenplus")));
-                groups.add(group);
-            }
-        }
-
-        return groups;
-    }
-
+    public abstract Collection getPublicGroups(String userId) throws IOException, SAXException, FlickrException;
+    
     /**
      * Get a collection of public photos for the specified user ID.
      *
@@ -253,57 +101,9 @@ public class PeopleInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getPublicPhotos(String userId, int perPage, int page) throws IOException, SAXException,
-            FlickrException {
-        List photos = new ArrayList();
-
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_PUBLIC_PHOTOS));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-
-        parameters.add(new Parameter("user_id", userId));
-
-        if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
-        }
-        if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
-        }
-
-        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element photosElement = (Element) response.getPayload();
-            NodeList photoNodes = photosElement.getElementsByTagName("photo");
-            for (int i = 0; i < photoNodes.getLength(); i++) {
-                Element photoElement = (Element) photoNodes.item(i);
-                Photo photo = new Photo();
-                photo.setId(photoElement.getAttribute("id"));
-
-                User owner = new User();
-                owner.setId(photoElement.getAttribute("owner"));
-                photo.setOwner(owner);
-
-                photo.setSecret(photoElement.getAttribute("secret"));
-                photo.setServer(photoElement.getAttribute("server"));
-                photo.setTitle(photoElement.getAttribute("name"));
-                photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-                photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-                photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-                photos.add(photo);
-            }
-            return photos;
-        }
-    }
-
+    public abstract Collection getPublicPhotos(String userId, int perPage, int page) throws IOException, SAXException,
+    FlickrException;
+    
     /**
      * Get upload status for the currently authenticated user.
      *
@@ -314,30 +114,6 @@ public class PeopleInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public User getUploadStatus() throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_PUBLIC_PHOTOS));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        RESTResponse response = (RESTResponse) restInterface.get("/services/rest/", parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            Element userElement = (Element) response.getPayload();
-            User user = new User();
-            user.setId(userElement.getAttribute("id"));
-            user.setPro("1".equals(userElement.getAttribute("ispro")));
-            user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
-
-            Element bandwidthElement = XMLUtilities.getChild(userElement, "bandwidth");
-            user.setBandwidthMax(bandwidthElement.getAttribute("max"));
-            user.setBandwidthUsed(bandwidthElement.getAttribute("used"));
-
-            Element filesizeElement = XMLUtilities.getChild(userElement, "filesize");
-            user.setFilesizeMax(filesizeElement.getAttribute("max"));
-
-            return user;
-        }
-    }
-
+    public abstract User getUploadStatus() throws IOException, SAXException, FlickrException;
+    
 }
