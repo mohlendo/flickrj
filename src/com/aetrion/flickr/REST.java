@@ -40,6 +40,7 @@ public class REST extends Transport {
      * @throws ParserConfigurationException
      */
     public REST() throws ParserConfigurationException {
+        setTransportType(REST);
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         builder = builderFactory.newDocumentBuilder();
     }
