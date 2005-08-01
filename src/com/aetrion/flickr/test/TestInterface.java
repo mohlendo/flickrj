@@ -8,9 +8,10 @@ import java.util.Collection;
 
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.REST;
+import com.aetrion.flickr.SOAP;
+import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.people.User;
 
 /**
@@ -25,8 +26,9 @@ public abstract class TestInterface {
     public static TestInterface getInterface(String apiKey, Transport transport) {
         if (transport.getTransportType().equals(Transport.REST)) {
             return new TestInterfaceREST(apiKey, (REST)transport);
+        } else if (transport.getTransportType().equals(Transport.SOAP)) {
+            return new TestInterfaceSOAP(apiKey, (SOAP)transport);
         }
-        //put the SOAP version here
         return null;
     }
 

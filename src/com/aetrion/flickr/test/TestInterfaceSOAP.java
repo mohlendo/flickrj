@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2005 Aetrion LLC.
- */
 package com.aetrion.flickr.test;
 
 import java.io.IOException;
@@ -15,30 +12,30 @@ import org.xml.sax.SAXException;
 import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.SOAP;
+import com.aetrion.flickr.SOAPResponse;
 import com.aetrion.flickr.people.User;
 
 /**
- * REST Interface implementation for testing Flickr connectivity.
+ * SOAP Interface implementation for testing Flickr connectivity.
  *
- * @author Anthony Eden
+ * @author Matt Ray
  */
-public class TestInterfaceREST extends TestInterface {
+public class TestInterfaceSOAP extends TestInterface {
 
     private String apiKey;
-    private REST restInterface;
+    private SOAP soapInterface;
 
     /**
      * Construct a TestInterface.
      *
      * @param apiKey The API key
-     * @param restInterface The REST interface
+     * @param soapInterface The SOAP interface
      */
-    public TestInterfaceREST(String apiKey, REST restInterface) {
+    public TestInterfaceSOAP(String apiKey, SOAP soapInterface) {
         this.apiKey = apiKey;
-        this.restInterface = restInterface;
+        this.soapInterface = soapInterface;
     }
 
     /**
@@ -56,7 +53,7 @@ public class TestInterfaceREST extends TestInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.addAll(params);
 
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
+        SOAPResponse response = (SOAPResponse) soapInterface.post("/services/soap/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -82,7 +79,7 @@ public class TestInterfaceREST extends TestInterface {
             parameters.addAll(auth.getAsParameters());
         }
 
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
+        SOAPResponse response = (SOAPResponse) soapInterface.post("/services/soap/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
