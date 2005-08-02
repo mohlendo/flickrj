@@ -32,12 +32,13 @@ import org.xml.sax.SAXException;
 public class AuthInterfaceTest extends TestCase {
 
     Flickr flickr = null;
+    Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
-            Properties properties = new Properties();
+            properties = new Properties();
             properties.load(in);
 
             REST rest = new REST();
@@ -58,11 +59,25 @@ public class AuthInterfaceTest extends TestCase {
         assertNotNull(frob);
     }
 
-    public void testAuthentication() throws FlickrException, IOException, SAXException,
+    public void testReadAuthentication() throws FlickrException, IOException, SAXException,
+            BrowserLaunchingInitializingException, UnsupportedOperatingSystemException {
+        testAuthentication(Permission.READ);
+    }
+
+    public void testWriteAuthentication() throws FlickrException, IOException, BrowserLaunchingInitializingException,
+            SAXException, UnsupportedOperatingSystemException {
+        testAuthentication(Permission.WRITE);
+    }
+
+    public void testDeleteAuthentication() throws FlickrException, IOException, BrowserLaunchingInitializingException,
+            SAXException, UnsupportedOperatingSystemException {
+        testAuthentication(Permission.DELETE);
+    }
+
+    private void testAuthentication(Permission permission) throws FlickrException, IOException, SAXException,
             BrowserLaunchingInitializingException, UnsupportedOperatingSystemException {
         AuthInterface authInterface = flickr.getAuthInterface();
         String frob = authInterface.getFrob();
-        Permission permission = Permission.READ;
         URL url = authInterface.buildAuthenticationUrl(permission, frob);
 
         BrowserLauncher launcher = new BrowserLauncher(null);
@@ -84,14 +99,21 @@ public class AuthInterfaceTest extends TestCase {
         d.setVisible(true);
 
         Auth auth = authInterface.getToken(frob);
-//        System.out.println("Token: " + auth.getToken());
-//        System.out.println("Permission: " + auth.getPermission());
+//        System.out.println("Token: " + authentication.getToken());
+//        System.out.println("Permission: " + authentication.getPermission());
         assertNotNull(auth.getToken());
         assertEquals(permission, auth.getPermission());
 
         Auth checkedAuth = authInterface.checkToken(auth.getToken());
         assertEquals(auth.getToken(), checkedAuth.getToken());
         assertEquals(auth.getPermission(), checkedAuth.getPermission());
+    }
+
+    public void testCheckToken() throws FlickrException, IOException, SAXException {
+        String token = properties.getProperty("token");
+        AuthInterface authInterface = flickr.getAuthInterface();
+        Auth checkedAuth = authInterface.checkToken(token);
+        assertEquals(token, checkedAuth.getToken());
     }
 
 }

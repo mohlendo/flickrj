@@ -11,7 +11,7 @@ import java.util.List;
  * Class encapsulating authentication data.
  *
  * @author Anthony Eden
- * @deprecated Use the auth API instead
+ * @deprecated Use the authentication API instead
  */
 public class Authentication {
 

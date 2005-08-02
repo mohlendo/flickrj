@@ -119,7 +119,7 @@ public class REST extends Transport {
      * @throws SAXException
      */
     public Response post(String path, Collection parameters, boolean multipart) throws IOException, SAXException {
-        URL url = UrlUtilities.buildUrl(getHost(), getPort(), path, Collections.EMPTY_LIST);
+        URL url = UrlUtilities.buildPostUrl(getHost(), getPort(), path);
 
         HttpURLConnection conn = null;
         try {

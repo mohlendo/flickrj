@@ -65,4 +65,19 @@ public class UrlUtilities {
         return new URL(buffer.toString());
     }
 
+    public static URL buildPostUrl(String host, int port, String path) throws MalformedURLException {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("http://");
+        buffer.append(host);
+        if (port > 0) {
+            buffer.append(":");
+            buffer.append(port);
+        }
+        if (path == null) {
+            path = "/";
+        }
+        buffer.append(path);
+        return new URL(buffer.toString());
+    }
+
 }
