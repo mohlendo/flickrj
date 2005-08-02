@@ -58,8 +58,8 @@ public class UrlUtilities {
         RequestContext requestContext = RequestContext.getRequestContext();
         Auth auth = requestContext.getAuth();
         if (auth != null) {
-            buffer.append("auth_token=" + auth.getToken());
-            buffer.append("auth_sig=" + AuthUtilities.getSignature(parameters));
+            buffer.append("&auth_token=" + auth.getToken());
+            buffer.append("&auth_sig=" + AuthUtilities.getSignature(parameters));
         }
 
         return new URL(buffer.toString());
