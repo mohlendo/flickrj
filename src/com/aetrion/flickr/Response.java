@@ -4,7 +4,10 @@
 
 package com.aetrion.flickr;
 
+import java.util.Collection;
+
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author Anthony Eden
@@ -18,4 +21,8 @@ public interface Response {
     String getErrorCode();
 
     String getErrorMessage();
+    
+    Element getPayload();
+    
+    Collection getPayloadCollection();
 }

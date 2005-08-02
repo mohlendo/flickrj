@@ -218,7 +218,7 @@ public class Flickr {
 
     public TestInterface getTestInterface() {
         if (testInterface == null) {
-            testInterface = TestInterface.getInterface(apiKey, transport);
+            testInterface = new TestInterface(apiKey, transport);
         }
         return testInterface;
     }

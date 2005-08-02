@@ -3,7 +3,11 @@ package com.aetrion.flickr;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.axis.message.SOAPBody;
+import org.apache.axis.message.SOAPBodyElement;
 import org.apache.axis.message.SOAPEnvelope;
+import org.apache.axis.message.SOAPFault;
+import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -29,21 +33,33 @@ public class SOAPResponse implements Response {
     }
     
     public void parse(Document document) {
-        Element rspElement = document.getDocumentElement();
-        rspElement.normalize();
-        stat = rspElement.getAttribute("stat");
-        if ("ok".equals(stat)) {
-            // TODO: Verify that the payload is always a single XML node
-            payload = XMLUtilities.getChildElements(rspElement);
-        } else if ("fail".equals(stat)) {
-            Element errElement = (Element) rspElement.getElementsByTagName("err").item(0);
-            errorCode = errElement.getAttribute("code");
-            errorMessage = errElement.getAttribute("msg");
+        try {
+            SOAPBody body = (SOAPBody)envelope.getBody();
+
+            if (Flickr.debugStream) {
+                System.out.println("SOAP RESPONSE.parse");
+                System.out.println(body.getAsString());
+            }
+            
+            SOAPFault fault = (SOAPFault)body.getFault();
+            if (fault != null) {
+                System.err.println("FAULT: "+fault.getAsString());
+                errorCode = fault.getFaultCode();
+                errorMessage = fault.getFaultString();
+            } else {
+                for (Iterator i = body.getChildElements(); i.hasNext(); ) {
+                    SOAPBodyElement sbe = (SOAPBodyElement)i.next();
+                    // TODO: Verify that the payload is always a single XML node
+                    payload = XMLUtilities.getChildElements(sbe);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public String getStat() {
-        return stat;
+        return null;
     }
     
     public Element getPayload() {

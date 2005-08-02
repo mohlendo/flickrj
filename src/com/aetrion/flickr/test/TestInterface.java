@@ -4,13 +4,20 @@
 package com.aetrion.flickr.test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
+import com.aetrion.flickr.Authentication;
+import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.SOAP;
+import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.people.User;
 
@@ -19,17 +26,16 @@ import com.aetrion.flickr.people.User;
  *
  * @author Matt Ray
  */
-public abstract class TestInterface {
+public class TestInterface {
     public static final String METHOD_ECHO = "flickr.test.echo";
     public static final String METHOD_LOGIN = "flickr.test.login";
     
-    public static TestInterface getInterface(String apiKey, Transport transport) {
-        if (transport.getTransportType().equals(Transport.REST)) {
-            return new TestInterfaceREST(apiKey, (REST)transport);
-        } else if (transport.getTransportType().equals(Transport.SOAP)) {
-            return new TestInterfaceSOAP(apiKey, (SOAP)transport);
-        }
-        return null;
+    private String apiKey;
+    private Transport transportAPI;
+    
+    public TestInterface(String apiKey, Transport transport) {
+        this.apiKey = apiKey;
+        this.transportAPI = transport;
     }
 
     /**
@@ -41,7 +47,18 @@ public abstract class TestInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public abstract Collection echo(Collection params) throws IOException, SAXException, FlickrException;
+    public Collection echo(Collection params) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_ECHO));
+        parameters.add(new Parameter("api_key", apiKey));
+        parameters.addAll(params);
+    
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        return response.getPayloadCollection();
+    }
 
     /**
      * A testing method which checks if the caller is logged in then returns a User object.
@@ -51,6 +68,29 @@ public abstract class TestInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public abstract User login() throws IOException, SAXException, FlickrException;
+    public User login() throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_LOGIN));
+        parameters.add(new Parameter("api_key", apiKey));
+        
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+        
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element userElement = response.getPayload();
+        User user = new User();
+        user.setId(userElement.getAttribute("id"));
+        
+        Element usernameElement = (Element) userElement.getElementsByTagName("username").item(0);
+        user.setUsername(((Text)usernameElement.getFirstChild()).getData());
+        
+        return user;
+    }
 
 }

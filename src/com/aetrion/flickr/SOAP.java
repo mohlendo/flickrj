@@ -40,8 +40,7 @@ public class SOAP extends Transport {
     
     public static final String URN = "urn:flickr";
     public static final String BODYELEMENT = "FlickrRequest";
-    
-    Class responseClass = SOAPResponse.class;
+    public static final String PATH = "/services/soap/";
     
     private DocumentBuilder builder;
     
@@ -49,6 +48,8 @@ public class SOAP extends Transport {
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         builder = builderFactory.newDocumentBuilder();
         setTransportType(SOAP);
+        setResponseClass(SOAPResponse.class);
+        setPath(PATH);
     }
     
     public SOAP(String host) throws ParserConfigurationException {
@@ -62,17 +63,6 @@ public class SOAP extends Transport {
         setPort(port);
     }
     
-    public Class getResponseClass() {
-        return responseClass;
-    }
-    
-    public void setResponseClass(Class responseClass) {
-        if (responseClass == null) {
-            throw new IllegalArgumentException("The response Class cannot be null");
-        }
-        this.responseClass = responseClass;
-    }
-    
     /**
      * Invoke an HTTP GET request on a remote host.  You must close the InputStream after you are done with.
      *
@@ -84,7 +74,7 @@ public class SOAP extends Transport {
      */
     public Response get(String path, List parameters) throws IOException, SAXException {
         URL url = UrlUtilities.buildUrl(getHost(), getPort(), path, parameters);
-        System.out.println("GET: " + url);
+
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.connect();
@@ -98,7 +88,7 @@ public class SOAP extends Transport {
             }
 
             Document document = builder.parse(in);
-            Response response = (Response) responseClass.newInstance();
+            Response response = (SOAPResponse) responseClass.newInstance();
             response.parse(document);
             return response;
         } catch (IllegalAccessException e) {
@@ -123,7 +113,6 @@ public class SOAP extends Transport {
     public Response post(String path, Collection parameters, boolean multipart) 
     throws IOException, SAXException {
         URL url = UrlUtilities.buildUrl(getHost(), getPort(), path, Collections.EMPTY_LIST);
-        System.out.println(url.toString());
 
         try {
             //build the envelope
@@ -152,7 +141,7 @@ public class SOAP extends Transport {
             env.addBodyElement(body);
 
             if (Flickr.debugStream) {
-                System.out.println("SOAP ENVELOPE");
+                System.out.println("SOAP ENVELOPE:");
                 System.out.println(env.toString());
             }
             
@@ -168,6 +157,7 @@ public class SOAP extends Transport {
             }
             
             SOAPResponse response = new SOAPResponse(envelope);
+            response.parse(null); //the null is because we don't really need a document, but the Interface does
             
             return response; 
             

@@ -30,8 +30,8 @@ import org.xml.sax.SAXException;
  */
 public class REST extends Transport {
 
-    private Class responseClass = RESTResponse.class;
-
+    public static final String PATH = "/services/rest/";
+    
     private DocumentBuilder builder;
 
     /**
@@ -41,6 +41,8 @@ public class REST extends Transport {
      */
     public REST() throws ParserConfigurationException {
         setTransportType(REST);
+        setPath(PATH);
+        setResponseClass(RESTResponse.class);
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         builder = builderFactory.newDocumentBuilder();
     }
@@ -69,27 +71,6 @@ public class REST extends Transport {
         setPort(port);
     }
 
-    /**
-     * Get the response Class. By default the RESTResponse class is used.
-     *
-     * @return The response Class
-     */
-    public Class getResponseClass() {
-        return responseClass;
-    }
-
-    /**
-     * Set the response Class.
-     *
-     * @param responseClass The response Class
-     */
-    public void setResponseClass(Class responseClass) {
-        if (responseClass == null) {
-            throw new IllegalArgumentException("The response Class cannot be null");
-        }
-        this.responseClass = responseClass;
-    }
-    
     /**
      * Invoke an HTTP GET request on a remote host.  You must close the InputStream after you are done with.
      *

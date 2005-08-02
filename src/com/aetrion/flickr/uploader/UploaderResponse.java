@@ -4,6 +4,8 @@
 
 package com.aetrion.flickr.uploader;
 
+import java.util.Collection;
+
 import com.aetrion.flickr.Response;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -54,4 +56,22 @@ public class UploaderResponse implements Response {
     public String getErrorMessage() {
         return errorMessage;
     }
+
+    /* (non-Javadoc)
+     * @see com.aetrion.flickr.Response#getPayload()
+     */
+    public Element getPayload() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.aetrion.flickr.Response#getPayloadCollection()
+     */
+    public Collection getPayloadCollection() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    
 }

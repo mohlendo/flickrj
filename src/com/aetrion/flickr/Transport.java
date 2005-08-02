@@ -23,7 +23,8 @@ public abstract class Transport {
     public static final String SOAP = "SOAP";
 
     private String transportType;
-
+    protected Class responseClass;
+    private String path;
     private String host;
     private int port = 80;
 
@@ -50,10 +51,6 @@ public abstract class Transport {
     public void setTransportType(String transport) {
         this.transportType = transport;
     }
-
-    public abstract Class getResponseClass();
-
-    public abstract void setResponseClass(Class responseClass);
 
     /**
      * Invoke an HTTP GET request on a remote host.  You must close the InputStream after you are done with.
@@ -91,5 +88,30 @@ public abstract class Transport {
      */
     public abstract Response post(String path, Collection parameters, boolean multipart) throws IOException,
             SAXException;
+
+    /**
+     * @return Returns the path.
+     */
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * @param path The path to set.
+     */
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public Class getResponseClass() {
+        return responseClass;
+    }
+
+    public void setResponseClass(Class responseClass) {
+        if (responseClass == null) {
+            throw new IllegalArgumentException("The response Class cannot be null");
+        }
+        this.responseClass = responseClass;
+    }
 
 }
