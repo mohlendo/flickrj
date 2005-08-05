@@ -11,6 +11,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.util.IOUtilities;
 import com.aetrion.flickr.groups.pools.PoolsInterface;
+import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.auth.Auth;
 import org.xml.sax.SAXException;
 import junit.framework.TestCase;
 
@@ -20,10 +22,9 @@ import junit.framework.TestCase;
 public class PoolsInterfaceTest extends TestCase {
 
     Flickr flickr = null;
-    Authentication auth = null;
     Properties properties = null;
 
-    public void setUp() throws ParserConfigurationException, IOException {
+    public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
         Flickr.debugStream = true;
         InputStream in = null;
         try {
@@ -36,9 +37,12 @@ public class PoolsInterfaceTest extends TestCase {
 
             flickr = new Flickr(properties.getProperty("apiKey"), rest);
 
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
+            RequestContext requestContext = RequestContext.getRequestContext();
+            requestContext.setSharedSecret(properties.getProperty("secret"));
+
+            AuthInterface authInterface = flickr.getAuthInterface();
+            Auth auth = authInterface.checkToken(properties.getProperty("token"));
+            requestContext.setAuth(auth);
         } finally {
             IOUtilities.close(in);
         }
@@ -60,7 +64,7 @@ public class PoolsInterfaceTest extends TestCase {
         PoolsInterface iface = flickr.getPoolsInterface();
         Collection groups = iface.getGroups();
         assertNotNull(groups);
-        assertEquals(1, groups.size());
+        assertEquals(4, groups.size());
     }
 
     public void testGetPhotos() throws FlickrException, IOException, SAXException {

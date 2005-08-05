@@ -171,7 +171,7 @@ public class Flickr {
 
     public PoolsInterface getPoolsInterface() {
         if (poolsInterface == null) {
-            poolsInterface = PoolsInterface.getInterface(apiKey, transport);
+            poolsInterface = new PoolsInterface(apiKey, transport);
         }
         return poolsInterface;
     }
