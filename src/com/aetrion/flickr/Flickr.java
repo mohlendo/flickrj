@@ -136,7 +136,7 @@ public class Flickr {
 
     public synchronized BlogsInterface getBlogsInterface() {
         if (blogsInterface == null) {
-            blogsInterface = BlogsInterface.getInterface(apiKey, transport);
+            blogsInterface = new BlogsInterface(apiKey, transport);
         }
         return blogsInterface;
     }

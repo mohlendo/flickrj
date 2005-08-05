@@ -4,10 +4,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.axis.message.SOAPBody;
-import org.apache.axis.message.SOAPBodyElement;
 import org.apache.axis.message.SOAPEnvelope;
 import org.apache.axis.message.SOAPFault;
-import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -48,9 +46,10 @@ public class SOAPResponse implements Response {
                 errorMessage = fault.getFaultString();
             } else {
                 for (Iterator i = body.getChildElements(); i.hasNext(); ) {
-                    SOAPBodyElement sbe = (SOAPBodyElement)i.next();
+                    Element bodyelement = (Element)i.next();
+                    bodyelement.normalize();
                     // TODO: Verify that the payload is always a single XML node
-                    payload = XMLUtilities.getChildElements(sbe);
+                    payload = XMLUtilities.getChildElements(bodyelement);
                 }
             }
         } catch (Exception e) {

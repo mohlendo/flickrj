@@ -4,12 +4,19 @@
 package com.aetrion.flickr.blogs;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.REST;
+import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.photos.Photo;
 
@@ -18,27 +25,56 @@ import com.aetrion.flickr.photos.Photo;
  *
  * @author Anthony Eden
  */
-public abstract class BlogsInterface {
+public class BlogsInterface {
 
     public static final String METHOD_GET_LIST = "flickr.blogs.getList";
     public static final String METHOD_POST_PHOTO = "flickr.blogs.postPhoto";
 
-    public static BlogsInterface getInterface(String apiKey, Transport transport) {
-        if (transport.getTransportType().equals(Transport.REST)) {
-            return new BlogsInterfaceREST(apiKey, (REST)transport);
-        }
-        //put the SOAP version here
-        return null;
-    }
+    private String apiKey;
+    private Transport transportAPI;
+
     
+    public BlogsInterface(String apiKey, Transport transport) {
+        this.apiKey = apiKey;
+        this.transportAPI = transport;
+    }
+
+
     /**
-     * Get the collection of configured blogs for the calling user.
+     * Post the specified photo to a blog.  Note that the Photo.title and Photo.description are used for the blog entry
+     * title and body respectively.
      *
-     * @return The Collection of configured blogs
+     * @param photo The photo metadata
+     * @param blogId The blog ID
+     * @param blogPassword The blog password
      * @throws IOException
      * @throws SAXException
+     * @throws FlickrException
      */
-    public abstract Collection getList() throws IOException, SAXException, FlickrException;
+    public void postPhoto(Photo photo, String blogId, String blogPassword) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_POST_PHOTO));
+        parameters.add(new Parameter("api_key", apiKey));
+        
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+        
+        parameters.add(new Parameter("blog_id", blogId));
+        parameters.add(new Parameter("photo_id", photo.getId()));
+        parameters.add(new Parameter("title", photo.getTitle()));
+        parameters.add(new Parameter("description", photo.getDescription()));
+        if (blogPassword != null) {
+            parameters.add(new Parameter("blog_password", blogPassword));
+        }
+        
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+    }
 
     /**
      * Post the specified photo to a blog.
@@ -54,16 +90,41 @@ public abstract class BlogsInterface {
     }
 
     /**
-     * Post the specified photo to a blog.  Note that the Photo.title and Photo.description are used for the blog entry
-     * title and body respectively.
+     * Get the collection of configured blogs for the calling user.
      *
-     * @param photo The photo metadata
-     * @param blogId The blog ID
-     * @param blogPassword The blog password
+     * @return The Collection of configured blogs
      * @throws IOException
      * @throws SAXException
-     * @throws FlickrException
      */
-    public abstract void postPhoto(Photo photo, String blogId, String blogPassword) throws IOException, SAXException,
-            FlickrException;
+    public Collection getList() throws IOException, SAXException, FlickrException {
+        List blogs = new ArrayList();
+        
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_LIST));
+        parameters.add(new Parameter("api_key", apiKey));
+        
+        RequestContext requestContext = RequestContext.getRequestContext();
+        Authentication auth = requestContext.getAuthentication();
+        if (auth != null) {
+            parameters.addAll(auth.getAsParameters());
+        }
+        
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } 
+        
+        Element blogsElement = response.getPayload();
+        NodeList blogNodes = blogsElement.getElementsByTagName("blog");
+        for (int i = 0; i < blogNodes.getLength(); i++) {
+            Element blogElement = (Element) blogNodes.item(i);
+            Blog blog = new Blog();
+            blog.setId(blogElement.getAttribute("id"));
+            blog.setName(blogElement.getAttribute("name"));
+            blog.setNeedPassword("1".equals(blogElement.getAttribute("needspassword")));
+            blog.setUrl(blogElement.getAttribute("url"));
+            blogs.add(blog);
+        }
+        return blogs;
+    }
 }
