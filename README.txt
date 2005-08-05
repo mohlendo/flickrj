@@ -1,7 +1,8 @@
 This is a Java API which wraps the REST-based Flickr API
 (information available at http://www.flickr.com/services/api/).
 
-This API has been tested with JDK 1.4.
+This API has been tested with JDK 1.4 and JDK 1.5. The default
+distribution is build with JDK 1.5.
 
 Please note: this library is not thread safe.
 

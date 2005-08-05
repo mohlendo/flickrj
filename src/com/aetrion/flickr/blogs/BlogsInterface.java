@@ -30,7 +30,6 @@ public class BlogsInterface {
     private String apiKey;
     private Transport transportAPI;
 
-
     public BlogsInterface(String apiKey, Transport transport) {
         this.apiKey = apiKey;
         this.transportAPI = transport;

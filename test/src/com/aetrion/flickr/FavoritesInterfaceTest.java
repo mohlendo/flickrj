@@ -14,6 +14,8 @@ import com.aetrion.flickr.favorites.FavoritesInterface;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.util.IOUtilities;
+import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.auth.Auth;
 import junit.framework.TestCase;
 import org.xml.sax.SAXException;
 
@@ -23,9 +25,8 @@ import org.xml.sax.SAXException;
 public class FavoritesInterfaceTest extends TestCase {
 
     Flickr flickr = null;
-    Authentication auth = null;
 
-    public void setUp() throws ParserConfigurationException, IOException {
+    public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -37,26 +38,25 @@ public class FavoritesInterfaceTest extends TestCase {
 
             flickr = new Flickr(properties.getProperty("apiKey"), rest);
 
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
+            RequestContext requestContext = RequestContext.getRequestContext();
+            requestContext.setSharedSecret(properties.getProperty("secret"));
+
+            AuthInterface authInterface = flickr.getAuthInterface();
+            Auth auth = authInterface.checkToken(properties.getProperty("token"));
+            requestContext.setAuth(auth);
         } finally {
             IOUtilities.close(in);
         }
     }
 
     public void testGetList() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         FavoritesInterface iface = flickr.getFavoritesInterface();
-        Collection favorites = iface.getList(null, 0, 0);
+        Collection favorites = iface.getList(null, 0, 0, null);
         assertNotNull(favorites);
         assertEquals(1, favorites.size());
     }
 
     public void testGetListWithExtras() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         String[] extras = Extras.ALL;
         FavoritesInterface iface = flickr.getFavoritesInterface();
         Collection favorites = iface.getList(null, 0, 0, extras);
@@ -66,25 +66,23 @@ public class FavoritesInterfaceTest extends TestCase {
 
     public void testGetPublicList() throws FlickrException, IOException, SAXException {
         FavoritesInterface iface = flickr.getFavoritesInterface();
-        Collection favorites = iface.getPublicList("77348956@N00", 0, 0);
+        Collection favorites = iface.getPublicList("77348956@N00", 0, 0, null);
         assertNotNull(favorites);
         assertEquals(1, favorites.size());
     }
 
     public void testAddAndRemove() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         String photoId = "2153378";
         FavoritesInterface iface = flickr.getFavoritesInterface();
         iface.add(photoId);
 
         Photo foundPhoto = null;
-        Iterator favorites = iface.getList(null, 0, 0).iterator();
-        FIND_LOOP: while (favorites.hasNext()) {
+        Iterator favorites = iface.getList(null, 0, 0, null).iterator();
+        while (favorites.hasNext()) {
             Photo photo = (Photo) favorites.next();
             if (photo.getId().equals(photoId)) {
                 foundPhoto = photo;
-                break FIND_LOOP;
+                break;
             }
         }
         assertNotNull(foundPhoto);

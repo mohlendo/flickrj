@@ -150,7 +150,7 @@ public class Flickr {
 
     public FavoritesInterface getFavoritesInterface() {
         if (favoritesInterface == null) {
-            favoritesInterface = FavoritesInterface.getInterface(apiKey, transport);
+            favoritesInterface = new FavoritesInterface(apiKey, transport);
         }
         return favoritesInterface;
     }
