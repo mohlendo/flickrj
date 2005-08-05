@@ -11,6 +11,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.blogs.BlogsInterface;
 import com.aetrion.flickr.util.IOUtilities;
+import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.auth.Auth;
 import junit.framework.TestCase;
 import org.xml.sax.SAXException;
 
@@ -20,9 +22,8 @@ import org.xml.sax.SAXException;
 public class BlogsInterfaceTest extends TestCase {
 
     Flickr flickr = null;
-    Authentication auth = null;
 
-    public void setUp() throws ParserConfigurationException, IOException {
+    public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -34,17 +35,18 @@ public class BlogsInterfaceTest extends TestCase {
 
             flickr = new Flickr(properties.getProperty("apiKey"), rest);
 
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
+            RequestContext requestContext = RequestContext.getRequestContext();
+            requestContext.setSharedSecret(properties.getProperty("secret"));
+
+            AuthInterface authInterface = flickr.getAuthInterface();
+            Auth auth = authInterface.checkToken(properties.getProperty("token"));
+            requestContext.setAuth(auth);
         } finally {
             IOUtilities.close(in);
         }
     }
 
     public void testGetList() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         BlogsInterface blogsInterface = flickr.getBlogsInterface();
         Collection blogs = blogsInterface.getList();
         assertNotNull(blogs);
@@ -52,8 +54,7 @@ public class BlogsInterfaceTest extends TestCase {
     }
 
     public void testPostImage() {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
+        // TODO: implement this test
     }
 
 }
