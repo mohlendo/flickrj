@@ -112,6 +112,7 @@ public class GroupsInterfaceREST extends GroupsInterface{
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
+     * @deprecated To be removed from the Flickr API
      */
     public Collection getActiveList() throws IOException, SAXException, FlickrException {
         List groups = new ArrayList();

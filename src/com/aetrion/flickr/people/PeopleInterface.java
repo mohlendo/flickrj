@@ -76,6 +76,7 @@ public abstract class PeopleInterface {
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
+     * @deprecated To be removed from the Flickr API
      */
     public abstract Collection getOnlineList() throws IOException, SAXException, FlickrException;
     

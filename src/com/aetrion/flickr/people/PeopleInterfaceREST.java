@@ -156,6 +156,7 @@ public class PeopleInterfaceREST extends PeopleInterface{
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
+     * @deprecated To be removed from the Flickr API
      */
     public Collection getOnlineList() throws IOException, SAXException, FlickrException {
         List online = new ArrayList();

@@ -51,6 +51,7 @@ public abstract class GroupsInterface {
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
+     * @deprecated To be removed from the Flickr API
      */
     public abstract Collection getActiveList() throws IOException, SAXException, FlickrException;
 
