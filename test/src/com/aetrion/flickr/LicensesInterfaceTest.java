@@ -15,6 +15,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.aetrion.flickr.photos.licenses.LicensesInterface;
 import com.aetrion.flickr.photos.licenses.License;
 import com.aetrion.flickr.util.IOUtilities;
+import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.auth.Auth;
 import junit.framework.TestCase;
 import org.xml.sax.SAXException;
 
@@ -24,9 +26,8 @@ import org.xml.sax.SAXException;
 public class LicensesInterfaceTest extends TestCase {
 
     Flickr flickr = null;
-    Authentication auth = null;
 
-    public void setUp() throws ParserConfigurationException, IOException {
+    public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
         Flickr.debugStream = true;
         InputStream in = null;
         try {
@@ -39,17 +40,18 @@ public class LicensesInterfaceTest extends TestCase {
 
             flickr = new Flickr(properties.getProperty("apiKey"), rest);
 
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
+            RequestContext requestContext = RequestContext.getRequestContext();
+            requestContext.setSharedSecret(properties.getProperty("secret"));
+
+            AuthInterface authInterface = flickr.getAuthInterface();
+            Auth auth = authInterface.checkToken(properties.getProperty("token"));
+            requestContext.setAuth(auth);
         } finally {
             IOUtilities.close(in);
         }
     }
 
     public void testGetInfo() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         LicensesInterface iface = flickr.getLicensesInterface();
         Collection licenses = iface.getInfo();
         assertNotNull(licenses);

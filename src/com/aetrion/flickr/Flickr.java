@@ -164,7 +164,7 @@ public class Flickr {
 
     public LicensesInterface getLicensesInterface() {
         if (licensesInterface == null) {
-            licensesInterface = LicensesInterface.getInterface(apiKey, transport);
+            licensesInterface = new LicensesInterface(apiKey, transport);
         }
         return licensesInterface;
     }
