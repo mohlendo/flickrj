@@ -178,7 +178,7 @@ public class Flickr {
 
     public PeopleInterface getPeopleInterface() {
         if (peopleInterface == null) {
-            peopleInterface = PeopleInterface.getInterface(apiKey, transport);
+            peopleInterface = new PeopleInterface(apiKey, transport);
         }
         return peopleInterface;
     }

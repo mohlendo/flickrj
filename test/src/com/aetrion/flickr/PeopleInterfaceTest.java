@@ -12,6 +12,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.util.IOUtilities;
+import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.auth.Auth;
 import junit.framework.TestCase;
 import org.xml.sax.SAXException;
 
@@ -21,10 +23,9 @@ import org.xml.sax.SAXException;
 public class PeopleInterfaceTest extends TestCase {
 
     Flickr flickr = null;
-    Authentication auth = null;
     Properties properties = null;
 
-    public void setUp() throws ParserConfigurationException, IOException {
+    public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
         Flickr.debugStream = true;
 
         InputStream in = null;
@@ -38,9 +39,12 @@ public class PeopleInterfaceTest extends TestCase {
 
             flickr = new Flickr(properties.getProperty("apiKey"), rest);
 
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
+            RequestContext requestContext = RequestContext.getRequestContext();
+            requestContext.setSharedSecret(properties.getProperty("secret"));
+
+            AuthInterface authInterface = flickr.getAuthInterface();
+            Auth auth = authInterface.checkToken(properties.getProperty("token"));
+            requestContext.setAuth(auth);
         } finally {
             IOUtilities.close(in);
         }
@@ -68,12 +72,6 @@ public class PeopleInterfaceTest extends TestCase {
         assertNotNull(person);
         assertEquals(properties.getProperty("nsid"), person.getId());
         assertEquals(properties.getProperty("username"), person.getUsername());
-    }
-
-    public void testGetOnlineList() throws FlickrException, IOException, SAXException {
-        PeopleInterface iface = flickr.getPeopleInterface();
-        Collection onlineList = iface.getOnlineList();
-        assertNotNull(onlineList);
     }
 
     public void testGetPublicGroups() throws FlickrException, IOException, SAXException {
