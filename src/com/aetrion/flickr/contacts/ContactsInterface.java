@@ -4,30 +4,36 @@
 package com.aetrion.flickr.contacts;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-
-import org.xml.sax.SAXException;
+import java.util.List;
 
 import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.REST;
+import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.util.XMLUtilities;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
- * Interface for working with Flickr contacts.
+ * REST Interface for working with Flickr contacts.
  *
  * @author Anthony Eden
  */
-public abstract class ContactsInterface {
+public class ContactsInterface {
 
     public static final String METHOD_GET_LIST = "flickr.contacts.getList";
     public static final String METHOD_GET_PUBLIC_LIST = "flickr.contacts.getPublicList";
 
-    public static ContactsInterface getInterface(String apiKey, Transport transport) {
-        if (transport.getTransportType().equals(Transport.REST)) {
-            return new ContactsInterfaceREST(apiKey, (REST)transport);
-        }
-        //put the SOAP version here
-        return null;
+
+    private String apiKey;
+    private Transport transportAPI;
+
+    public ContactsInterface(String apiKey, Transport transportAPI) {
+        this.apiKey = apiKey;
+        this.transportAPI = transportAPI;
     }
 
     /**
@@ -37,7 +43,38 @@ public abstract class ContactsInterface {
      * @throws IOException
      * @throws SAXException
      */
-    public abstract Collection getList() throws IOException, SAXException, FlickrException;
+    public Collection getList() throws IOException, SAXException, FlickrException {
+        List contacts = new ArrayList();
+
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_LIST));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        RESTResponse response = (RESTResponse) transportAPI.get("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+
+        Element contactsElement = response.getPayload();
+        NodeList contactNodes = contactsElement.getElementsByTagName("contact");
+        for (int i = 0; i < contactNodes.getLength(); i++) {
+            Element contactElement = (Element) contactNodes.item(i);
+            Contact contact = new Contact();
+            contact.setId(contactElement.getAttribute("nsid"));
+            contact.setUsername(contactElement.getAttribute("username"));
+            contact.setRealName(contactElement.getAttribute("realname"));
+            contact.setFriend("1".equals(contactElement.getAttribute("friend")));
+            contact.setFamily("1".equals(contactElement.getAttribute("family")));
+            contact.setIgnored("1".equals(contactElement.getAttribute("ignored")));
+            contact.setOnline(OnlineStatus.fromType(contactElement.getAttribute("online")));
+            if (contact.getOnline() == OnlineStatus.AWAY) {
+                contactElement.normalize();
+                contact.setAwayMessage(XMLUtilities.getValue(contactElement));
+            }
+            contacts.add(contact);
+        }
+        return contacts;
+    }
 
     /**
      * Get the collection of public contacts for the specified user ID.
@@ -48,6 +85,36 @@ public abstract class ContactsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public abstract Collection getPublicList(String userId) throws IOException, SAXException, FlickrException;
+    public Collection getPublicList(String userId) throws IOException, SAXException, FlickrException {
+        List contacts = new ArrayList();
+
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_PUBLIC_LIST));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("user_id", userId));
+
+        RESTResponse response = (RESTResponse) transportAPI.get("/services/rest/", parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+
+        Element contactsElement = response.getPayload();
+        NodeList contactNodes = contactsElement.getElementsByTagName("contact");
+        for (int i = 0; i < contactNodes.getLength(); i++) {
+            Element contactElement = (Element) contactNodes.item(i);
+            Contact contact = new Contact();
+            contact.setId(contactElement.getAttribute("nsid"));
+            contact.setUsername(contactElement.getAttribute("username"));
+            contact.setIgnored("1".equals(contactElement.getAttribute("ignored")));
+            contact.setOnline(OnlineStatus.fromType(contactElement.getAttribute("online")));
+            if (contact.getOnline() == OnlineStatus.AWAY) {
+                contactElement.normalize();
+                contact.setAwayMessage(XMLUtilities.getValue(contactElement));
+            }
+            contacts.add(contact);
+        }
+        return contacts;
+    }
 
 }

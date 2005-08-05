@@ -45,3 +45,8 @@ Release 1.0a8 (May 21, 2005):
  - Added note about lack of thread safety in the README
  - Added PhotoList class which is returned from PhotosInterface.search() and which
    contains additional metadata about the search results.
+
+Release 1.0a9:
+ - Added SOAP implementation (courtesy of Matthew Ray)
+ - Added new authentication API implementation
+ - Deprecated methods which are being removed from the Flickr API

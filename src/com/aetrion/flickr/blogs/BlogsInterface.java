@@ -8,17 +8,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.photos.Photo;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Interface for working with Flickr blog configurations.
@@ -33,7 +30,7 @@ public class BlogsInterface {
     private String apiKey;
     private Transport transportAPI;
 
-    
+
     public BlogsInterface(String apiKey, Transport transport) {
         this.apiKey = apiKey;
         this.transportAPI = transport;
@@ -51,17 +48,12 @@ public class BlogsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public void postPhoto(Photo photo, String blogId, String blogPassword) throws IOException, SAXException, FlickrException {
+    public void postPhoto(Photo photo, String blogId, String blogPassword)
+            throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_POST_PHOTO));
         parameters.add(new Parameter("api_key", apiKey));
-        
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
+
         parameters.add(new Parameter("blog_id", blogId));
         parameters.add(new Parameter("photo_id", photo.getId()));
         parameters.add(new Parameter("title", photo.getTitle()));
@@ -69,7 +61,7 @@ public class BlogsInterface {
         if (blogPassword != null) {
             parameters.add(new Parameter("blog_password", blogPassword));
         }
-        
+
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -98,22 +90,16 @@ public class BlogsInterface {
      */
     public Collection getList() throws IOException, SAXException, FlickrException {
         List blogs = new ArrayList();
-        
+
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
-        
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
+
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } 
-        
+        }
+
         Element blogsElement = response.getPayload();
         NodeList blogNodes = blogsElement.getElementsByTagName("blog");
         for (int i = 0; i < blogNodes.getLength(); i++) {

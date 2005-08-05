@@ -9,7 +9,6 @@ import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.aetrion.flickr.contacts.ContactsInterface;
 import com.aetrion.flickr.util.IOUtilities;
 import junit.framework.TestCase;
 import org.xml.sax.SAXException;
