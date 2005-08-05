@@ -93,7 +93,7 @@ public class FavoritesInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        RESTResponse response = (RESTResponse) transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -153,7 +153,7 @@ public class FavoritesInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        RESTResponse response = (RESTResponse) transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

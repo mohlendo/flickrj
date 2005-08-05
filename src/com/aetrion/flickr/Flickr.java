@@ -157,7 +157,7 @@ public class Flickr {
 
     public GroupsInterface getGroupsInterface() {
         if (groupsInterface == null) {
-            groupsInterface = GroupsInterface.getInterface(apiKey, transport);
+            groupsInterface = new GroupsInterface(apiKey, transport);
         }
         return groupsInterface;
     }

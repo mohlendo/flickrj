@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.RESTResponse;
+import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
@@ -50,7 +50,7 @@ public class ContactsInterface {
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
 
-        RESTResponse response = (RESTResponse) transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -94,7 +94,7 @@ public class ContactsInterface {
 
         parameters.add(new Parameter("user_id", userId));
 
-        RESTResponse response = (RESTResponse) transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get("/services/rest/", parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

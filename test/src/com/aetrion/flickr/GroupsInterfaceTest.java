@@ -13,6 +13,8 @@ import com.aetrion.flickr.groups.Category;
 import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.groups.GroupsInterface;
 import com.aetrion.flickr.util.IOUtilities;
+import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.auth.Auth;
 import junit.framework.TestCase;
 import org.xml.sax.SAXException;
 
@@ -22,9 +24,8 @@ import org.xml.sax.SAXException;
 public class GroupsInterfaceTest extends TestCase {
 
     Flickr flickr = null;
-    Authentication auth = null;
 
-    public void setUp() throws ParserConfigurationException, IOException {
+    public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
         Flickr.debugStream = true;
 
         InputStream in = null;
@@ -38,17 +39,18 @@ public class GroupsInterfaceTest extends TestCase {
 
             flickr = new Flickr(properties.getProperty("apiKey"), rest);
 
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
+            RequestContext requestContext = RequestContext.getRequestContext();
+            requestContext.setSharedSecret(properties.getProperty("secret"));
+
+            AuthInterface authInterface = flickr.getAuthInterface();
+            Auth auth = authInterface.checkToken(properties.getProperty("token"));
+            requestContext.setAuth(auth);
         } finally {
             IOUtilities.close(in);
         }
     }
 
     public void testBrowse() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         GroupsInterface iface = flickr.getGroupsInterface();
         Category cat = iface.browse(null);
         assertNotNull(cat);
@@ -77,8 +79,6 @@ public class GroupsInterfaceTest extends TestCase {
     }
 
     public void testBrowseWithId() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         GroupsInterface iface = flickr.getGroupsInterface();
         Category cat = iface.browse("68"); // browse the Flickr category
         assertNotNull(cat);
@@ -94,17 +94,7 @@ public class GroupsInterfaceTest extends TestCase {
 //        System.out.println("category name: " + cat.getName());
     }
 
-    public void testGetActiveList() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
-        GroupsInterface iface = flickr.getGroupsInterface();
-        Collection groups = iface.getActiveList();
-        assertNotNull(groups);
-    }
-
     public void testGetInfo() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         GroupsInterface iface = flickr.getGroupsInterface();
         Group group = iface.getInfo("34427469792@N01");
         assertNotNull(group);
