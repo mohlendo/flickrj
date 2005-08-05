@@ -57,9 +57,11 @@ public class UrlUtilities {
 
         RequestContext requestContext = RequestContext.getRequestContext();
         Auth auth = requestContext.getAuth();
-        if (auth != null) {
-            buffer.append("&auth_token=" + auth.getToken());
-            buffer.append("&auth_sig=" + AuthUtilities.getSignature(parameters));
+        if (auth != null && !ignoreMethod(getMethod(parameters))) {
+            buffer.append("&auth_token=");
+            buffer.append(auth.getToken());
+            buffer.append("&auth_sig=");
+            buffer.append(AuthUtilities.getSignature(parameters));
         }
 
         return new URL(buffer.toString());
@@ -78,6 +80,26 @@ public class UrlUtilities {
         }
         buffer.append(path);
         return new URL(buffer.toString());
+    }
+
+    private static String getMethod(List parameters) {
+        Iterator iter = parameters.iterator();
+        while (iter.hasNext()) {
+            Parameter parameter = (Parameter) iter.next();
+            if ("method".equals(parameter.getName())) {
+                return String.valueOf(parameter.getValue());
+            }
+        }
+        return null;
+    }
+
+    private static boolean ignoreMethod(String method) {
+        if (method != null) {
+            if ("flickr.auth.checkToken".equals(method)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

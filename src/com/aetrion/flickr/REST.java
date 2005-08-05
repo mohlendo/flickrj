@@ -8,17 +8,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.aetrion.flickr.util.IOUtilities;
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.util.DebugInputStream;
+import com.aetrion.flickr.util.IOUtilities;
 import com.aetrion.flickr.util.UrlUtilities;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
 public class REST extends Transport {
 
     public static final String PATH = "/services/rest/";
-    
+
     private DocumentBuilder builder;
 
     /**
@@ -118,7 +118,8 @@ public class REST extends Transport {
      * @throws IOException
      * @throws SAXException
      */
-    public Response post(String path, Collection parameters, boolean multipart) throws IOException, SAXException {
+    public Response post(String path, List parameters, boolean multipart) throws IOException, SAXException {
+        RequestContext requestContext = RequestContext.getRequestContext();
         URL url = UrlUtilities.buildPostUrl(getHost(), getPort(), path);
 
         HttpURLConnection conn = null;
@@ -145,6 +146,12 @@ public class REST extends Transport {
                     while (iter.hasNext()) {
                         Parameter p = (Parameter) iter.next();
                         writeParam(p.getName(), p.getValue(), out, boundary);
+
+                        Auth auth = requestContext.getAuth();
+                        if (auth != null) {
+                            writeParam("auth_token", auth.getToken(), out, boundary);
+                            writeParam("auth_sig", AuthUtilities.getSignature(parameters), out, boundary);
+                        }
                     }
                 } else {
                     Iterator iter = parameters.iterator();
@@ -154,6 +161,14 @@ public class REST extends Transport {
                         out.writeBytes("=");
                         out.writeBytes(String.valueOf(p.getValue()));
                         if (iter.hasNext()) out.writeBytes("&");
+                    }
+
+                    Auth auth = requestContext.getAuth();
+                    if (auth != null) {
+                        out.writeBytes("&auth_token=");
+                        out.writeBytes(auth.getToken());
+                        out.writeBytes("&auth_sig=");
+                        out.writeBytes(AuthUtilities.getSignature(parameters));
                     }
                 }
                 out.flush();

@@ -4,7 +4,6 @@
 package com.aetrion.flickr;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import org.xml.sax.SAXException;
@@ -72,7 +71,7 @@ public abstract class Transport {
      * @throws IOException
      * @throws SAXException
      */
-    public Response post(String path, Collection parameters) throws IOException, SAXException {
+    public Response post(String path, List parameters) throws IOException, SAXException {
         return post(path, parameters, false);
     }
 
@@ -80,13 +79,13 @@ public abstract class Transport {
      * Invoke an HTTP POST request on a remote host.
      *
      * @param path The request path
-     * @param parameters The parameters (collection of Parameter objects)
+     * @param parameters The parameters (List of Parameter objects)
      * @param multipart Use multipart
      * @return The Response object
      * @throws IOException
      * @throws SAXException
      */
-    public abstract Response post(String path, Collection parameters, boolean multipart) throws IOException,
+    public abstract Response post(String path, List parameters, boolean multipart) throws IOException,
             SAXException;
 
     /**
