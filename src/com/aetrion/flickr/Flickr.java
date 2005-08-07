@@ -129,7 +129,7 @@ public class Flickr {
      */
     public AuthInterface getAuthInterface() {
         if (authInterface == null) {
-            authInterface = AuthInterface.getInterface(apiKey, transport);
+            authInterface = new AuthInterface(apiKey, transport);
         }
         return authInterface;
     }
@@ -185,21 +185,21 @@ public class Flickr {
 
     public PhotosInterface getPhotosInterface() {
         if (photosInterface == null) {
-            photosInterface = PhotosInterface.getInterface(apiKey, transport);
+            photosInterface = new PhotosInterface(apiKey, transport);
         }
         return photosInterface;
     }
 
     public PhotosetsInterface getPhotosetsInterface() {
         if (photosetsInterface == null) {
-            photosetsInterface = PhotosetsInterface.getInterface(apiKey, transport);
+            photosetsInterface = new PhotosetsInterface(apiKey, transport);
         }
         return photosetsInterface;
     }
 
     public ReflectionInterface getReflectionInterface() {
         if (reflectionInterface == null) {
-            reflectionInterface = ReflectionInterface.getInterface(apiKey, transport);
+            reflectionInterface = new ReflectionInterface(apiKey, transport);
         }
         return reflectionInterface;
     }
@@ -211,7 +211,7 @@ public class Flickr {
      */
     public TagsInterface getTagsInterface() {
         if (tagsInterface == null) {
-            tagsInterface = TagsInterface.getInterface(apiKey, transport);
+            tagsInterface = new TagsInterface(apiKey, transport);
         }
         return tagsInterface;
     }
@@ -225,7 +225,7 @@ public class Flickr {
 
     public UrlsInterface getUrlsInterface() {
         if (urlsInterface == null) {
-            urlsInterface = UrlsInterface.getInterface(apiKey, transport);
+            urlsInterface = new UrlsInterface(apiKey, transport);
         }
         return urlsInterface;
     }
