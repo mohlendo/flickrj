@@ -27,11 +27,11 @@ public class LicensesInterface {
     public static final String METHOD_GET_INFO = "flickr.photos.licenses.getInfo";
 
     private String apiKey;
-    private Transport transport;
+    private Transport transportAPI;
 
     public LicensesInterface(String apiKey, Transport transport) {
         this.apiKey = apiKey;
-        this.transport = transport;
+        this.transportAPI = transport;
     }
 
     /**
@@ -44,7 +44,7 @@ public class LicensesInterface {
         parameters.add(new Parameter("method", METHOD_GET_INFO));
         parameters.add(new Parameter("api_key", apiKey));
 
-        Response response = transport.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

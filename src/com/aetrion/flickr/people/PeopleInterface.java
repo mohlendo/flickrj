@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
+
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
@@ -16,10 +21,6 @@ import com.aetrion.flickr.contacts.OnlineStatus;
 import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.util.XMLUtilities;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
 /**
  * Interface for finding Flickr users.
@@ -60,7 +61,7 @@ public class PeopleInterface {
 
         parameters.add(new Parameter("find_email", email));
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -87,7 +88,7 @@ public class PeopleInterface {
 
         parameters.add(new Parameter("username", username));
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -114,7 +115,7 @@ public class PeopleInterface {
 
         parameters.add(new Parameter("user_id", userId));
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -152,7 +153,7 @@ public class PeopleInterface {
         parameters.add(new Parameter("method", METHOD_GET_ONLINE_LIST));
         parameters.add(new Parameter("api_key", apiKey));
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -192,7 +193,7 @@ public class PeopleInterface {
 
         parameters.add(new Parameter("user_id", userId));
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -239,7 +240,7 @@ public class PeopleInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -281,7 +282,7 @@ public class PeopleInterface {
         parameters.add(new Parameter("method", METHOD_GET_PUBLIC_PHOTOS));
         parameters.add(new Parameter("api_key", apiKey));
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

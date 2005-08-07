@@ -15,9 +15,9 @@ import org.xml.sax.SAXException;
 import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.Response;
+import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.photos.Note;
 
 /**
@@ -30,11 +30,11 @@ public class NotesInterface {
     public static final String METHOD_EDIT = "flickr.photos.notes.edit";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport transportAPI;
 
-    public NotesInterface(String apiKey, REST restInterface) {
+    public NotesInterface(String apiKey, Transport transport) {
         this.apiKey = apiKey;
-        this.restInterface = restInterface;
+        this.transportAPI = transport;
     }
 
     /**
@@ -68,7 +68,7 @@ public class NotesInterface {
             parameters.add(new Parameter("note_text", text));
         }
 
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -99,7 +99,7 @@ public class NotesInterface {
 
         parameters.add(new Parameter("note_id", noteId));
 
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -137,7 +137,7 @@ public class NotesInterface {
             parameters.add(new Parameter("note_text", text));
         }
 
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

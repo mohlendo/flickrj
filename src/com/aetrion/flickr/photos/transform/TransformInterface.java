@@ -4,17 +4,18 @@
 
 package com.aetrion.flickr.photos.transform;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.aetrion.flickr.REST;
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Authentication;
+import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.Authentication;
-import com.aetrion.flickr.RESTResponse;
-import com.aetrion.flickr.FlickrException;
-import org.xml.sax.SAXException;
+import com.aetrion.flickr.Response;
+import com.aetrion.flickr.Transport;
 
 /**
  * @author Anthony Eden
@@ -24,11 +25,11 @@ public class TransformInterface {
     public static final String METHOD_ROTATE = "flickr.photos.transform.rotate";
 
     private String apiKey;
-    private REST restInterface;
+    private Transport transportAPI;
 
-    public TransformInterface(String apiKey, REST restInterface) {
+    public TransformInterface(String apiKey, Transport transport) {
         this.apiKey = apiKey;
-        this.restInterface = restInterface;
+        this.transportAPI = transport;
     }
 
     /**
@@ -51,7 +52,7 @@ public class TransformInterface {
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("degrees", String.valueOf(degrees)));
 
-        RESTResponse response = (RESTResponse) restInterface.post("/services/rest/", parameters);
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

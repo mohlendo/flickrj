@@ -18,7 +18,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * REST Interface for working with Flickr contacts.
+ * Interface for working with Flickr contacts.
  *
  * @author Anthony Eden
  */
@@ -26,7 +26,6 @@ public class ContactsInterface {
 
     public static final String METHOD_GET_LIST = "flickr.contacts.getList";
     public static final String METHOD_GET_PUBLIC_LIST = "flickr.contacts.getPublicList";
-
 
     private String apiKey;
     private Transport transportAPI;
@@ -50,7 +49,7 @@ public class ContactsInterface {
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -94,7 +93,7 @@ public class ContactsInterface {
 
         parameters.add(new Parameter("user_id", userId));
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

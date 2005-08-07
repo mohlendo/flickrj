@@ -59,7 +59,7 @@ public class GroupsInterface {
             parameters.add(new Parameter("cat_id", catId));
         }
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -117,7 +117,7 @@ public class GroupsInterface {
         parameters.add(new Parameter("method", METHOD_GET_ACTIVE_LIST));
         parameters.add(new Parameter("api_key", apiKey));
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -151,7 +151,7 @@ public class GroupsInterface {
 
         parameters.add(new Parameter("group_id", groupId));
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -196,7 +196,7 @@ public class GroupsInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
