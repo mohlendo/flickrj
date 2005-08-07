@@ -56,7 +56,7 @@ public class PoolsInterface {
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("group_id", groupId));
 
-        Response response = transport.post("/services/rest/", parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -80,7 +80,7 @@ public class PoolsInterface {
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("group_id", groupId));
 
-        Response response = transport.get("/services/rest/", parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -120,7 +120,7 @@ public class PoolsInterface {
         parameters.add(new Parameter("method", METHOD_GET_GROUPS));
         parameters.add(new Parameter("api_key", apiKey));
 
-        Response response = (Response) transport.get("/services/rest/", parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -170,7 +170,7 @@ public class PoolsInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        Response response = transport.get("/services/rest/", parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -215,7 +215,7 @@ public class PoolsInterface {
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("group_id", groupId));
 
-        Response response = transport.post("/services/rest/", parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

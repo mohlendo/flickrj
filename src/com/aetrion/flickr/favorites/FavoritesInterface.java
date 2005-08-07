@@ -8,17 +8,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.RESTResponse;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.util.StringUtilities;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Interface for working with Flickr favorites.
@@ -55,7 +55,7 @@ public class FavoritesInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
 
-        Response response = transportAPI.post("/services/rest/", parameters);
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -93,7 +93,7 @@ public class FavoritesInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -153,7 +153,7 @@ public class FavoritesInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
-        Response response = transportAPI.get("/services/rest/", parameters);
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -200,7 +200,7 @@ public class FavoritesInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
 
-        Response response = transportAPI.post("/services/rest/", parameters);
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

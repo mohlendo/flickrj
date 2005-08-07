@@ -4,11 +4,16 @@
 package com.aetrion.flickr.urls;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.REST;
+import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 
 /**
@@ -16,7 +21,7 @@ import com.aetrion.flickr.Transport;
  *
  * @author Anthony Eden
  */
-public abstract class UrlsInterface {
+public class UrlsInterface {
 
     public static final String METHOD_GET_GROUP = "flickr.urls.getGroup";
     public static final String METHOD_GET_USER_PHOTOS = "flickr.urls.getUserPhotos";
@@ -24,14 +29,20 @@ public abstract class UrlsInterface {
     public static final String METHOD_LOOKUP_GROUP = "flickr.urls.lookupGroup";
     public static final String METHOD_LOOKUP_USER = "flickr.urls.lookupUser";
 
-    public static UrlsInterface getInterface(String apiKey, Transport transport) {
-        if (transport.getTransportType().equals(Transport.REST)) {
-            return new UrlsInterfaceREST(apiKey, (REST)transport);
-        }
-        //put the SOAP version here
-        return null;
+    private String apiKey;
+    private Transport transportAPI;
+    
+    /**
+     * Construct a UrlsInterface.
+     *
+     * @param apiKey The API key
+     * @param transportAPI The Transport interface
+     */
+    public UrlsInterface(String apiKey, Transport transport) {
+        this.apiKey = apiKey;
+        this.transportAPI = transport;
     }
-
+    
     /**
      * Get the group URL for the specified group ID
      *
@@ -41,8 +52,22 @@ public abstract class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public abstract String getGroup(String groupId) throws IOException, SAXException, FlickrException;
-
+    public String getGroup(String groupId) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_GROUP));
+        parameters.add(new Parameter("api_key", apiKey));
+        
+        parameters.add(new Parameter("group_id", groupId));
+        
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } 
+        
+        Element payload = response.getPayload();
+        return payload.getAttribute("url");
+    }
+    
     /**
      * Get the URL for the user's photos.
      *
@@ -52,8 +77,22 @@ public abstract class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public abstract String getUserPhotos(String userId) throws IOException, SAXException, FlickrException;
-
+    public String getUserPhotos(String userId) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_USER_PHOTOS));
+        parameters.add(new Parameter("api_key", apiKey));
+        
+        parameters.add(new Parameter("user_id", userId));
+        
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } 
+        
+        Element payload = response.getPayload();
+        return payload.getAttribute("url");
+    }
+    
     /**
      * Get the URL for the user's profile.
      *
@@ -63,8 +102,22 @@ public abstract class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public abstract String getUserProfile(String userId) throws IOException, SAXException, FlickrException;
-
+    public String getUserProfile(String userId) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_USER_PROFILE));
+        parameters.add(new Parameter("api_key", apiKey));
+        
+        parameters.add(new Parameter("user_id", userId));
+        
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } 
+        
+        Element payload = response.getPayload();
+        return payload.getAttribute("url");
+    }
+    
     /**
      * Lookup the group name for the specified URL.
      *
@@ -74,8 +127,23 @@ public abstract class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public abstract String lookupGroup(String url) throws IOException, SAXException, FlickrException;
-
+    public String lookupGroup(String url) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_LOOKUP_GROUP));
+        parameters.add(new Parameter("api_key", apiKey));
+        
+        parameters.add(new Parameter("url", url));
+        
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } 
+        
+        Element payload = response.getPayload();
+        Element groupnameElement = (Element) payload.getElementsByTagName("groupname").item(0);
+        return (((Text)groupnameElement.getFirstChild()).getData()).toString();
+    }
+    
     /**
      * Lookup the username for the specified User URL.
      *
@@ -85,6 +153,21 @@ public abstract class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public abstract String lookupUser(String url) throws IOException, SAXException, FlickrException;
+    public String lookupUser(String url) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_LOOKUP_USER));
+        parameters.add(new Parameter("api_key", apiKey));
+        
+        parameters.add(new Parameter("url", url));
+        
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } 
+        
+        Element payload = response.getPayload();
+        Element groupnameElement = (Element) payload.getElementsByTagName("username").item(0);
+        return (((Text)groupnameElement.getFirstChild()).getData()).toString();
+    }
 
 }

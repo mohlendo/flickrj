@@ -13,40 +13,42 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
-import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.util.StringUtilities;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
  */
 public class Uploader {
 
-    private REST restInterface;
+    private Transport transport;
 
     /**
      * Construct an Uploader.
      */
     public Uploader() {
         try {
-            this.restInterface = new REST(Flickr.DEFAULT_HOST);
-            this.restInterface.setResponseClass(UploaderResponse.class);
+            this.transport = new REST(Flickr.DEFAULT_HOST);
+            this.transport.setResponseClass(UploaderResponse.class);
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
     /**
-     * Construct an uploader using the specified REST interface.
+     * Construct an uploader using the specified Transport interface.
      *
-     * @param restInterface The REST interface
+     * @param transport The Transport interface
      */
-    public Uploader(REST restInterface) {
-        this.restInterface = restInterface;
-        this.restInterface.setResponseClass(UploaderResponse.class);
+    public Uploader(Transport transport) {
+        this.transport = transport;
+        this.transport.setResponseClass(UploaderResponse.class);
     }
 
     /**
@@ -81,12 +83,11 @@ public class Uploader {
 
         parameters.add(new Parameter("photo", data));
 
-        UploaderResponse response = (UploaderResponse) restInterface.post("/tools/uploader_go.gne", parameters, true);
+        UploaderResponse response = (UploaderResponse) transport.post("/tools/uploader_go.gne", parameters, true);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } else {
-            return response.getPhotoId();
-        }
+        } 
+        return response.getPhotoId();
     }
 
     public String upload(InputStream in, UploadMetaData metaData) throws IOException, FlickrException, SAXException {
