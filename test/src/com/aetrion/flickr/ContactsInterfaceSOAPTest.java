@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Matt Ray
  */
-public class ContactsInterfaceSOApTest extends TestCase {
+public class ContactsInterfaceSOAPTest extends TestCase {
 
     Flickr flickr = null;
     Properties properties = null;
