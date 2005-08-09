@@ -55,11 +55,11 @@ public class PhotosInterface {
     private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     private String apiKey;
-    private Transport transportAPI;
+    private Transport transport;
     
     public PhotosInterface(String apiKey, Transport transport) {
         this.apiKey = apiKey;
-        this.transportAPI = transport;
+        this.transport = transport;
     }
     
     /**
@@ -76,16 +76,10 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_ADD_TAGS));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("tags", StringUtilities.join(tags, " ")));
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -111,12 +105,6 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_GET_CONTACTS_PHOTOS));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         if (count > 0) {
             parameters.add(new Parameter("count", new Integer(count)));
         }
@@ -130,7 +118,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("include_self", "1"));
         }
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -179,12 +167,6 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_GET_CONTACTS_PUBLIC_PHOTOS));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         parameters.add(new Parameter("user_id", userId));
         
         if (count > 0) {
@@ -200,7 +182,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("include_self", "1"));
         }
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -239,15 +221,9 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_GET_CONTEXT));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         parameters.add(new Parameter("photo_id", photoId));
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -294,12 +270,6 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_GET_COUNTS));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         if (dates == null && takenDates == null) {
             throw new IllegalArgumentException("You must provide a value for either dates or takenDates");
         }
@@ -320,7 +290,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("taken_dates", StringUtilities.join(dateList, ",")));
         }
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -352,18 +322,12 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_GET_EXIF));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         parameters.add(new Parameter("photo_id", photoId));
         if (secret != null) {
             parameters.add(new Parameter("secret", secret));
         }
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -398,19 +362,13 @@ public class PhotosInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_INFO));
         parameters.add(new Parameter("api_key", apiKey));
-        
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
+
         parameters.add(new Parameter("photo_id", photoId));
         if (secret != null) {
             parameters.add(new Parameter("secret", secret));
         }
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -507,13 +465,9 @@ public class PhotosInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_RECENT));
         parameters.add(new Parameter("api_key", apiKey));
-        
+
         RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
+
         List extras = requestContext.getExtras();
         if (extras.size() > 0) {
             parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
@@ -526,7 +480,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -565,16 +519,10 @@ public class PhotosInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_PERMS));
         parameters.add(new Parameter("api_key", apiKey));
-        
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
+
         parameters.add(new Parameter("photo_id", photoId));
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -605,12 +553,6 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_GET_RECENT));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         if (perPage > 0) {
             parameters.add(new Parameter("per_page", new Integer(perPage)));
         }
@@ -618,7 +560,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -660,16 +602,10 @@ public class PhotosInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_SIZES));
         parameters.add(new Parameter("api_key", apiKey));
-        
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
+
         parameters.add(new Parameter("photo_id", photoId));
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -706,12 +642,6 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_GET_UNTAGGED));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         if (perPage > 0) {
             parameters.add(new Parameter("per_page", new Integer(perPage)));
         }
@@ -719,7 +649,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -759,15 +689,9 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_REMOVE_TAG));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         parameters.add(new Parameter("tag_id", tagId));
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -791,13 +715,7 @@ public class PhotosInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SEARCH));
         parameters.add(new Parameter("api_key", apiKey));
-        
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
+
         parameters.addAll(params.getAsParameters());
         
         if (perPage > 0) {
@@ -807,7 +725,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
         
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -855,13 +773,7 @@ public class PhotosInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_DATES));
         parameters.add(new Parameter("api_key", apiKey));
-        
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
+
         parameters.add(new Parameter("photo_id", photoId));
         
         if (datePosted != null) {
@@ -876,7 +788,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("date_taken_granularity", dateTakenGranularity));
         }
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -898,17 +810,11 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_SET_META));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("title", title));
         parameters.add(new Parameter("description", description));
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -929,12 +835,6 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_SET_META));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("is_public", permissions.isPublicFlag() ? "1" : "0"));
         parameters.add(new Parameter("is_friend", permissions.isFriendFlag() ? "1" : "0"));
@@ -942,7 +842,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("perm_comment", new Integer(permissions.getComment())));
         parameters.add(new Parameter("perm_addmeta", new Integer(permissions.getAddmeta())));
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -963,16 +863,10 @@ public class PhotosInterface {
         parameters.add(new Parameter("method", METHOD_SET_TAGS));
         parameters.add(new Parameter("api_key", apiKey));
         
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-        
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("tags", StringUtilities.join(tags, " ")));
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
