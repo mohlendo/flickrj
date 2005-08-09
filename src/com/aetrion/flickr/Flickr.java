@@ -33,9 +33,14 @@ public class Flickr {
     public static final String DEFAULT_HOST = "www.flickr.com";
 
     /**
-     * Set to true to enable stream debugging.
+     * Set to true to enable response debugging (print the response stream)
      */
     public static boolean debugStream = false;
+
+    /**
+     * Set to true to enable request debugging (print the request stream, used for "post")
+     */
+    public static boolean debugRequest = false;
 
     private String apiKey;
     private Transport transport;

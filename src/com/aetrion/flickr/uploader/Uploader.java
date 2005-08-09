@@ -27,13 +27,17 @@ import com.aetrion.flickr.util.StringUtilities;
  */
 public class Uploader {
 
+    private String apiKey;
     private Transport transport;
 
     /**
      * Construct an Uploader.
+     *
+     * @param apiKey The API key
      */
-    public Uploader() {
+    public Uploader(String apiKey) {
         try {
+            this.apiKey = apiKey;
             this.transport = new REST(Flickr.DEFAULT_HOST);
             this.transport.setResponseClass(UploaderResponse.class);
         } catch (ParserConfigurationException e) {
@@ -44,9 +48,11 @@ public class Uploader {
     /**
      * Construct an uploader using the specified Transport interface.
      *
+     * @param apiKey The API key
      * @param transport The Transport interface
      */
-    public Uploader(Transport transport) {
+    public Uploader(String apiKey, Transport transport) {
+        this.apiKey = apiKey;
         this.transport = transport;
         this.transport.setResponseClass(UploaderResponse.class);
     }
@@ -62,8 +68,8 @@ public class Uploader {
      */
     public String upload(byte[] data, UploadMetaData metaData) throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
-        parameters.add(new Parameter("email", metaData.getEmail()));
-        parameters.add(new Parameter("password", metaData.getPassword()));
+
+        parameters.add(new Parameter("api_key", apiKey));
 
         String title = metaData.getTitle();
         if (title != null)
@@ -83,7 +89,7 @@ public class Uploader {
 
         parameters.add(new Parameter("photo", data));
 
-        UploaderResponse response = (UploaderResponse) transport.post("/tools/uploader_go.gne", parameters, true);
+        UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 

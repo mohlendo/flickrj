@@ -20,6 +20,7 @@ import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.util.DebugInputStream;
 import com.aetrion.flickr.util.IOUtilities;
 import com.aetrion.flickr.util.UrlUtilities;
+import com.aetrion.flickr.util.DebugOutputStream;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -137,7 +138,11 @@ public class REST extends Transport {
 
             DataOutputStream out = null;
             try {
-                out = new DataOutputStream(conn.getOutputStream());
+                if (Flickr.debugRequest) {
+                    out = new DataOutputStream(new DebugOutputStream(conn.getOutputStream(), System.out));
+                } else {
+                    out = new DataOutputStream(conn.getOutputStream());
+                }
 
                 // construct the body
                 if (multipart) {
@@ -150,7 +155,7 @@ public class REST extends Transport {
                         Auth auth = requestContext.getAuth();
                         if (auth != null) {
                             writeParam("auth_token", auth.getToken(), out, boundary);
-                            writeParam("auth_sig", AuthUtilities.getSignature(parameters), out, boundary);
+                            writeParam("auth_sig", AuthUtilities.getMultipartSignature(parameters), out, boundary);
                         }
                     }
                 } else {

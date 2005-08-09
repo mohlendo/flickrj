@@ -22,17 +22,15 @@ public class UploaderResponse implements Response {
     private String errorMessage;
 
     public void parse(Document document) {
-        Element uploaderElement = document.getDocumentElement();
-        Element statusElement = (Element) uploaderElement.getElementsByTagName("status").item(0);
-
-        status = ((Text)statusElement.getFirstChild()).getData();
+        Element rspElement = document.getDocumentElement();
+        status = rspElement.getAttribute("stat");
         if ("ok".equals(status)) {
-            Element photoIdElement = (Element) uploaderElement.getElementsByTagName("photoid").item(0);
+            Element photoIdElement = (Element) rspElement.getElementsByTagName("photoid").item(0);
             photoId = ((Text)photoIdElement.getFirstChild()).getData();
         } else {
-            Element errorCodeElement = (Element) uploaderElement.getElementsByTagName("error").item(0);
+            Element errorCodeElement = (Element) rspElement.getElementsByTagName("error").item(0);
             errorCode = ((Text)errorCodeElement.getFirstChild()).getData();
-            Element errorMessageElement = (Element) uploaderElement.getElementsByTagName("verbose").item(0);
+            Element errorMessageElement = (Element) rspElement.getElementsByTagName("verbose").item(0);
             errorMessage = ((Text)errorMessageElement.getFirstChild()).getData();
         }
     }

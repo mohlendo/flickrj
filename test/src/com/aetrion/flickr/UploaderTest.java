@@ -14,6 +14,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.aetrion.flickr.uploader.UploadMetaData;
 import com.aetrion.flickr.uploader.Uploader;
 import com.aetrion.flickr.util.IOUtilities;
+import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.auth.Auth;
 import junit.framework.TestCase;
 import org.xml.sax.SAXException;
 
@@ -23,24 +25,32 @@ import org.xml.sax.SAXException;
 public class UploaderTest extends TestCase {
 
     Uploader uploader = null;
-    Authentication auth = null;
+    Flickr flickr = null;
     Properties properties = null;
 
-    public void setUp() throws ParserConfigurationException, IOException {
+    public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
         InputStream in = null;
+        Flickr.debugStream = true;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
             properties = new Properties();
             properties.load(in);
 
+            REST uploaderTransport = new REST();
+            uploaderTransport.setHost(properties.getProperty("host"));
+
             REST rest = new REST();
             rest.setHost(properties.getProperty("host"));
 
-            uploader = new Uploader(rest);
+            uploader = new Uploader(properties.getProperty("apiKey"), uploaderTransport);
+            flickr = new Flickr(properties.getProperty("apiKey"), rest);
 
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
+            RequestContext requestContext = RequestContext.getRequestContext();
+            requestContext.setSharedSecret(properties.getProperty("secret"));
+
+            AuthInterface authInterface = flickr.getAuthInterface();
+            Auth auth = authInterface.checkToken(properties.getProperty("token"));
+            requestContext.setAuth(auth);
         } finally {
             IOUtilities.close(in);
         }
@@ -65,8 +75,6 @@ public class UploaderTest extends TestCase {
                 out.write((byte) b);
             }
             UploadMetaData metaData = new UploadMetaData();
-            metaData.setEmail(auth.getEmail());
-            metaData.setPassword(auth.getPassword());
             String photoId = uploader.upload(out.toByteArray(), metaData);
             assertNotNull(photoId);
         } finally {
@@ -88,8 +96,6 @@ public class UploaderTest extends TestCase {
         try {
             in = new FileInputStream(imageFile);
             UploadMetaData metaData = new UploadMetaData();
-            metaData.setEmail(auth.getEmail());
-            metaData.setPassword(auth.getPassword());
             String photoId = uploader.upload(in, metaData);
             assertNotNull(photoId);
         } finally {

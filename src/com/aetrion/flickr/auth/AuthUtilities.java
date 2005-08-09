@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.ParameterAlphaComparator;
@@ -33,6 +34,11 @@ public class AuthUtilities {
         return getSignature(requestContext.getSharedSecret(), parameters);
     }
 
+    public static String getMultipartSignature(List parameters) {
+        RequestContext requestContext = RequestContext.getRequestContext();
+        return getMultipartSignature(requestContext.getSharedSecret(), parameters);
+    }
+
     /**
      * Get a signature for a list of parameters using the given shared secret.
      *
@@ -49,6 +55,30 @@ public class AuthUtilities {
             Parameter param = (Parameter) iter.next();
             buffer.append(param.getName());
             buffer.append(param.getValue());
+        }
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            return ByteUtilities.toHexString(md.digest(buffer.toString().getBytes()));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getMultipartSignature(String sharedSecret, List params) {
+        List ignoreParameters = new ArrayList();
+        ignoreParameters.add("photo");
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(sharedSecret);
+        Collections.sort(params, new ParameterAlphaComparator());
+        Iterator iter = params.iterator();
+        while (iter.hasNext()) {
+            Parameter param = (Parameter) iter.next();
+            if (!ignoreParameters.contains(param.getName().toLowerCase())) {
+                buffer.append(param.getName());
+                buffer.append(param.getValue());
+            }
         }
 
         try {

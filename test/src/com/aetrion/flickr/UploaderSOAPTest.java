@@ -25,7 +25,6 @@ import com.aetrion.flickr.util.IOUtilities;
 public class UploaderSOAPTest extends TestCase {
 
     Uploader uploader = null;
-    Authentication auth = null;
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
@@ -38,11 +37,7 @@ public class UploaderSOAPTest extends TestCase {
             Flickr.debugStream = true;
             SOAP soap = new SOAP(properties.getProperty("host"));
 
-            uploader = new Uploader(soap);
-
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
+            uploader = new Uploader(properties.getProperty("apiKey"), soap);
         } finally {
             IOUtilities.close(in);
         }
@@ -67,8 +62,6 @@ public class UploaderSOAPTest extends TestCase {
                 out.write((byte) b);
             }
             UploadMetaData metaData = new UploadMetaData();
-            metaData.setEmail(auth.getEmail());
-            metaData.setPassword(auth.getPassword());
             String photoId = uploader.upload(out.toByteArray(), metaData);
             assertNotNull(photoId);
         } finally {
@@ -90,8 +83,6 @@ public class UploaderSOAPTest extends TestCase {
         try {
             in = new FileInputStream(imageFile);
             UploadMetaData metaData = new UploadMetaData();
-            metaData.setEmail(auth.getEmail());
-            metaData.setPassword(auth.getPassword());
             String photoId = uploader.upload(in, metaData);
             assertNotNull(photoId);
         } finally {
