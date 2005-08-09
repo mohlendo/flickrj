@@ -1,32 +1,26 @@
 package com.aetrion.flickr;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import javax.xml.soap.Name;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 
-import com.aetrion.flickr.util.DebugInputStream;
-import com.aetrion.flickr.util.IOUtilities;
-import com.aetrion.flickr.util.UrlUtilities;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.message.SOAPBodyElement;
 import org.apache.axis.message.SOAPEnvelope;
 import org.apache.axis.utils.XMLUtils;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.util.UrlUtilities;
 
 
 /**
@@ -40,11 +34,7 @@ public class SOAP extends Transport {
     public static final String BODYELEMENT = "FlickrRequest";
     public static final String PATH = "/services/soap/";
 
-    private DocumentBuilder builder;
-
     public SOAP() throws ParserConfigurationException {
-        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-        builder = builderFactory.newDocumentBuilder();
         setTransportType(SOAP);
         setResponseClass(SOAPResponse.class);
         setPath(PATH);
@@ -71,31 +61,64 @@ public class SOAP extends Transport {
      * @throws SAXException
      */
     public Response get(String path, List parameters) throws IOException, SAXException {
-        URL url = UrlUtilities.buildUrl(getHost(), getPort(), path, parameters);
+        //TODO this is currently exactly the same as the post, so maybe they need to be consolidated
+        URL url = UrlUtilities.buildUrl(getHost(), getPort(), path, Collections.EMPTY_LIST);
 
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.connect();
-
-        InputStream in = null;
         try {
-            if (Flickr.debugStream) {
-                in = new DebugInputStream(conn.getInputStream(), System.out);
-            } else {
-                in = conn.getInputStream();
+            //build the envelope
+            SOAPEnvelope env = new SOAPEnvelope();
+            env.addNamespaceDeclaration("xsi", "http://www.w3.org/1999/XMLSchema-instance");
+            env.addNamespaceDeclaration("xsd", "http://www.w3.org/1999/XMLSchema");
+
+            //build the body
+            Name bodyName = env.createName(BODYELEMENT, "x", URN);
+            SOAPBodyElement body = new SOAPBodyElement(bodyName);
+
+            //set the format to soap2
+            Element e = XMLUtils.StringToElement("", "format", "soap2");
+            SOAPElement sbe = new SOAPBodyElement(e);
+            body.addChildElement(sbe);
+
+            //add all the parameters to the body
+            for (Iterator i = parameters.iterator(); i.hasNext();) {
+                Parameter p = (Parameter) i.next();
+                e = XMLUtils.StringToElement("", p.getName(), p.getValue().toString());
+                sbe = new SOAPBodyElement(e);
+                body.addChildElement(sbe);
             }
 
-            Document document = builder.parse(in);
-            Response response = (SOAPResponse) responseClass.newInstance();
-            response.parse(document);
+            //put the body in the envelope
+            env.addBodyElement(body);
+
+            if (Flickr.debugStream) {
+                System.out.println("SOAP ENVELOPE:");
+                System.out.println(env.toString());
+            }
+
+            // build the call.
+            Service service = new Service();
+            Call call = (Call) service.createCall();
+            call.setTargetEndpointAddress(url);
+            SOAPEnvelope envelope = call.invoke(env);
+
+            if (Flickr.debugStream) {
+                System.out.println("SOAP RESPONSE:");
+                System.out.println(envelope.toString());
+            }
+
+            SOAPResponse response = new SOAPResponse(envelope);
+            response.parse(null); //the null is because we don't really need a document, but the Interface does
+
             return response;
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e); // TODO: Replace with a better exception
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e); // TODO: Replace with a better exception
-        } finally {
-            IOUtilities.close(in);
+
+        } catch (SOAPException se) {
+            se.printStackTrace();
+            throw new RuntimeException(se); // TODO: Replace with a better exception
+        } catch (ServiceException se) {
+            se.printStackTrace();
+            throw new RuntimeException(se); // TODO: Replace with a better exception
         }
+        
     }
 
     /**
