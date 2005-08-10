@@ -2,15 +2,15 @@ package com.aetrion.flickr;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 import java.util.Collection;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
-import com.aetrion.flickr.photos.SearchParameters;
-import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photosets.Photoset;
 import com.aetrion.flickr.photosets.Photosets;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
@@ -24,10 +24,9 @@ import org.xml.sax.SAXException;
 public class PhotosetsInterfaceTest extends TestCase {
 
     Flickr flickr = null;
-    Authentication auth = null;
     Properties properties = null;
 
-    public void setUp() throws ParserConfigurationException, IOException {
+    public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -39,17 +38,18 @@ public class PhotosetsInterfaceTest extends TestCase {
 
             flickr = new Flickr(properties.getProperty("apiKey"));
 
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
+            RequestContext requestContext = RequestContext.getRequestContext();
+            requestContext.setSharedSecret(properties.getProperty("secret"));
+
+            AuthInterface authInterface = flickr.getAuthInterface();
+            Auth auth = authInterface.checkToken(properties.getProperty("token"));
+            requestContext.setAuth(auth);
         } finally {
             IOUtilities.close(in);
         }
     }
 
     public void testCreateAndDelete() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
         Photoset photoset = iface.create("test", "A test photoset", properties.getProperty("photoid"));
         assertNotNull(photoset);
@@ -67,10 +67,9 @@ public class PhotosetsInterfaceTest extends TestCase {
     }
 
     public void testGetContext() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
-        PhotoContext photoContext = iface.getContext(properties.getProperty("photoid"), properties.getProperty("photosetid"));
+        PhotoContext photoContext = iface
+                .getContext(properties.getProperty("photoid"), properties.getProperty("photosetid"));
         Photo previousPhoto = photoContext.getPreviousPhoto();
         Photo nextPhoto = photoContext.getNextPhoto();
         assertNotNull(previousPhoto);
@@ -105,8 +104,6 @@ public class PhotosetsInterfaceTest extends TestCase {
     }
 
     public void testOrderSets() throws FlickrException, IOException, SAXException {
-        RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
         String[] photosetIds = {properties.getProperty("photosetid")};
         iface.orderSets(photosetIds);

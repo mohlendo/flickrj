@@ -30,17 +30,17 @@ public class UrlsInterface {
     public static final String METHOD_LOOKUP_USER = "flickr.urls.lookupUser";
 
     private String apiKey;
-    private Transport transportAPI;
+    private Transport transport;
     
     /**
      * Construct a UrlsInterface.
      *
      * @param apiKey The API key
-     * @param transportAPI The Transport interface
+     * @param transport The Transport interface
      */
     public UrlsInterface(String apiKey, Transport transport) {
         this.apiKey = apiKey;
-        this.transportAPI = transport;
+        this.transport = transport;
     }
     
     /**
@@ -59,7 +59,7 @@ public class UrlsInterface {
         
         parameters.add(new Parameter("group_id", groupId));
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -84,7 +84,7 @@ public class UrlsInterface {
         
         parameters.add(new Parameter("user_id", userId));
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -109,7 +109,7 @@ public class UrlsInterface {
         
         parameters.add(new Parameter("user_id", userId));
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -134,7 +134,7 @@ public class UrlsInterface {
         
         parameters.add(new Parameter("url", url));
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 
@@ -160,7 +160,7 @@ public class UrlsInterface {
         
         parameters.add(new Parameter("url", url));
         
-        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         } 

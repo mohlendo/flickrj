@@ -9,16 +9,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
-import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.photos.Note;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
@@ -49,12 +46,6 @@ public class NotesInterface {
         parameters.add(new Parameter("method", METHOD_ADD));
         parameters.add(new Parameter("api_key", apiKey));
 
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
-
         parameters.add(new Parameter("photo_id", photoId));
         Rectangle bounds = note.getBounds();
         if (bounds != null) {
@@ -71,11 +62,11 @@ public class NotesInterface {
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } 
-        
-            Element noteElement = response.getPayload();
-            note.setId(noteElement.getAttribute("id"));
-            return note;
+        }
+
+        Element noteElement = response.getPayload();
+        note.setId(noteElement.getAttribute("id"));
+        return note;
     }
 
     /**
@@ -90,12 +81,6 @@ public class NotesInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_DELETE));
         parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
 
         parameters.add(new Parameter("note_id", noteId));
 
@@ -113,16 +98,10 @@ public class NotesInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-     public void edit(Note note) throws IOException, SAXException, FlickrException {
+    public void edit(Note note) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_EDIT));
         parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
 
         parameters.add(new Parameter("note_id", note.getId()));
         Rectangle bounds = note.getBounds();

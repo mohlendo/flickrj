@@ -4,8 +4,8 @@
 
 package com.aetrion.flickr;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.aetrion.flickr.auth.Auth;
 
@@ -84,7 +84,7 @@ public class RequestContext {
     /**
      * Get the List of extra return values requested.
      *
-     * @return
+     * @return List of extra return values requested
      */
     public List getExtras() {
         if (extras == null) extras = new ArrayList();
@@ -100,7 +100,7 @@ public class RequestContext {
         protected Object initialValue() {
             return new RequestContext();
         }
-        
+
     }
 
 }

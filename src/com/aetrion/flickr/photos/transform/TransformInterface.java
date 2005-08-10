@@ -8,14 +8,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.xml.sax.SAXException;
-
-import com.aetrion.flickr.Authentication;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
@@ -42,12 +39,6 @@ public class TransformInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_ROTATE));
         parameters.add(new Parameter("api_key", apiKey));
-
-        RequestContext requestContext = RequestContext.getRequestContext();
-        Authentication auth = requestContext.getAuthentication();
-        if (auth != null) {
-            parameters.addAll(auth.getAsParameters());
-        }
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("degrees", String.valueOf(degrees)));
