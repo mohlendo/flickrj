@@ -20,7 +20,8 @@ import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.util.IOUtilities;
 
 /**
- * Class representing metadata about a Flickr photo.  Instances do not actually contain the photo data.
+ * Class representing metadata about a Flickr photo.  Instances do not actually contain the photo data, however you can
+ * obtain the photo data by calling one of the getXXXImage() or getXXXAsStream() methods in this class.
  *
  * @author Anthony Eden
  */
@@ -263,6 +264,16 @@ public class Photo {
     }
 
     /**
+     * Get an InputStream for the original image. Callers must close the stream upon completion.
+     *
+     * @return The InputStream
+     * @throws IOException
+     */
+    public InputStream getOriginalAsStream() throws IOException {
+        return getImageAsStream("_o.jpg");
+    }
+
+    /**
      * Get an Image object which is a 75x75 pixel square.
      *
      * @return An Image
@@ -272,20 +283,40 @@ public class Photo {
         return getImage("_s.jpg");
     }
 
+    public InputStream getSmallSquareAsInputStream() throws IOException {
+        return getImageAsStream("_s.jpg");
+    }
+
     public BufferedImage getThumbnailImage() throws IOException {
         return getImage("_t.jpg");
+    }
+
+    public InputStream getThumbnailAsInputStream() throws IOException {
+        return getImageAsStream("_t.jpg");
     }
 
     public BufferedImage getSmallImage() throws IOException {
         return getImage("_m.jpg");
     }
 
+    public InputStream getSmallAsInputStream() throws IOException {
+        return getImageAsStream("_m.jpg");
+    }
+
     public BufferedImage getMediumImage() throws IOException {
         return getImage(".jpg");
     }
 
+    public InputStream getMediumAsStream() throws IOException {
+        return getImageAsStream(".jpg");
+    }
+
     public BufferedImage getLargeImage() throws IOException {
         return getImage("_b.jpg");
+    }
+
+    public InputStream getLargeAsStream() throws IOException {
+        return getImageAsStream("_b.jpg");
     }
 
     /**
@@ -308,6 +339,22 @@ public class Photo {
         } finally {
             IOUtilities.close(in);
         }
+    }
+
+    /**
+     * Get an image as a stream. Callers must be sure to close the stream when they are done with it.
+     *
+     * @param suffix The suffix
+     * @return The InputStream
+     * @throws IOException
+     */
+    private InputStream getImageAsStream(String suffix) throws IOException {
+        StringBuffer buffer = getBaseImageUrl();
+        buffer.append(suffix);
+        URL url = new URL(buffer.toString());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.connect();
+        return conn.getInputStream();
     }
 
     private StringBuffer getBaseImageUrl() {
