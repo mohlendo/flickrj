@@ -61,64 +61,8 @@ public class SOAP extends Transport {
      * @throws SAXException
      */
     public Response get(String path, List parameters) throws IOException, SAXException {
-        //TODO this is currently exactly the same as the post, so maybe they need to be consolidated
-        URL url = UrlUtilities.buildUrl(getHost(), getPort(), path, Collections.EMPTY_LIST);
-
-        try {
-            //build the envelope
-            SOAPEnvelope env = new SOAPEnvelope();
-            env.addNamespaceDeclaration("xsi", "http://www.w3.org/1999/XMLSchema-instance");
-            env.addNamespaceDeclaration("xsd", "http://www.w3.org/1999/XMLSchema");
-
-            //build the body
-            Name bodyName = env.createName(BODYELEMENT, "x", URN);
-            SOAPBodyElement body = new SOAPBodyElement(bodyName);
-
-            //set the format to soap2
-            Element e = XMLUtils.StringToElement("", "format", "soap2");
-            SOAPElement sbe = new SOAPBodyElement(e);
-            body.addChildElement(sbe);
-
-            //add all the parameters to the body
-            for (Iterator i = parameters.iterator(); i.hasNext();) {
-                Parameter p = (Parameter) i.next();
-                e = XMLUtils.StringToElement("", p.getName(), p.getValue().toString());
-                sbe = new SOAPBodyElement(e);
-                body.addChildElement(sbe);
-            }
-
-            //put the body in the envelope
-            env.addBodyElement(body);
-
-            if (Flickr.debugStream) {
-                System.out.println("SOAP ENVELOPE:");
-                System.out.println(env.toString());
-            }
-
-            // build the call.
-            Service service = new Service();
-            Call call = (Call) service.createCall();
-            call.setTargetEndpointAddress(url);
-            SOAPEnvelope envelope = call.invoke(env);
-
-            if (Flickr.debugStream) {
-                System.out.println("SOAP RESPONSE:");
-                System.out.println(envelope.toString());
-            }
-
-            SOAPResponse response = new SOAPResponse(envelope);
-            response.parse(null); //the null is because we don't really need a document, but the Interface does
-
-            return response;
-
-        } catch (SOAPException se) {
-            se.printStackTrace();
-            throw new RuntimeException(se); // TODO: Replace with a better exception
-        } catch (ServiceException se) {
-            se.printStackTrace();
-            throw new RuntimeException(se); // TODO: Replace with a better exception
-        }
-        
+        //this is currently exactly the same as the post
+        return post(path, parameters);
     }
 
     /**
