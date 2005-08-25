@@ -27,6 +27,8 @@ public class PhotosetsInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
+        Flickr.debugStream = true;
+
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -80,6 +82,7 @@ public class PhotosetsInterfaceTest extends TestCase {
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
         Photoset photoset = iface.getInfo(properties.getProperty("photosetid"));
         assertNotNull(photoset);
+        assertNotNull(photoset.getPrimaryPhoto());
         assertEquals(3, photoset.getPhotoCount());
     }
 

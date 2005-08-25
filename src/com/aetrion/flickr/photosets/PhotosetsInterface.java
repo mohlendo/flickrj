@@ -295,6 +295,8 @@ public class PhotosetsInterface {
 
             Photo primaryPhoto = new Photo();
             primaryPhoto.setId(photosetElement.getAttribute("primary"));
+            primaryPhoto.setSecret(photosetElement.getAttribute("secret")); // TODO verify that this is the secret for the photo
+            primaryPhoto.setServer(photosetElement.getAttribute("server")); // TODO verify that this is the server for the photo
             photoset.setPrimaryPhoto(primaryPhoto);
 
             photoset.setSecret(photosetElement.getAttribute("secret"));
