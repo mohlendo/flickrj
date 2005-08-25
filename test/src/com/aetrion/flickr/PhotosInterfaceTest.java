@@ -65,7 +65,8 @@ public class PhotosInterfaceTest extends TestCase {
         PhotosInterface iface = flickr.getPhotosInterface();
         Photo photo = iface.getInfo(properties.getProperty("photoid"), null);
         assertNotNull(photo);
-        System.out.println("photo id: " + photo.getId());
+        assertNotNull(photo.getUrl());
+        //System.out.println("photo id: " + photo.getId());
     }
 
     public void testAddAndRemoveTags() throws FlickrException, IOException, SAXException {
@@ -305,5 +306,11 @@ public class PhotosInterfaceTest extends TestCase {
         ImageIO.write(image, "jpg", new File("out.large.jpg"));
     }
 
+    public void testGetPhoto() throws FlickrException, IOException, SAXException {
+        PhotosInterface iface = flickr.getPhotosInterface();
+        String photoId = properties.getProperty("photoid");
+        Photo photo = iface.getPhoto(photoId, null);
+        assertNotNull(photo);
+    }
 
 }

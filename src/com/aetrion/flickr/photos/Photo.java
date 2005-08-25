@@ -29,6 +29,13 @@ public class Photo {
 
     private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    private static final String ORIGINAL_IMAGE_SUFFIX = "_o.jpg";
+    private static final String SMALL_SQUARE_IMAGE_SUFFIX = "_s.jpg";
+    private static final String SMALL_IMAGE_SUFFIX = "_m.jpg";
+    private static final String THUMBNAIL_IMAGE_SUFFIX = "_t.jpg";
+    private static final String MEDIUM_IMAGE_SUFFIX = ".jpg";
+    private static final String LARGE_IMAGE_SUFFIX = "_b.jpg";
+
     private String id;
     private User owner;
     private String secret;
@@ -49,6 +56,7 @@ public class Photo {
     private int comments;
     private Collection notes;
     private Collection tags;
+    private Collection urls;
     private String iconServer;
     private String url;
 
@@ -243,6 +251,14 @@ public class Photo {
         this.tags = tags;
     }
 
+    public Collection getUrls() {
+        return urls;
+    }
+
+    public void setUrls(Collection urls) {
+        this.urls = urls;
+    }
+
     public String getIconServer() {
         return iconServer;
     }
@@ -260,7 +276,7 @@ public class Photo {
     }
 
     public BufferedImage getOriginalImage() throws IOException {
-        return getImage("_o.jpg");
+        return getImage(ORIGINAL_IMAGE_SUFFIX);
     }
 
     /**
@@ -270,7 +286,16 @@ public class Photo {
      * @throws IOException
      */
     public InputStream getOriginalAsStream() throws IOException {
-        return getImageAsStream("_o.jpg");
+        return getImageAsStream(ORIGINAL_IMAGE_SUFFIX);
+    }
+
+    /**
+     * Get the original image URL.
+     *
+     * @return The original image URL
+     */
+    public String getOriginalUrl() {
+        return getBaseImageUrl() + ORIGINAL_IMAGE_SUFFIX;
     }
 
     /**
@@ -280,43 +305,63 @@ public class Photo {
      * @throws IOException
      */
     public BufferedImage getSmallSquareImage() throws IOException {
-        return getImage("_s.jpg");
+        return getImage(SMALL_SQUARE_IMAGE_SUFFIX);
     }
 
     public InputStream getSmallSquareAsInputStream() throws IOException {
-        return getImageAsStream("_s.jpg");
+        return getImageAsStream(SMALL_SQUARE_IMAGE_SUFFIX);
+    }
+
+    public String getSmallSquareUrl() {
+        return getBaseImageUrl() + SMALL_SQUARE_IMAGE_SUFFIX;
     }
 
     public BufferedImage getThumbnailImage() throws IOException {
-        return getImage("_t.jpg");
+        return getImage(THUMBNAIL_IMAGE_SUFFIX);
     }
 
     public InputStream getThumbnailAsInputStream() throws IOException {
-        return getImageAsStream("_t.jpg");
+        return getImageAsStream(THUMBNAIL_IMAGE_SUFFIX);
+    }
+
+    public String getThumbnailUrl() {
+        return getBaseImageUrl() + THUMBNAIL_IMAGE_SUFFIX;
     }
 
     public BufferedImage getSmallImage() throws IOException {
-        return getImage("_m.jpg");
+        return getImage(SMALL_IMAGE_SUFFIX);
     }
 
     public InputStream getSmallAsInputStream() throws IOException {
-        return getImageAsStream("_m.jpg");
+        return getImageAsStream(SMALL_IMAGE_SUFFIX);
+    }
+
+    public String getSmallUrl() {
+        return getBaseImageUrl() + SMALL_IMAGE_SUFFIX;
     }
 
     public BufferedImage getMediumImage() throws IOException {
-        return getImage(".jpg");
+        return getImage(MEDIUM_IMAGE_SUFFIX);
     }
 
     public InputStream getMediumAsStream() throws IOException {
-        return getImageAsStream(".jpg");
+        return getImageAsStream(MEDIUM_IMAGE_SUFFIX);
+    }
+
+    public String getMediumUrl() {
+        return getBaseImageUrl() + MEDIUM_IMAGE_SUFFIX;
     }
 
     public BufferedImage getLargeImage() throws IOException {
-        return getImage("_b.jpg");
+        return getImage(LARGE_IMAGE_SUFFIX);
     }
 
     public InputStream getLargeAsStream() throws IOException {
-        return getImageAsStream("_b.jpg");
+        return getImageAsStream(LARGE_IMAGE_SUFFIX);
+    }
+
+    public String getLargeUrl() {
+        return getBaseImageUrl() + LARGE_IMAGE_SUFFIX;
     }
 
     /**

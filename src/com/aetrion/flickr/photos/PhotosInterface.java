@@ -134,7 +134,7 @@ public class PhotosInterface {
 
             photo.setSecret(photoElement.getAttribute("secret"));
             photo.setServer(photoElement.getAttribute("server"));
-            photo.setTitle(photoElement.getAttribute("name"));
+            photo.setTitle(photoElement.getAttribute("title"));
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
             photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
@@ -443,6 +443,20 @@ public class PhotosInterface {
             tags.add(tag);
         }
         photo.setTags(tags);
+
+        Element urlsElement = (Element) photoElement.getElementsByTagName("urls").item(0);
+        List urls = new ArrayList();
+        NodeList urlNodes = urlsElement.getElementsByTagName("url");
+        for (int i = 0; i < urlNodes.getLength(); i++) {
+            Element urlElement = (Element) urlNodes.item(i);
+            PhotoUrl photoUrl = new PhotoUrl();
+            photoUrl.setType(urlElement.getAttribute("type"));
+            photoUrl.setUrl(XMLUtilities.getValue(urlElement));
+            if (photoUrl.getType().equals("photopage")) {
+                photo.setUrl(photoUrl.getUrl());
+            }
+        }
+        photo.setUrls(urls);
 
         return photo;
     }
@@ -868,6 +882,33 @@ public class PhotosInterface {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
+    }
+
+    /**
+     * Get the photo for the specified ID. Currently maps to the getInfo() method.
+     *
+     * @param id The ID
+     * @return The Photo
+     * @throws IOException
+     * @throws FlickrException
+     * @throws SAXException
+     */
+    public Photo getPhoto(String id) throws IOException, FlickrException, SAXException {
+        return getPhoto(id, null);
+    }
+
+    /**
+     * Get the photo for the specified ID with the given secret. Currently maps to the getInfo() method.
+     *
+     * @param id The ID
+     * @param secret The secret
+     * @return The Photo
+     * @throws IOException
+     * @throws FlickrException
+     * @throws SAXException
+     */
+    public Photo getPhoto(String id, String secret) throws IOException, FlickrException, SAXException {
+        return getInfo(id, secret);
     }
 
 
