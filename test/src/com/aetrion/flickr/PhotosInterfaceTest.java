@@ -66,6 +66,8 @@ public class PhotosInterfaceTest extends TestCase {
         Photo photo = iface.getInfo(properties.getProperty("photoid"), null);
         assertNotNull(photo);
         assertNotNull(photo.getUrl());
+        assertNotNull(photo.getTitle());
+        assertEquals("Winter", photo.getTitle());
         //System.out.println("photo id: " + photo.getId());
     }
 
