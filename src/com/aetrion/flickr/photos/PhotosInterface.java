@@ -475,7 +475,7 @@ public class PhotosInterface {
         List photos = new ArrayList();
 
         List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_RECENT));
+        parameters.add(new Parameter("method", METHOD_NOT_IN_SET));
         parameters.add(new Parameter("api_key", apiKey));
 
         RequestContext requestContext = RequestContext.getRequestContext();
