@@ -83,7 +83,7 @@ public class REST extends Transport {
      */
     public Response get(String path, List parameters) throws IOException, SAXException {
         URL url = UrlUtilities.buildUrl(getHost(), getPort(), path, parameters);
-        System.out.println("GET: " + url);
+        if (Flickr.debugRequest) System.out.println("GET: " + url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.connect();
