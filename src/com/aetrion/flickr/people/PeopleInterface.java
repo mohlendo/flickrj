@@ -258,7 +258,7 @@ public class PeopleInterface {
 
             photo.setSecret(photoElement.getAttribute("secret"));
             photo.setServer(photoElement.getAttribute("server"));
-            photo.setTitle(photoElement.getAttribute("name"));
+            photo.setTitle(photoElement.getAttribute("title"));
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
             photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
