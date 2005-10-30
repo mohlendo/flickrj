@@ -21,7 +21,7 @@ import com.aetrion.flickr.contacts.OnlineStatus;
 import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.util.XMLUtilities;
-
+import java.net.URLEncoder;
 /**
  * Interface for finding Flickr users.
  *
@@ -86,7 +86,7 @@ public class PeopleInterface {
         parameters.add(new Parameter("method", METHOD_FIND_BY_USERNAME));
         parameters.add(new Parameter("api_key", apiKey));
 
-        parameters.add(new Parameter("username", username));
+        parameters.add(new Parameter("username", URLEncoder.encode(username, "UTF-8")));
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
