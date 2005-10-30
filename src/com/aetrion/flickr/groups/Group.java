@@ -2,6 +2,7 @@
  * Copyright (c) 2005 Aetrion LLC.
  */
 package com.aetrion.flickr.groups;
+import com.aetrion.flickr.Flickr;
 
 /**
  * Class representing a Flickr Group.
@@ -82,7 +83,14 @@ public class Group {
     }
 
     public void setInChat(String inChat) {
-        if (inChat != null) setInChat(Integer.parseInt(inChat));
+    	try {
+    		if (inChat != null) setInChat(Integer.parseInt(inChat));
+    	} catch (NumberFormatException nfe) {
+    		setInChat(0);
+    		if (Flickr.tracing) 
+    			System.out.println("trace: Group.setInChat(String) encountered a number format " + 
+    			"exception.  PhotoCount set to 0");
+    	}
     }
 
     public String getPrivacy() {
@@ -111,7 +119,14 @@ public class Group {
 
     public void setPhotoCount(String photoCount) {
         if (photoCount != null) {
-            setPhotoCount(Integer.parseInt(photoCount));
+        	try {
+        		setPhotoCount(Integer.parseInt(photoCount));
+        	} catch (NumberFormatException nfe) {
+        		setPhotoCount(0);
+        		if (Flickr.tracing) 
+        			System.out.println("trace: Group.setPhotoCount(String) encountered a number format " + 
+        								"exception.  PhotoCount set to 0");
+        	}
         }
     }
 

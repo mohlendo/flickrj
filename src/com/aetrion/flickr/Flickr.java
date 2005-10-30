@@ -41,6 +41,11 @@ public class Flickr {
      * Set to true to enable request debugging (print the request stream, used for "post")
      */
     public static boolean debugRequest = false;
+    
+    /**
+     * If set to true, trace messages will be printed to STDOUT.
+     */
+    public static boolean tracing = false;
 
     private String apiKey;
     private Transport transport;
