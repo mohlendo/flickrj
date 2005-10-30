@@ -128,7 +128,8 @@ public class PeopleInterface {
         user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
         user.setRealName(XMLUtilities.getChildValue(userElement, "realname"));
         user.setLocation(XMLUtilities.getChildValue(userElement, "location"));
-
+        user.setMbox_sha1sum(XMLUtilities.getChildValue(userElement, "mbox_sha1sum"));
+        
         Element photosElement = XMLUtilities.getChild(userElement, "photos");
         user.setPhotosFirstDate(XMLUtilities.getChildValue(photosElement, "firstdate"));
         user.setPhotosFirstDateTaken(XMLUtilities.getChildValue(photosElement, "firstdatetaken"));

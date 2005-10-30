@@ -32,7 +32,8 @@ public class User {
     private int bandwidthMax;
     private int bandwidthUsed;
     private int filesizeMax;
-
+    private String mbox_sha1sum;
+    
     public User() {
 
     }
@@ -48,7 +49,7 @@ public class User {
     public String getUsername() {
         return username;
     }
-
+    
     public void setUsername(String username) {
         this.username = username;
     }
@@ -200,5 +201,12 @@ public class User {
             setFilesizeMax(Integer.parseInt(filesizeMax));
         }
     }
-
+    
+    public void setMbox_sha1sum(String mbox_sha1sum) {
+    	this.mbox_sha1sum = mbox_sha1sum;
+    }
+    
+    public String getMbox_sha1sum() {
+    	return this.mbox_sha1sum;
+    }
 }
