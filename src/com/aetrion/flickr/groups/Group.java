@@ -51,7 +51,14 @@ public class Group {
     }
 
     public void setMembers(String members) {
-        if (members != null) setMembers(Integer.parseInt(members));
+    	try {
+    		if (members != null) setMembers(Integer.parseInt(members));
+    	} catch (NumberFormatException nfe) {
+    		setMembers(0);
+    		if (Flickr.tracing) 
+    			System.out.println("trace: Group.setMembers(String) encountered a number format " + 
+    			"exception.  members set to 0");
+    	}
     }
 
     public int getOnline() {
@@ -63,7 +70,14 @@ public class Group {
     }
 
     public void setOnline(String online) {
-        if (online != null) setOnline(Integer.parseInt(online));
+    	try {
+    		if (online != null) setOnline(Integer.parseInt(online));
+    	} catch (NumberFormatException nfe) {
+    		setOnline(0);
+    		if (Flickr.tracing) 
+    			System.out.println("trace: Group.setOnline(String) encountered a number format " + 
+    			"exception.  online set to 0");
+    	}
     }
 
     public String getChatId() {
@@ -89,7 +103,7 @@ public class Group {
     		setInChat(0);
     		if (Flickr.tracing) 
     			System.out.println("trace: Group.setInChat(String) encountered a number format " + 
-    			"exception.  PhotoCount set to 0");
+    			"exception.  InChat set to 0");
     	}
     }
 
