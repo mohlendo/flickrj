@@ -4,6 +4,7 @@
 package com.aetrion.flickr.people;
 
 import java.util.Date;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -13,9 +14,10 @@ import com.aetrion.flickr.contacts.OnlineStatus;
 /**
  * @author Anthony Eden
  */
-public class User {
+public class User implements Serializable {
 
-    private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+	private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private String id;
     private String username;

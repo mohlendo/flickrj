@@ -4,14 +4,16 @@
 
 package com.aetrion.flickr.auth;
 
+import java.io.Serializable;
+
 import com.aetrion.flickr.people.User;
 
 /**
  * @author Anthony Eden
  */
-public class Auth {
+public class Auth implements Serializable {
 
-    private String token;
+	private String token;
     private Permission permission;
     private User user;
 

@@ -4,6 +4,7 @@
 
 package com.aetrion.flickr.auth;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import java.util.Map;
  *
  * @author Anthony Eden
  */
-public class Permission {
+public class Permission implements Serializable {
 
     public static final int NONE_TYPE = 0;
     public static final int READ_TYPE = 1;

@@ -3,14 +3,17 @@
  */
 package com.aetrion.flickr.contacts;
 
+import java.io.Serializable;
+
 /**
  * Class representing the various types of online statuses.
  *
  * @author Anthony Eden
  */
-public class OnlineStatus {
+public class OnlineStatus implements Serializable {
 
-    public static final int OFFLINE_TYPE = 0;
+   
+	public static final int OFFLINE_TYPE = 0;
     public static final int AWAY_TYPE = 1;
     public static final int ONLINE_TYPE = 2;
     public static final int UNKNOWN_TYPE = 100;
