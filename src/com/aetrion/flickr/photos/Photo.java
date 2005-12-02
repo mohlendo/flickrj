@@ -404,9 +404,9 @@ public class Photo {
 
     private StringBuffer getBaseImageUrl() {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("http://photos");
+        buffer.append("http://static.flickr.com/");
         buffer.append(getServer());
-        buffer.append(".flickr.com/");
+        buffer.append("/");
         buffer.append(getId());
         buffer.append("_");
         buffer.append(getSecret());
