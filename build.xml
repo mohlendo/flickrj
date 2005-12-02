@@ -36,7 +36,9 @@
 			classpathref="build.classpath"
 			debug="${javac.debug}"
 			deprecation="${javac.deprecation}"
-			optimize="${javac.optimize}">
+			optimize="${javac.optimize}"
+                        source="${javac.source}" 
+                        target="${javac.target}">
 			<include name="**/*.java"/>
 		</javac>
 	</target>
