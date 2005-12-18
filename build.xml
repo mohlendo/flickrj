@@ -120,6 +120,11 @@
 			<fileset dir="${docs.dir}"/>
 		</copy>
 		
+		<mkdir dir="${build.dir}/examples"/>
+		<copy todir="${build.dir}/examples">
+			<fileset dir="${examples.dir}"/>
+		</copy>
+		
 		<delete dir="${build.classes}"/>
 		
 		<mkdir dir="zip/${vname}"/>
@@ -137,7 +142,7 @@
 	<!-- Compiles the example code                                           -->
 	<!-- =================================================================== -->
 	<target name="examples" depends="jar">
-	    <javac srcdir="examples"
+	    <javac srcdir="${examples.dir}"
 	    	classpathref="examples.classpath"
 			debug="${javac.debug}"
 			deprecation="${javac.deprecation}"
