@@ -13,6 +13,9 @@
           <pathelement location="${lib.dir}/saaj.jar"/>
         </path>
 
+    	<path id="examples.classpath">
+    	  <pathelement location="${build.dir}/${vname}.jar"/>
+		</path>
 	
 	<!-- ==================================================== -->
 	<!-- Initialize Ant                                       -->
@@ -37,8 +40,8 @@
 			debug="${javac.debug}"
 			deprecation="${javac.deprecation}"
 			optimize="${javac.optimize}"
-                        source="${javac.source}" 
-                        target="${javac.target}">
+			source="${javac.source}" 
+			target="${javac.target}">
 			<include name="**/*.java"/>
 		</javac>
 	</target>
@@ -128,6 +131,19 @@
 		<gzip zipfile="${name}-${version}.tar.gz" src="${name}-${version}.tar"/>
 		<delete file="${name}-${version}.tar"/>
 		<delete dir="zip"/>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the example code                                           -->
+	<!-- =================================================================== -->
+	<target name="examples" depends="jar">
+	    <javac srcdir="examples"
+	    	classpathref="examples.classpath"
+			debug="${javac.debug}"
+			deprecation="${javac.deprecation}"
+			optimize="${javac.optimize}">
+			<include name="**/*.java"/>
+	    </javac>
 	</target>
 	
 	<!-- ==================================================== -->
