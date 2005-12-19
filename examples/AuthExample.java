@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -14,6 +16,8 @@ import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.auth.Permission;
+import com.aetrion.flickr.util.IOUtilities;
+
 
 /**
  * Demonstrates the authentication-process.<p>
@@ -22,7 +26,7 @@ import com.aetrion.flickr.auth.Permission;
  * <a href="http://www.flickr.com/services/api/registered_keys.gne">list of API keys</a>
  * 
  * @author mago
- * @version $Id: AuthExample.java,v 1.2 2005/12/18 20:08:03 x-mago Exp $
+ * @version $Id: AuthExample.java,v 1.3 2005/12/19 23:03:04 x-mago Exp $
  */
 public class AuthExample {
 	static String restHost = "www.flickr.com";
