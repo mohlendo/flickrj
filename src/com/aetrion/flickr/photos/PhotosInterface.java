@@ -49,6 +49,7 @@ public class PhotosInterface {
     public static final String METHOD_SET_META = "flickr.photos.setMeta";
     public static final String METHOD_SET_PERMS = "flickr.photos.setPerms";
     public static final String METHOD_SET_TAGS = "flickr.photos.setTags";
+    public static final String METHOD_GET_INTERESTINGNESS = "flickr.interestingness.getList";
 
     private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -769,6 +770,60 @@ public class PhotosInterface {
         return photos;
     }
 
+    public PhotoList searchInterestingness(SearchParameters params, int perPage, int page)
+			throws IOException, SAXException, FlickrException {
+		PhotoList photos = new PhotoList();
+
+		List parameters = new ArrayList();
+		parameters.add(new Parameter("method", METHOD_GET_INTERESTINGNESS));
+		parameters.add(new Parameter("api_key", apiKey));
+
+		parameters.addAll(params.getAsParameters());
+
+		if (perPage > 0) {
+			parameters.add(new Parameter("per_page", new Integer(perPage)));
+		}
+		if (page > 0) {
+			parameters.add(new Parameter("page", new Integer(page)));
+		}
+
+		Response response = transport.get(transport.getPath(), parameters);
+		if (response.isError()) {
+			throw new FlickrException(response.getErrorCode(), response
+					.getErrorMessage());
+		}
+		Element photosElement = response.getPayload();
+		photos.setPage(photosElement.getAttribute("page"));
+		photos.setPages(photosElement.getAttribute("pages"));
+		photos.setPerPage(photosElement.getAttribute("perpage"));
+		photos.setTotal(photosElement.getAttribute("total"));
+
+		NodeList photoNodes = photosElement.getElementsByTagName("photo");
+		for (int i = 0; i < photoNodes.getLength(); i++) {
+			Element photoElement = (Element) photoNodes.item(i);
+			Photo photo = new Photo();
+			photo.setId(photoElement.getAttribute("id"));
+
+			User owner = new User();
+			owner.setId(photoElement.getAttribute("owner"));
+			photo.setOwner(owner);
+
+			photo.setSecret(photoElement.getAttribute("secret"));
+			photo.setServer(photoElement.getAttribute("server"));
+			photo.setTitle(photoElement.getAttribute("title"));
+			photo.setPublicFlag("1".equals(photoElement
+					.getAttribute("ispublic")));
+			photo.setFriendFlag("1".equals(photoElement
+					.getAttribute("isfriend")));
+			photo.setFamilyFlag("1".equals(photoElement
+					.getAttribute("isfamily")));
+
+			photos.add(photo);
+		}
+		return photos;
+	}
+    
+    
     /**
      * Set the dates for the specified photo.
      *
