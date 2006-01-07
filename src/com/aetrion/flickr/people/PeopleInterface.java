@@ -280,7 +280,7 @@ public class PeopleInterface {
      */
     public User getUploadStatus() throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_PUBLIC_PHOTOS));
+        parameters.add(new Parameter("method", METHOD_GET_UPLOAD_STATUS));
         parameters.add(new Parameter("api_key", apiKey));
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
