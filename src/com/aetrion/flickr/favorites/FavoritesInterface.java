@@ -18,6 +18,7 @@ import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.util.StringUtilities;
 
 /**
@@ -72,9 +73,9 @@ public class FavoritesInterface {
      * @throws IOException
      * @throws SAXException
      */
-    public Collection getList(String userId, int perPage, int page, String[] extras) throws IOException,
+    public PhotoList getList(String userId, int perPage, int page, String[] extras) throws IOException,
             SAXException, FlickrException {
-        List photos = new ArrayList();
+        PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST));
@@ -99,6 +100,10 @@ public class FavoritesInterface {
         }
 
         Element photosElement = response.getPayload();
+        photos.setPage(photosElement.getAttribute("page"));
+		photos.setPages(photosElement.getAttribute("pages"));
+		photos.setPerPage(photosElement.getAttribute("perpage"));
+		photos.setTotal(photosElement.getAttribute("total"));
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
@@ -133,9 +138,9 @@ public class FavoritesInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getPublicList(String userId, int perPage, int page, String[] extras)
+    public PhotoList getPublicList(String userId, int perPage, int page, String[] extras)
             throws IOException, SAXException, FlickrException {
-        List photos = new ArrayList();
+        PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_PUBLIC_LIST));
@@ -159,6 +164,10 @@ public class FavoritesInterface {
         }
 
         Element photosElement = response.getPayload();
+        photos.setPage(photosElement.getAttribute("page"));
+		photos.setPages(photosElement.getAttribute("pages"));
+		photos.setPerPage(photosElement.getAttribute("perpage"));
+		photos.setTotal(photosElement.getAttribute("total"));
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);

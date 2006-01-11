@@ -96,9 +96,9 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getContactsPhotos(int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
+    public PhotoList getContactsPhotos(int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
             throws IOException, SAXException, FlickrException {
-        List photos = new ArrayList();
+        PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_CONTACTS_PHOTOS));
@@ -122,6 +122,10 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photosElement = response.getPayload();
+        photos.setPage(photosElement.getAttribute("page"));
+		photos.setPages(photosElement.getAttribute("pages"));
+		photos.setPerPage(photosElement.getAttribute("perpage"));
+		photos.setTotal(photosElement.getAttribute("total"));
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
@@ -158,9 +162,9 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getContactsPublicPhotos(String userId, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
+    public PhotoList getContactsPublicPhotos(String userId, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
             throws IOException, SAXException, FlickrException {
-        List photos = new ArrayList();
+        PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_CONTACTS_PUBLIC_PHOTOS));
@@ -186,6 +190,10 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photosElement = response.getPayload();
+        photos.setPage(photosElement.getAttribute("page"));
+		photos.setPages(photosElement.getAttribute("pages"));
+		photos.setPerPage(photosElement.getAttribute("perpage"));
+		photos.setTotal(photosElement.getAttribute("total"));
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
@@ -472,8 +480,8 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getNotInSet(int perPage, int page) throws IOException, SAXException, FlickrException {
-        List photos = new ArrayList();
+    public PhotoList getNotInSet(int perPage, int page) throws IOException, SAXException, FlickrException {
+        PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", PhotosInterface.METHOD_GET_NOT_IN_SET));
@@ -498,6 +506,11 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photosElement = response.getPayload();
+        photos.setPage(photosElement.getAttribute("page"));
+		photos.setPages(photosElement.getAttribute("pages"));
+		photos.setPerPage(photosElement.getAttribute("perpage"));
+		photos.setTotal(photosElement.getAttribute("total"));
+
         NodeList photoElements = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoElements.getLength(); i++) {
             Element photoElement = (Element) photoElements.item(i);
@@ -559,8 +572,8 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getRecent(int perPage, int page) throws IOException, SAXException, FlickrException {
-        List photos = new ArrayList();
+    public PhotoList getRecent(int perPage, int page) throws IOException, SAXException, FlickrException {
+        PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_RECENT));
@@ -578,6 +591,10 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photosElement = response.getPayload();
+        photos.setPage(photosElement.getAttribute("page"));
+		photos.setPages(photosElement.getAttribute("pages"));
+		photos.setPerPage(photosElement.getAttribute("perpage"));
+		photos.setTotal(photosElement.getAttribute("total"));
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
@@ -647,9 +664,9 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getUntagged(int perPage, int page) throws IOException, SAXException,
+    public PhotoList getUntagged(int perPage, int page) throws IOException, SAXException,
             FlickrException {
-        List photos = new ArrayList();
+        PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_UNTAGGED));
@@ -667,6 +684,11 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photosElement = response.getPayload();
+        photos.setPage(photosElement.getAttribute("page"));
+		photos.setPages(photosElement.getAttribute("pages"));
+		photos.setPerPage(photosElement.getAttribute("perpage"));
+		photos.setTotal(photosElement.getAttribute("total"));
+
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
@@ -770,6 +792,17 @@ public class PhotosInterface {
         return photos;
     }
 
+    /**
+     * Search for interesting photos using the Flickr Interestingness algorithm.
+     *
+     * @param params Any search parameters
+     * @param perPage Number of items per page
+     * @param page The page to start on
+     * @return A PhotoList
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
     public PhotoList searchInterestingness(SearchParameters params, int perPage, int page)
 			throws IOException, SAXException, FlickrException {
 		PhotoList photos = new PhotoList();
