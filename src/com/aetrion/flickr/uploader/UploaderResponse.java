@@ -28,10 +28,9 @@ public class UploaderResponse implements Response {
             Element photoIdElement = (Element) rspElement.getElementsByTagName("photoid").item(0);
             photoId = ((Text)photoIdElement.getFirstChild()).getData();
         } else {
-            Element errorCodeElement = (Element) rspElement.getElementsByTagName("error").item(0);
-            errorCode = ((Text)errorCodeElement.getFirstChild()).getData();
-            Element errorMessageElement = (Element) rspElement.getElementsByTagName("verbose").item(0);
-            errorMessage = ((Text)errorMessageElement.getFirstChild()).getData();
+            Element errElement = (Element) rspElement.getElementsByTagName("err").item(0);
+            errorCode = errElement.getAttribute("code");
+            errorMessage = errElement.getAttribute("msg");
         }
     }
 
