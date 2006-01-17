@@ -37,6 +37,22 @@ public class SearchParameters {
 	private boolean extrasIconServer = false;
 	private boolean extrasOriginalFormat = false;
 
+	/** order argument */
+	public static int DATE_POSTED_DESC = 0;
+	/** order argument */
+	public static int DATE_POSTED_ASC = 1;
+	/** order argument */
+	public static int DATE_TAKEN_DESC = 2;
+	/** order argument */
+	public static int DATE_TAKEN_ASC = 3;
+	/** order argument */
+	public static int INTERESTINGNESS_DESC = 4;
+	/** order argument */
+	public static int INTERESTINGNESS_ASC = 5;
+	/** order argument */
+	public static int RELEVANCE = 6;
+	private int sort = 0;
+
     public SearchParameters() {
 
     }
@@ -113,51 +129,68 @@ public class SearchParameters {
         this.license = license;
     }
 
-	public Date getInterestingnessDate() {
-		return interestingnessDate;
-	}
-	/**
-	 * Set the date, for which interesting Photos to request.
-	 * 
-	 * @param intrestingnessDate
-	 */
-	public void setInterestingnessDate(Date intrestingnessDate) {
-		this.interestingnessDate = intrestingnessDate;
-	}
+    public Date getInterestingnessDate() {
+        return interestingnessDate;
+    }
+    
+    /**
+     * Set the date, for which interesting Photos to request.
+     * 
+     * @param intrestingnessDate
+     */
+    public void setInterestingnessDate(Date intrestingnessDate) {
+        this.interestingnessDate = intrestingnessDate;
+    }
 	
-	/**
-	 * Setting all toogles to get extra-fields in Photos-search.<br>
-	 * Default is false.
-	 * 
-	 * @param toggle to include or exclude all extra fields.
-	 */
-	public void setExtras(boolean toggle) {
-		setExtrasLicense(toggle);
-		setExtrasDateUpload(toggle);
-		setExtrasDateTaken(toggle);
-		setExtrasOwnerName(toggle);
-		setExtrasIconServer(toggle);
-		setExtrasOriginalFormat(toggle);
-	}
+    /**
+     * Setting all toogles to get extra-fields in Photos-search.<br>
+     * The default is false.
+     * 
+     * @param toggle to include or exclude all extra fields.
+     */
+    public void setExtras(boolean toggle) {
+        setExtrasLicense(toggle);
+        setExtrasDateUpload(toggle);
+        setExtrasDateTaken(toggle);
+        setExtrasOwnerName(toggle);
+        setExtrasIconServer(toggle);
+        setExtrasOriginalFormat(toggle);
+    }
 	
-	public void setExtrasLicense(boolean toggle) {
-		this.extrasLicense = toggle;
-	}	
-	public void setExtrasDateUpload(boolean toggle) {
-		this.extrasDateUpload = toggle;
-	}
-	public void setExtrasDateTaken(boolean toggle) {
-		this.extrasDateTaken = toggle;
-	}
-	public void setExtrasOwnerName(boolean toggle) {
-		this.extrasOwnerName = toggle;
-	}
-	public void setExtrasIconServer(boolean toggle) {
-		this.extrasIconServer = toggle;
-	}
-	public void setExtrasOriginalFormat(boolean toggle) {
-		this.extrasOriginalFormat = toggle;
-	}
+    public void setExtrasLicense(boolean toggle) {
+        this.extrasLicense = toggle;
+    }
+    public void setExtrasDateUpload(boolean toggle) {
+        this.extrasDateUpload = toggle;
+    }
+    public void setExtrasDateTaken(boolean toggle) {
+        this.extrasDateTaken = toggle;
+    }
+    public void setExtrasOwnerName(boolean toggle) {
+        this.extrasOwnerName = toggle;
+    }
+    public void setExtrasIconServer(boolean toggle) {
+        this.extrasIconServer = toggle;
+    }
+    public void setExtrasOriginalFormat(boolean toggle) {
+        this.extrasOriginalFormat = toggle;
+    }
+	
+    public int getSort() {
+        return sort;
+    }
+	
+    /**
+     * Set the sort-order to one of the following constants 
+     * DATE_POSTED_ASC, DATE_TAKEN_DESC, DATE_TAKEN_ASC, 
+     * INTERESTINGNESS_DESC, INTERESTINGNESS_ASC, RELEVANCE<br>
+     * The default is DATE_POSTED_DESC
+     * 
+     * @param order constant
+     */
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
 	
     public Collection getAsParameters() {
         List parameters = new ArrayList();
@@ -211,18 +244,31 @@ public class SearchParameters {
         if (intrestingnessDate != null) {
             parameters.add(new Parameter("date", DF.format(intrestingnessDate)));
         }
-    	if(extrasLicense || extrasDateUpload ||
-    	   extrasDateTaken || extrasOwnerName ||
-    	   extrasIconServer || extrasOriginalFormat) {
-    		Vector argsList = new Vector();
-    		if(extrasLicense) argsList.add("license");
-    		if(extrasDateUpload) argsList.add("date_upload");
-    		if(extrasDateTaken) argsList.add("date_taken");
-    		if(extrasOwnerName) argsList.add("owner_name");
-    		if(extrasIconServer) argsList.add("icon_server");
-    		if(extrasOriginalFormat) argsList.add("original_format");
+        
+        if(extrasLicense || extrasDateUpload ||
+           extrasDateTaken || extrasOwnerName ||
+           extrasIconServer || extrasOriginalFormat) {
+            Vector argsList = new Vector();
+            if(extrasLicense) argsList.add("license");
+            if(extrasDateUpload) argsList.add("date_upload");
+            if(extrasDateTaken) argsList.add("date_taken");
+            if(extrasOwnerName) argsList.add("owner_name");
+            if(extrasIconServer) argsList.add("icon_server");
+            if(extrasOriginalFormat) argsList.add("original_format");
             parameters.add(new Parameter("extras", StringUtilities.join(argsList,",")));
-    	}
+        }
+    	
+        if(sort != DATE_POSTED_DESC) {
+            String sortArg = null;
+            if(sort == DATE_POSTED_ASC) sortArg = "date-posted-asc";
+            if(sort == DATE_TAKEN_DESC) sortArg = "date-taken-desc";
+            if(sort == DATE_TAKEN_ASC) sortArg = "date-taken-asc";
+            if(sort == INTERESTINGNESS_DESC) sortArg = "interestingness-desc";
+            if(sort == INTERESTINGNESS_ASC) sortArg = "interestingness-asc";
+            if(sort == RELEVANCE) sortArg = "relevance";
+            if(sortArg != null) parameters.add(new Parameter("sort", sortArg));
+        }
+		
         return parameters;
     }
 }
