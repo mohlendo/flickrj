@@ -113,7 +113,7 @@ public class User implements Serializable {
     }
 
     public void setPhotosFirstDate(String photosFirstDate) {
-        setPhotosFirstDate(Long.parseLong(photosFirstDate));
+        setPhotosFirstDate(Long.parseLong(photosFirstDate) * (long) 1000);
     }
 
     public Date getPhotosFirstDateTaken() {
