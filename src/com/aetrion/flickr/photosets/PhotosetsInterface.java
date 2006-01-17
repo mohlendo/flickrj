@@ -16,6 +16,7 @@ import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
+import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
@@ -322,7 +323,8 @@ public class PhotosetsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getPhotos(String photosetId) throws IOException, SAXException, FlickrException {
+    public PhotoList getPhotos(String photosetId) throws IOException, SAXException, FlickrException {
+        PhotoList photos = new PhotoList();
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_PHOTOS));
         parameters.add(new Parameter("api_key", apiKey));
@@ -333,17 +335,25 @@ public class PhotosetsInterface {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        List photos = new ArrayList();
 
         Element photoset = response.getPayload();
         NodeList photoElements = photoset.getElementsByTagName("photo");
+        photos.setPage("1");
+		photos.setPages("1");
+		photos.setPerPage(photoElements.getLength());
+		photos.setTotal(photoElements.getLength());
+		
         for (int i = 0; i < photoElements.getLength(); i++) {
             Element photoElement = (Element) photoElements.item(i);
             Photo photo = new Photo();
             photo.setId(photoElement.getAttribute("id"));
+            photo.setTitle(photoElement.getAttribute("title"));
             photo.setSecret(photoElement.getAttribute("secret"));
             photo.setServer(photoElement.getAttribute("server"));
             photo.setPrimary(photoElement.getAttribute("isprimary"));
+            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
+            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
+            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
             photos.add(photo);
         }
 
