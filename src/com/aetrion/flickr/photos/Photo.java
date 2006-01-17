@@ -178,7 +178,7 @@ public class Photo {
 
     public void setDatePosted(String datePosted) {
         if (datePosted == null || "".equals(datePosted)) return;
-        setDatePosted(Long.parseLong(datePosted));
+        setDatePosted(Long.parseLong(datePosted) * (long) 1000);
     }
 
     public Date getDateTaken() {
