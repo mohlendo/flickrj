@@ -877,7 +877,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("photo_id", photoId));
 
         if (datePosted != null) {
-            parameters.add(new Parameter("date_posted", new Long(datePosted.getTime())));
+            parameters.add(new Parameter("date_posted", new Long(datePosted.getTime() / 1000)));
         }
 
         if (dateTaken != null) {
