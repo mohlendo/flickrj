@@ -20,15 +20,23 @@ public class UploaderResponse implements Response {
     private String photoId;
     private String errorCode;
     private String errorMessage;
+    private Element responsePayLoad;
 
     public void parse(Document document) {
-        Element rspElement = document.getDocumentElement();
-        status = rspElement.getAttribute("stat");
+        responsePayLoad = document.getDocumentElement();
+        status = responsePayLoad.getAttribute("stat");
         if ("ok".equals(status)) {
-            Element photoIdElement = (Element) rspElement.getElementsByTagName("photoid").item(0);
-            photoId = ((Text)photoIdElement.getFirstChild()).getData();
+            Element photoIdElement = (Element) responsePayLoad.getElementsByTagName("photoid").item(0);
+            if( photoIdElement != null )
+            {
+              photoId = ((Text)photoIdElement.getFirstChild()).getData();
+            }
+            else
+            {
+              photoId = null;
+            }
         } else {
-            Element errElement = (Element) rspElement.getElementsByTagName("err").item(0);
+            Element errElement = (Element) responsePayLoad.getElementsByTagName("err").item(0);
             errorCode = errElement.getAttribute("code");
             errorMessage = errElement.getAttribute("msg");
         }
@@ -58,8 +66,7 @@ public class UploaderResponse implements Response {
      * @see com.aetrion.flickr.Response#getPayload()
      */
     public Element getPayload() {
-        // TODO Auto-generated method stub
-        return null;
+        return responsePayLoad;
     }
 
     /* (non-Javadoc)

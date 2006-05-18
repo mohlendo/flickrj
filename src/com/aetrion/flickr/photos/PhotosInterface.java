@@ -76,7 +76,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
-        parameters.add(new Parameter("tags", StringUtilities.join(tags, " ")));
+        parameters.add(new Parameter("tags", StringUtilities.join(tags, " ", true)));
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -379,7 +379,7 @@ public class PhotosInterface {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        Element photoElement = response.getPayload();
+        Element photoElement = (Element)response.getPayload().getElementsByTagName( "photo" ).item( 0 );
         Photo photo = new Photo();
         photo.setId(photoElement.getAttribute("id"));
         photo.setSecret(photoElement.getAttribute("secret"));
@@ -964,7 +964,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
-        parameters.add(new Parameter("tags", StringUtilities.join(tags, " ")));
+        parameters.add(new Parameter("tags", StringUtilities.join(tags, " ", true)));
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {

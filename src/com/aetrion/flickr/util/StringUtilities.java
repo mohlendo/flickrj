@@ -26,7 +26,36 @@ public class StringUtilities {
      * @return The joined String
      */
     public static String join(String[] s, String delimiter) {
-        return join(Arrays.asList(s), delimiter);
+        return join(s, delimiter, false);
+    }
+    
+    public static String join(String[] s, String delimiter, boolean doQuote) {
+        return join(Arrays.asList(s), delimiter, doQuote);
+    }
+    
+    /**
+     * Join the Collection of Strings using the specified delimter and
+     * optionally quoting each
+     * @param s The String collection
+     * @param delimiter the delimiter String
+     * @param doQuote whether or not to quote the Strings
+     * @return
+     */
+    public static String join( Collection s, String delimiter, boolean doQuote ) {
+        StringBuffer buffer = new StringBuffer();
+        Iterator iter = s.iterator();
+        while (iter.hasNext()) {
+            if( doQuote ) {
+              buffer.append( "\"" + iter.next() + "\"" );
+            }
+            else {
+                buffer.append(iter.next());
+            }
+            if (iter.hasNext()) {
+                buffer.append(delimiter);
+            }
+        }
+        return buffer.toString();
     }
 
     /**
@@ -37,15 +66,7 @@ public class StringUtilities {
      * @return The joined String
      */
     public static String join(Collection s, String delimiter) {
-        StringBuffer buffer = new StringBuffer();
-        Iterator iter = s.iterator();
-        while (iter.hasNext()) {
-            buffer.append(iter.next());
-            if (iter.hasNext()) {
-                buffer.append(delimiter);
-            }
-        }
-        return buffer.toString();
+      return join( s, delimiter, false );
     }
 
 }

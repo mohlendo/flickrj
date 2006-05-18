@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  */
 public class PhotosetsInterface {
 
-    public static final String METHOD_ADD_PHOTO = "flickr.photos.addPhoto";
+    public static final String METHOD_ADD_PHOTO = "flickr.photosets.addPhoto";
     public static final String METHOD_CREATE = "flickr.photosets.create";
     public static final String METHOD_DELETE = "flickr.photosets.delete";
     public static final String METHOD_EDIT_META = "flickr.photosets.editMeta";
@@ -97,7 +97,7 @@ public class PhotosetsInterface {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        Element photosetElement = response.getPayload();
+        Element photosetElement = (Element)response.getPayload().getElementsByTagName("photoset").item(0);
         Photoset photoset = new Photoset();
         photoset.setId(photosetElement.getAttribute("id"));
         photoset.setUrl(photosetElement.getAttribute("url"));
@@ -241,7 +241,7 @@ public class PhotosetsInterface {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        Element photosetElement = response.getPayload();
+        Element photosetElement = (Element)response.getPayload().getElementsByTagName( "photoset" ).item( 0 );
         Photoset photoset = new Photoset();
         photoset.setId(photosetElement.getAttribute("id"));
 
