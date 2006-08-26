@@ -4,20 +4,9 @@
 
 package com.aetrion.flickr;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Properties;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.swing.JDialog;
-import javax.swing.JButton;
-
+import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.auth.Permission;
-import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.util.IOUtilities;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.BrowserLauncherRunner;
@@ -25,6 +14,15 @@ import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import junit.framework.TestCase;
 import org.xml.sax.SAXException;
+
+import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Properties;
 
 /**
  * @author Anthony Eden
@@ -35,6 +33,7 @@ public class AuthInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
+        Flickr.debugRequest = true;
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");

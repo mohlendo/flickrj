@@ -2,19 +2,18 @@
 
 package com.aetrion.flickr;
 
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.blogs.BlogsInterface;
+import com.aetrion.flickr.util.IOUtilities;
+import junit.framework.TestCase;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Properties;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import com.aetrion.flickr.blogs.BlogsInterface;
-import com.aetrion.flickr.util.IOUtilities;
-import com.aetrion.flickr.auth.AuthInterface;
-import com.aetrion.flickr.auth.Auth;
-import junit.framework.TestCase;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
@@ -24,6 +23,7 @@ public class BlogsInterfaceTest extends TestCase {
     Flickr flickr = null;
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
+        Flickr.debugRequest = true;
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");

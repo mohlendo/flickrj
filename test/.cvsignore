@@ -3,3 +3,4 @@ TEST-com.aetrion.flickr.BlogsInterfaceTest.txt
 TEST-com.aetrion.flickr.FavoritesInterfaceTest.txt
 TEST-com.aetrion.flickr.ContactsInterfaceTest.txt
 TEST-com.aetrion.flickr.GroupsInterfaceTest.txt
+build

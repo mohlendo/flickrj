@@ -3,6 +3,18 @@
  */
 package com.aetrion.flickr;
 
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.auth.AuthUtilities;
+import com.aetrion.flickr.util.DebugInputStream;
+import com.aetrion.flickr.util.DebugOutputStream;
+import com.aetrion.flickr.util.IOUtilities;
+import com.aetrion.flickr.util.UrlUtilities;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,19 +22,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import com.aetrion.flickr.auth.Auth;
-import com.aetrion.flickr.auth.AuthUtilities;
-import com.aetrion.flickr.util.DebugInputStream;
-import com.aetrion.flickr.util.IOUtilities;
-import com.aetrion.flickr.util.UrlUtilities;
-import com.aetrion.flickr.util.DebugOutputStream;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * Transport implementation using the REST interface.
@@ -120,6 +119,8 @@ public class REST extends Transport {
      * @throws SAXException
      */
     public Response post(String path, List parameters, boolean multipart) throws IOException, SAXException {
+        AuthUtilities.addAuthToken(parameters);
+
         RequestContext requestContext = RequestContext.getRequestContext();
         URL url = UrlUtilities.buildPostUrl(getHost(), getPort(), path);
 
@@ -154,8 +155,7 @@ public class REST extends Transport {
 
                         Auth auth = requestContext.getAuth();
                         if (auth != null) {
-                            writeParam("auth_token", auth.getToken(), out, boundary);
-                            writeParam("auth_sig", AuthUtilities.getMultipartSignature(parameters), out, boundary);
+                            writeParam("api_sig", AuthUtilities.getMultipartSignature(parameters), out, boundary);
                         }
                     }
                 } else {
@@ -172,7 +172,7 @@ public class REST extends Transport {
                     if (auth != null) {
                         out.writeBytes("&auth_token=");
                         out.writeBytes(auth.getToken());
-                        out.writeBytes("&auth_sig=");
+                        out.writeBytes("&api_sig=");
                         out.writeBytes(AuthUtilities.getSignature(parameters));
                     }
                 }

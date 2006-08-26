@@ -4,9 +4,9 @@
 
 package com.aetrion.flickr.auth;
 
-import java.io.Serializable;
-
 import com.aetrion.flickr.people.User;
+
+import java.io.Serializable;
 
 /**
  * @author Anthony Eden

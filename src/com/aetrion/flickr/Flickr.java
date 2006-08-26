@@ -3,10 +3,9 @@
  */
 package com.aetrion.flickr;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.blogs.BlogsInterface;
+import com.aetrion.flickr.contacts.ContactsInterface;
 import com.aetrion.flickr.favorites.FavoritesInterface;
 import com.aetrion.flickr.groups.GroupsInterface;
 import com.aetrion.flickr.groups.pools.PoolsInterface;
@@ -18,7 +17,8 @@ import com.aetrion.flickr.reflection.ReflectionInterface;
 import com.aetrion.flickr.tags.TagsInterface;
 import com.aetrion.flickr.test.TestInterface;
 import com.aetrion.flickr.urls.UrlsInterface;
-import com.aetrion.flickr.contacts.ContactsInterface;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Main entry point for the Flickrj API.  This class is used to acquire Interface classes which wrap the Flickr API.

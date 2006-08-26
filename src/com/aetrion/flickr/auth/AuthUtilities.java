@@ -4,17 +4,17 @@
 
 package com.aetrion.flickr.auth;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
-
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.ParameterAlphaComparator;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.util.ByteUtilities;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Utilities used by the authentication API.
@@ -47,6 +47,8 @@ public class AuthUtilities {
      * @return The signature String
      */
     public static String getSignature(String sharedSecret, List params) {
+        addAuthToken(params);
+
         StringBuffer buffer = new StringBuffer();
         buffer.append(sharedSecret);
         Collections.sort(params, new ParameterAlphaComparator());
@@ -56,6 +58,8 @@ public class AuthUtilities {
             buffer.append(param.getName());
             buffer.append(param.getValue());
         }
+
+        System.out.println("buffer: " + buffer);
 
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -68,6 +72,8 @@ public class AuthUtilities {
     public static String getMultipartSignature(String sharedSecret, List params) {
         List ignoreParameters = new ArrayList();
         ignoreParameters.add("photo");
+
+        addAuthToken(params);
 
         StringBuffer buffer = new StringBuffer();
         buffer.append(sharedSecret);
@@ -86,6 +92,33 @@ public class AuthUtilities {
             return ByteUtilities.toHexString(md.digest(buffer.toString().getBytes()));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Adds the auth_token to the parameter list if it is necessary.
+     * @param params
+     */
+    public static void addAuthToken(List params) {
+        //Checking for the auth_token parameter
+        Iterator it = params.iterator();
+        boolean tokenFlag = false;
+        while(it.hasNext())
+        {
+            if(((Parameter)it.next()).getName().equals("auth_token"))
+            {
+                tokenFlag = true;
+            }
+        }
+
+        if(!tokenFlag)
+        {
+            if(RequestContext.getRequestContext().getAuth() != null)
+            {
+                String authToken = RequestContext.getRequestContext().getAuth().getToken();
+                if(authToken != null && !authToken.equals(""))
+                    params.add(new Parameter("auth_token", authToken));
+            }
         }
     }
 

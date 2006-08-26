@@ -3,10 +3,10 @@
  */
 package com.aetrion.flickr;
 
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.util.List;
-
-import org.xml.sax.SAXException;
 
 /**
  * The abstract Transport class provides a common interface for transporting requests to the Flickr servers. Flickr
