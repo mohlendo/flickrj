@@ -9,6 +9,7 @@ import com.aetrion.flickr.contacts.ContactsInterface;
 import com.aetrion.flickr.favorites.FavoritesInterface;
 import com.aetrion.flickr.groups.GroupsInterface;
 import com.aetrion.flickr.groups.pools.PoolsInterface;
+import com.aetrion.flickr.interestingness.InterestingnessInterface;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.licenses.LicensesInterface;
@@ -64,6 +65,7 @@ public class Flickr {
     private TagsInterface tagsInterface;
     private TestInterface testInterface;
     private UrlsInterface urlsInterface;
+    private InterestingnessInterface interestingnessInterface;
 
     /**
      * Construct a new Flickr gateway instance.  Defaults to a REST transport.
@@ -238,6 +240,16 @@ public class Flickr {
             urlsInterface = new UrlsInterface(apiKey, transport);
         }
         return urlsInterface;
+    }
+    
+    /**
+     * @return the interface to the flickr.interestingness methods
+     */
+    public synchronized InterestingnessInterface getInterestingnessInterface() {
+        if (interestingnessInterface == null) {
+            interestingnessInterface = new InterestingnessInterface(apiKey, transport);
+        }
+        return interestingnessInterface;
     }
 
 }
