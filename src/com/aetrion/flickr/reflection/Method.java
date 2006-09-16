@@ -12,11 +12,16 @@ import java.util.Collection;
  */
 public class Method {
 
-    private String name;
+    public static final int READ_PERMISSION = 1;
+    public static final int WRITE_PERMISSION = 2;
+    
+	private String name;
     private boolean needsLogin;
+    private boolean needsSigning;
+    private int requiredPerms;
     private String description;
     private String response;
-    private String explaination;
+    private String explanation;
     private Collection arguments;
     private Collection errors;
 
@@ -28,15 +33,40 @@ public class Method {
         this.name = name;
     }
 
+    /**
+     * @deprecated, use needsLogin() instead
+     * @return
+     */
     public boolean isNeedsLogin() {
         return needsLogin;
     }
+    
+    public boolean needsLogin() {
+        return needsLogin;
+    }
+
 
     public void setNeedsLogin(boolean needsLogin) {
         this.needsLogin = needsLogin;
     }
 
-    public String getDescription() {
+    public boolean needsSigning() {
+		return needsSigning;
+	}
+
+	public void setNeedsSigning(boolean needsSigning) {
+		this.needsSigning = needsSigning;
+	}
+
+	public int getRequiredPerms() {
+		return requiredPerms;
+	}
+
+	public void setRequiredPerms(int reqiredPerms) {
+		this.requiredPerms = reqiredPerms;
+	}
+
+	public String getDescription() {
         return description;
     }
 
@@ -52,15 +82,30 @@ public class Method {
         this.response = response;
     }
 
+    /**
+     * @deprecated use getExplanation() instead.
+     * @return the methods explanation
+     */
     public String getExplaination() {
-        return explaination;
+        return explanation;
     }
 
+    /**
+     * @deprecated use setExplanation() instead.
+     */
     public void setExplaination(String explaination) {
-        this.explaination = explaination;
+        this.explanation = explaination;
     }
 
-    public Collection getArguments() {
+    public String getExplanation() {
+		return explanation;
+	}
+
+	public void setExplanation(String explanation) {
+		this.explanation = explanation;
+	}
+
+	public Collection getArguments() {
         if (arguments == null) {
             arguments = new ArrayList();
         }
