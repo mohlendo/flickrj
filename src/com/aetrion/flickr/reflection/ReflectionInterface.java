@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 public class ReflectionInterface {
 
     public static final String METHOD_GET_METHOD_INFO = "flickr.reflection.getMethodInfo";
-    public static final String METHOD_GET_METHODS = "flickr.reflection.getMethods";
+    public static final String METHOD_GET_METHODS     = "flickr.reflection.getMethods";
 
     private String apiKey;
     private Transport transport;
@@ -66,12 +66,49 @@ public class ReflectionInterface {
         Method method = new Method();
         method.setName(methodElement.getAttribute("name"));
         method.setNeedsLogin("1".equals(methodElement.getAttribute("needslogin")));
+        method.setNeedsSigning("1".equals(methodElement.getAttribute("needssigning")));
+        String requiredPermsStr = methodElement.getAttribute("requiredperms");
+        if (requiredPermsStr != null && requiredPermsStr.length() > 0) {
+        	try {
+        		int perms = Integer.parseInt(requiredPermsStr);
+                method.setRequiredPerms(perms);
+        	} catch (NumberFormatException e) {
+        		// what shall we do?
+        		e.printStackTrace();
+        	}
+        }
         method.setDescription(XMLUtilities.getChildValue(methodElement, "description"));
         method.setResponse(XMLUtilities.getChildValue(methodElement, "response"));
-        method.setExplaination(XMLUtilities.getChildValue(methodElement, "explaination"));
+        method.setExplanation(XMLUtilities.getChildValue(methodElement, "explanation"));
 
         List arguments = new ArrayList();
         Element argumentsElement = XMLUtilities.getChild(methodElement, "arguments");
+        // tolerant fix for incorrect nesting of the <arguments> element
+        // as observed in current flickr responses of this method
+        //
+        // specified as 
+        // <rsp>
+        //	<method>
+        //   <arguments>
+        //   <errors>
+        //  <method>
+        // </rsp>
+        //
+        // observed as
+        // <rsp>
+        //  <method>
+        //  <arguments>
+        //  <errors>
+        // </rsp>
+        //
+        if (argumentsElement == null) {
+        	//System.err.println("getMethodInfo: Using workaround for arguments array");
+            Element parent = (Element)methodElement.getParentNode();
+            Element child = XMLUtilities.getChild(parent, "arguments");
+            if (child != null) {
+            	argumentsElement = child;
+            }
+        }
         NodeList argumentElements = argumentsElement.getElementsByTagName("argument");
         for (int i = 0; i < argumentElements.getLength(); i++) {
             Argument argument = new Argument();
@@ -83,14 +120,41 @@ public class ReflectionInterface {
         }
         method.setArguments(arguments);
 
-        List errors = new ArrayList();
         Element errorsElement = XMLUtilities.getChild(methodElement, "errors");
+        // tolerant fix for incorrect nesting of the <errors> element
+        // as observed in current flickr responses of this method
+        // as of 2006-09-15
+        //
+        // specified as 
+        // <rsp>
+        //	<method>
+        //   <arguments>
+        //   <errors>
+        //  <method>
+        // </rsp>
+        //
+        // observed as
+        // <rsp>
+        //  <method>
+        //  <arguments>
+        //  <errors>
+        // </rsp>
+        //
+        if (errorsElement == null) {
+           	//System.err.println("getMethodInfo: Using workaround for errors array");
+            Element parent = (Element)methodElement.getParentNode();
+            Element child = XMLUtilities.getChild(parent, "errors");
+            if (child != null) {
+            	errorsElement = child;
+            }
+        }
+        List errors = new ArrayList();
         NodeList errorElements = errorsElement.getElementsByTagName("error");
         for (int i = 0; i < errorElements.getLength(); i++) {
             Error error = new Error();
             Element errorElement = (Element) errorElements.item(i);
             error.setCode(errorElement.getAttribute("code"));
-            error.setMessage(errorElement.getAttribute("messahe"));
+            error.setMessage(errorElement.getAttribute("message"));
             error.setExplaination(XMLUtilities.getValue(errorElement));
             errors.add(error);
         }
