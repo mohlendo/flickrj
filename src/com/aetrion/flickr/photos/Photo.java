@@ -29,7 +29,7 @@ public class Photo {
 
     private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private static final String ORIGINAL_IMAGE_SUFFIX = "_o.jpg";
+    private static final String DEFAULT_ORIGINAL_IMAGE_SUFFIX = "_o.jpg";
     private static final String SMALL_SQUARE_IMAGE_SUFFIX = "_s.jpg";
     private static final String SMALL_IMAGE_SUFFIX = "_m.jpg";
     private static final String THUMBNAIL_IMAGE_SUFFIX = "_t.jpg";
@@ -50,6 +50,7 @@ public class Photo {
     private boolean familyFlag;
     private Date datePosted;
     private Date dateTaken;
+    private Date lastUpdate;
     private String takenGranularity;
     private Permissions permissions;
     private Editability editability;
@@ -59,6 +60,8 @@ public class Photo {
     private Collection urls;
     private String iconServer;
     private String url;
+    private GeoData geoData;
+    private String originalFormat;
 
     public Photo() {
 
@@ -199,7 +202,21 @@ public class Photo {
         }
     }
 
-    public String getTakenGranularity() {
+    public Date getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(Date lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
+	
+	public void setLastUpdate(String lastUpdateStr) {
+		if (lastUpdateStr == null || "".equals(lastUpdateStr)) return;
+		long unixTime = Long.parseLong(lastUpdateStr);
+		setLastUpdate(new Date(unixTime * 1000L));
+	}
+
+	public String getTakenGranularity() {
         return takenGranularity;
     }
 
@@ -275,8 +292,31 @@ public class Photo {
         this.url = url;
     }
 
-    public BufferedImage getOriginalImage() throws IOException {
-        return getImage(ORIGINAL_IMAGE_SUFFIX);
+    public GeoData getGeoData() {
+		return geoData;
+	}
+
+	public void setGeoData(GeoData geoData) {
+		this.geoData = geoData;
+	}
+	
+	public boolean hasGeoData() {
+		return geoData != null;
+	}
+
+	public String getOriginalFormat() {
+		return originalFormat;
+	}
+
+	public void setOriginalFormat(String originalFormat) {
+		this.originalFormat = originalFormat;
+	}
+
+	public BufferedImage getOriginalImage() throws IOException {
+		if (originalFormat != null) {
+			return getImage("_o." + originalFormat);
+		}
+        return getImage(DEFAULT_ORIGINAL_IMAGE_SUFFIX);
     }
 
     /**
@@ -286,7 +326,10 @@ public class Photo {
      * @throws IOException
      */
     public InputStream getOriginalAsStream() throws IOException {
-        return getImageAsStream(ORIGINAL_IMAGE_SUFFIX);
+		if (originalFormat != null) {
+			return getImageAsStream("_o." + originalFormat);
+		}
+        return getImageAsStream(DEFAULT_ORIGINAL_IMAGE_SUFFIX);
     }
 
     /**
@@ -295,7 +338,10 @@ public class Photo {
      * @return The original image URL
      */
     public String getOriginalUrl() {
-        return getBaseImageUrl() + ORIGINAL_IMAGE_SUFFIX;
+    	if (originalFormat != null) {
+    		return getBaseImageUrl() + "_o." + originalFormat;
+    	}
+        return getBaseImageUrl() + DEFAULT_ORIGINAL_IMAGE_SUFFIX;
     }
 
     /**
