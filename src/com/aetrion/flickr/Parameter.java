@@ -24,7 +24,12 @@ public class Parameter {
         this.value = value;
     }
 
-    public String getName() {
+    public Parameter(String name, long value) {
+		this.name = name;
+		this.value = new Long(value);
+	}
+
+	public String getName() {
         return name;
     }
 
