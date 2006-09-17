@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
@@ -44,6 +45,9 @@ public class PhotosInterface {
     public static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
     public static final String METHOD_GET_SIZES = "flickr.photos.getSizes";
     public static final String METHOD_GET_UNTAGGED = "flickr.photos.getUntagged";
+    public static final String METHOD_GET_WITH_GEO_DATA = "flickr.photos.getWithGeoData";
+    public static final String METHOD_GET_WITHOUT_GEO_DATA = "flickr.photos.getWithoutGeoData";
+    public static final String METHOD_RECENTLY_UPLOADED ="flickr.photos.recentlyUpdated";
     public static final String METHOD_REMOVE_TAG = "flickr.photos.removeTag";
     public static final String METHOD_SEARCH = "flickr.photos.search";
     public static final String METHOD_SET_DATES = "flickr.photos.setDates";
@@ -72,6 +76,30 @@ public class PhotosInterface {
     		geoInterface = new GeoInterface(apiKey, transport);
     	}
     	return geoInterface;
+    }
+    
+    /**
+     * Delete a photo from flickr.
+     * This method requires authentication with 'delete' permission.
+     * @param photoId
+     * @throws SAXException 
+     * @throws IOException 
+     * @throws FlickrException 
+     */
+    public void delete(String photoId) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_ADD_TAGS));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photo_id", photoId));
+        
+        // Note: This method requires an HTTP POST request.
+        Response response = transport.post(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        // This method has no specific response - It returns an empty 
+        // sucess response if it completes without error.
     }
 
     /**
@@ -722,6 +750,229 @@ public class PhotosInterface {
             photos.add(photo);
         }
         return photos;
+    }
+    
+    /**
+     * Returns a list of your geo-tagged photos.
+     * This method requires authentication with 'read' permission.
+     * @param minUploadDate Minimum upload date. Photos with an upload date greater than or equal to this value will be returned. Set to null to not specify a date.
+     * @param maxUploadDate Maximum upload date. Photos with an upload date less than or equal to this value will be returned. Set to null to not specify a date.
+     * @param minTakenDate Minimum taken date. Photos with an taken date greater than or equal to this value will be returned. Set to null to not specify a date.
+     * @param maxTakenDate Maximum taken date. Photos with an taken date less than or equal to this value will be returned. Set to null to not specify a date.
+     * @param privacyFilter Return photos only matching a certain privacy level. Valid values are:
+     * <ul>
+     * <li>1 public photos</li>
+     * <li>2 private photos visible to friends</li>
+     * <li>3 private photos visible to family</li>
+     * <li>4 private photos visible to friends & family</li>
+     * <li>5 completely private photos</li>
+     * </ul>
+     * Set to 0 to not specify a privacy Filter.
+     * @param sort The order in which to sort returned photos. Deafults to date-posted-desc. The possible values are: date-posted-asc, date-posted-desc, date-taken-asc, date-taken-desc, interestingness-desc, and interestingness-asc.
+     * @param extras A set of Strings controlling the extra information to fetch for each returned record. Currently supported fields are: license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo. Set to null or an empty set to not specify any extras.
+     * @param perPage Number of photos to return per page. If this argument is 0, it defaults to 100. The maximum allowed value is 500.
+     * @param page The page of results to return. If this argument is 0, it defaults to 1.
+     * @return
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public PhotoList getWithGeoData(Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, int privacyFilter, String sort, Set extras, int perPage, int page) throws FlickrException, IOException, SAXException {
+    	PhotoList photos = new PhotoList();
+    	List parameters = new ArrayList();
+    	parameters.add(new Parameter("method", METHOD_GET_WITH_GEO_DATA));
+    	parameters.add(new Parameter("api_key", apiKey));
+
+    	if (minUploadDate != null) {
+    		parameters.add(new Parameter("min_upload_date", minUploadDate.getTime() / 1000L));
+    	}
+    	if (maxUploadDate != null) {
+    		parameters.add(new Parameter("max_upload_date", maxUploadDate.getTime() / 1000L));
+    	}
+    	if (minTakenDate != null) {
+    		parameters.add(new Parameter("min_taken_date", minTakenDate.getTime() / 1000L));
+    	}
+    	if (maxTakenDate != null) {
+    		parameters.add(new Parameter("max_taken_date", maxTakenDate.getTime() / 1000L));
+    	}
+    	if (privacyFilter > 0) {
+    		parameters.add(new Parameter("privacy_filter", privacyFilter));        	
+    	}
+    	if (sort != null) {
+    		parameters.add(new Parameter("sort", sort));
+    	}
+    	if (extras != null && !extras.isEmpty()) {
+    		StringBuffer sb = new StringBuffer();
+    		Iterator it = extras.iterator();
+    		while (it.hasNext()) {
+    			if (sb.length() > 0) {
+    				sb.append(",");
+    			}
+    			sb.append(it.next());
+    		}
+    		parameters.add(new Parameter("extras", sb.toString()));
+    	}
+    	if (perPage > 0) {
+    		parameters.add(new Parameter("per_page", perPage));
+    	}
+    	if (page > 0) {
+    		parameters.add(new Parameter("page", page));
+    	}
+    	Response response = transport.get(transport.getPath(), parameters);
+    	if (response.isError()) {
+    		throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+    	}
+    	Element photosElement = response.getPayload();
+    	photos.setPage(photosElement.getAttribute("page"));
+    	photos.setPages(photosElement.getAttribute("pages"));
+    	photos.setPerPage(photosElement.getAttribute("perpage"));
+    	photos.setTotal(photosElement.getAttribute("total"));
+
+    	NodeList photoNodes = photosElement.getElementsByTagName("photo");
+    	for (int i = 0; i < photoNodes.getLength(); i++) {
+    		Element photoElement = (Element) photoNodes.item(i);
+    		photos.add(PhotoFactory.createPhoto(photoElement));
+    	}
+    	return photos;
+    }
+    
+    /**
+     * Returns a list of your photos which haven't been geo-tagged.
+     * This method requires authentication with 'read' permission.
+     * @param minUploadDate Minimum upload date. Photos with an upload date greater than or equal to this value will be returned. Set to null to not specify a date.
+     * @param maxUploadDate Maximum upload date. Photos with an upload date less than or equal to this value will be returned. Set to null to not specify a date.
+     * @param minTakenDate Minimum taken date. Photos with an taken date greater than or equal to this value will be returned. Set to null to not specify a date.
+     * @param maxTakenDate Maximum taken date. Photos with an taken date less than or equal to this value will be returned. Set to null to not specify a date.
+     * @param privacyFilter Return photos only matching a certain privacy level. Valid values are:
+     * <ul>
+     * <li>1 public photos</li>
+     * <li>2 private photos visible to friends</li>
+     * <li>3 private photos visible to family</li>
+     * <li>4 private photos visible to friends & family</li>
+     * <li>5 completely private photos</li>
+     * </ul>
+     * Set to 0 to not specify a privacy Filter.
+     * @param sort The order in which to sort returned photos. Deafults to date-posted-desc. The possible values are: date-posted-asc, date-posted-desc, date-taken-asc, date-taken-desc, interestingness-desc, and interestingness-asc.
+     * @param extras A set of Strings controlling the extra information to fetch for each returned record. Currently supported fields are: license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo. Set to null or an empty set to not specify any extras.
+     * @param perPage Number of photos to return per page. If this argument is 0, it defaults to 100. The maximum allowed value is 500.
+     * @param page The page of results to return. If this argument is 0, it defaults to 1.
+     * @return a photo list
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public PhotoList getWithoutGeoData(Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, int privacyFilter, String sort, Set extras, int perPage, int page) throws FlickrException, IOException, SAXException {
+    	PhotoList photos = new PhotoList();
+    	List parameters = new ArrayList();
+    	parameters.add(new Parameter("method", METHOD_GET_WITHOUT_GEO_DATA));
+    	parameters.add(new Parameter("api_key", apiKey));
+
+    	if (minUploadDate != null) {
+    		parameters.add(new Parameter("min_upload_date", minUploadDate.getTime() / 1000L));
+    	}
+    	if (maxUploadDate != null) {
+    		parameters.add(new Parameter("max_upload_date", maxUploadDate.getTime() / 1000L));
+    	}
+    	if (minTakenDate != null) {
+    		parameters.add(new Parameter("min_taken_date", minTakenDate.getTime() / 1000L));
+    	}
+    	if (maxTakenDate != null) {
+    		parameters.add(new Parameter("max_taken_date", maxTakenDate.getTime() / 1000L));
+    	}
+    	if (privacyFilter > 0) {
+    		parameters.add(new Parameter("privacy_filter", privacyFilter));        	
+    	}
+    	if (sort != null) {
+    		parameters.add(new Parameter("sort", sort));
+    	}
+    	if (extras != null && !extras.isEmpty()) {
+    		StringBuffer sb = new StringBuffer();
+    		Iterator it = extras.iterator();
+    		while (it.hasNext()) {
+    			if (sb.length() > 0) {
+    				sb.append(",");
+    			}
+    			sb.append(it.next());
+    		}
+    		parameters.add(new Parameter("extras", sb.toString()));
+    	}
+    	if (perPage > 0) {
+    		parameters.add(new Parameter("per_page", perPage));
+    	}
+    	if (page > 0) {
+    		parameters.add(new Parameter("page", page));
+    	}
+    	Response response = transport.get(transport.getPath(), parameters);
+    	if (response.isError()) {
+    		throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+    	}
+    	Element photosElement = response.getPayload();
+    	photos.setPage(photosElement.getAttribute("page"));
+    	photos.setPages(photosElement.getAttribute("pages"));
+    	photos.setPerPage(photosElement.getAttribute("perpage"));
+    	photos.setTotal(photosElement.getAttribute("total"));
+
+    	NodeList photoNodes = photosElement.getElementsByTagName("photo");
+    	for (int i = 0; i < photoNodes.getLength(); i++) {
+    		Element photoElement = (Element) photoNodes.item(i);
+    		photos.add(PhotoFactory.createPhoto(photoElement));
+    	}
+    	return photos;
+    }
+
+    /**
+     * Return a list of your photos that have been recently created or which have been recently modified. 
+     * Recently modified may mean that the photo's metadata (title, description, tags) may have been changed or a comment has been added (or just modified somehow :-)
+     * @param minDate Date indicating the date from which modifications should be compared. Must be given.
+     * @param extras A set of Strings controlling the extra information to fetch for each returned record. Currently supported fields are: license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo. Set to null or an empty set to not specify any extras.
+     * @param perPage Number of photos to return per page. If this argument is 0, it defaults to 100. The maximum allowed value is 500.
+     * @param page The page of results to return. If this argument is 0, it defaults to 1.
+     * @return a list of photos
+     * @throws SAXException 
+     * @throws IOException 
+     * @throws FlickrException
+     */
+    public PhotoList recentlyUpdated(Date minDate, Set extras, int perPage, int page) throws IOException, SAXException, FlickrException {
+    	PhotoList photos = new PhotoList();
+    	List parameters = new ArrayList();
+    	parameters.add(new Parameter("method", METHOD_GET_WITHOUT_GEO_DATA));
+    	parameters.add(new Parameter("api_key", apiKey));
+    	
+    	parameters.add(new Parameter("min_date", minDate.getTime() / 1000L));
+    	
+    	if (extras != null && !extras.isEmpty()) {
+    		StringBuffer sb = new StringBuffer();
+    		Iterator it = extras.iterator();
+    		while (it.hasNext()) {
+    			if (sb.length() > 0) {
+    				sb.append(",");
+    			}
+    			sb.append(it.next());
+    		}
+    		parameters.add(new Parameter("extras", sb.toString()));
+    	}
+    	if (perPage > 0) {
+    		parameters.add(new Parameter("per_page", perPage));
+    	}
+    	if (page > 0) {
+    		parameters.add(new Parameter("page", page));
+    	}
+    	Response response = transport.get(transport.getPath(), parameters);
+    	if (response.isError()) {
+    		throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+    	}
+    	Element photosElement = response.getPayload();
+    	photos.setPage(photosElement.getAttribute("page"));
+    	photos.setPages(photosElement.getAttribute("pages"));
+    	photos.setPerPage(photosElement.getAttribute("perpage"));
+    	photos.setTotal(photosElement.getAttribute("total"));
+
+    	NodeList photoNodes = photosElement.getElementsByTagName("photo");
+    	for (int i = 0; i < photoNodes.getLength(); i++) {
+    		Element photoElement = (Element) photoNodes.item(i);
+    		photos.add(PhotoFactory.createPhoto(photoElement));
+    	}
+    	return photos;
     }
 
     /**
