@@ -18,6 +18,7 @@ import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.people.User;
+import com.aetrion.flickr.photos.geo.GeoInterface;
 import com.aetrion.flickr.tags.Tag;
 import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
@@ -52,6 +53,7 @@ public class PhotosInterface {
     public static final String METHOD_GET_INTERESTINGNESS = "flickr.interestingness.getList";
 
     private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private GeoInterface geoInterface = null;
 
     private String apiKey;
     private Transport transport;
@@ -59,6 +61,17 @@ public class PhotosInterface {
     public PhotosInterface(String apiKey, Transport transport) {
         this.apiKey = apiKey;
         this.transport = transport;
+    }
+    
+    /**
+     * Get the geo interface.
+     * @return Access class to the flickr.photos.geo methods. 
+     */
+    public synchronized GeoInterface getGeoInterface() {
+    	if (geoInterface == null) {
+    		geoInterface = new GeoInterface(apiKey, transport);
+    	}
+    	return geoInterface;
     }
 
     /**
