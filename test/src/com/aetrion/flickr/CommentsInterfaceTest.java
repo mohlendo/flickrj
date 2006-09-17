@@ -12,11 +12,8 @@ import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
-import com.aetrion.flickr.photos.GeoData;
 import com.aetrion.flickr.photos.comments.Comment;
 import com.aetrion.flickr.photos.comments.CommentsInterface;
-import com.aetrion.flickr.photos.geo.GeoInterface;
-import com.aetrion.flickr.photos.geo.GeoPermissions;
 import com.aetrion.flickr.util.IOUtilities;
 
 public class CommentsInterfaceTest extends TestCase {
