@@ -15,7 +15,11 @@ import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.photos.comments.Comment;
 import com.aetrion.flickr.photos.comments.CommentsInterface;
 import com.aetrion.flickr.util.IOUtilities;
-
+/**
+ * 
+ * @author till (Till Krech) flickr:extranoise
+ *
+ */
 public class CommentsInterfaceTest extends TestCase {
 
     Flickr flickr = null;
