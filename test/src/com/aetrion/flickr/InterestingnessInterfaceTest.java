@@ -2,7 +2,6 @@ package com.aetrion.flickr;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Properties;
 
 import org.xml.sax.SAXException;
