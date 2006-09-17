@@ -26,6 +26,7 @@ public class TestInterface {
 
     public static final String METHOD_ECHO = "flickr.test.echo";
     public static final String METHOD_LOGIN = "flickr.test.login";
+    public static final String METHOD_NULL = "flickr.test.null";
 
     private String apiKey;
     private Transport transport;
@@ -82,6 +83,25 @@ public class TestInterface {
         user.setUsername(((Text) usernameElement.getFirstChild()).getData());
 
         return user;
+    }
+    
+    /**
+     * Null test.
+     * This method requires authentication with 'read' permission.
+     * @throws SAXException 
+     * @throws IOException 
+     * @throws FlickrException 
+     */
+    public void null_() throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_NULL));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        Response response = transport.get(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+    	
     }
 
 }
