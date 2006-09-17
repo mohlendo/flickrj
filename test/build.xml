@@ -125,6 +125,7 @@
         <test name="com.aetrion.flickr.ReflectionInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.InterestingnessInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.GeoInterfaceTest" todir="${test.reports}"/>
+        <test name="com.aetrion.flickr.CommentsInterfaceTest" todir="${test.reports}"/>
      </junit>
       <echo message="Test reports are in ${test.reports}"/>
    </target>
