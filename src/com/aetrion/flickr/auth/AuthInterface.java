@@ -30,6 +30,7 @@ public class AuthInterface {
     public static final String METHOD_CHECK_TOKEN = "flickr.auth.checkToken";
     public static final String METHOD_GET_FROB = "flickr.auth.getFrob";
     public static final String METHOD_GET_TOKEN = "flickr.auth.getToken";
+    public static final String METHOD_GET_FULL_TOKEN = "flickr.auth.getFullToken";
 
     private String apiKey;
     private Transport transportAPI;
@@ -61,6 +62,46 @@ public class AuthInterface {
 
         parameters.add(new Parameter("auth_token", authToken));
 
+        // This method call must be signed.
+        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        } 
+        Auth auth = new Auth();
+        
+        Element authElement = response.getPayload();
+        auth.setToken(XMLUtilities.getChildValue(authElement, "token"));
+        auth.setPermission(Permission.fromString(XMLUtilities.getChildValue(authElement, "perms")));
+        
+        Element userElement = XMLUtilities.getChild(authElement, "user");
+        User user = new User();
+        user.setId(userElement.getAttribute("nsid"));
+        user.setUsername(userElement.getAttribute("username"));
+        user.setRealName(userElement.getAttribute("fullname"));
+        auth.setUser(user);
+        
+        return auth;
+    }
+    
+    /**
+     * Get the full authentication token for a mini-token.
+     * @param miniToken The mini-token typed in by a user. 
+     * It should be 9 digits long. It may optionally contain dashes.
+     * @return an Auth object containing the full token, permissions and user info. 
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public Auth getFullToken(String miniToken) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_FULL_TOKEN));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("mini_token", miniToken));
+
+        // This method call must be signed.
         parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
@@ -86,7 +127,7 @@ public class AuthInterface {
     /**
      * Get a frob.
      *
-     * @return
+     * @return the frob
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
@@ -96,6 +137,7 @@ public class AuthInterface {
         parameters.add(new Parameter("method", METHOD_GET_FROB));
         parameters.add(new Parameter("api_key", apiKey));
 
+        // This method call must be signed.
         parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
@@ -121,6 +163,7 @@ public class AuthInterface {
 
         parameters.add(new Parameter("frob", frob));
 
+        // This method call must be signed.
         parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
@@ -142,6 +185,7 @@ public class AuthInterface {
         
         return auth;
     }
+    
 
     /**
      * Build the authentication URL using the given permission and frob.
@@ -156,7 +200,8 @@ public class AuthInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("perms", permission.toString()));
         parameters.add(new Parameter("frob", frob));
-
+        
+        // The parameters in the url must be signed
         parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
 
         String host = transportAPI.getHost();
