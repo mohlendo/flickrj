@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -74,9 +73,33 @@ public class CompletenessTest extends TestCase {
 		}
 		assertEquals(0, notFound);
  	}
+	
+	private String getReplacement(String fullMethodName) {
+		String repl = replacements.getProperty(fullMethodName);
+		if (repl == null) {
+			String meth = fullMethodName.substring(fullMethodName.lastIndexOf('.') + 1);
+			Iterator keys = replacements.keySet().iterator();
+			while (keys.hasNext()) {
+				String key = (String)keys.next();
+				if (key.endsWith(".*")) {
+					String keyPack = key.substring(0, key.length()-2);
+					String methPack = fullMethodName.substring(0, fullMethodName.lastIndexOf('.'));
+					if (keyPack.equals(methPack)) {
+						String cls = replacements.getProperty(key);
+						if (cls.endsWith(".*")) {
+							cls = cls.substring(0, cls.length() - 2);
+						}
+						repl = cls + "." + meth;
+						break;
+					}
+				}
+			}
+		}
+		return repl;
+	}
 
 	private boolean checkMethod(String fullMethodName) {
-		String repl = replacements.getProperty(fullMethodName);
+		String repl = getReplacement(fullMethodName);
 		String methodName;
 		String fqClassName;
 		if (repl != null) {
@@ -109,7 +132,7 @@ public class CompletenessTest extends TestCase {
 				System.out.println("ATTENTION: Method not implemented in flickrj: " + fqClassName + "." + methodName);
 			}
 		} catch (ClassNotFoundException e) {
-			System.out.println("ATTENTION:  Class not implemented in flickrj: " + fqClassName);
+			System.out.println("ATTENTION:  Class not implemented in flickrj: [" + fqClassName + "] (Method: " + methodName +")");
 		}
 		return found;
 	}
