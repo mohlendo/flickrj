@@ -1,12 +1,13 @@
 package com.aetrion.flickr.photos;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.aetrion.flickr.people.User;
 
-public class PhotoFactory {
+public class PhotoUtils {
 
-	private PhotoFactory() {
+	private PhotoUtils() {
 	}
 	
 	public static final Photo createPhoto(Element photoElement) {
@@ -52,6 +53,22 @@ public class PhotoFactory {
         }
         photo.setUrl("http://flickr.com/photos/" + owner.getId() + "/" + photo.getId());
         return photo;
+
+	}
+	
+	public static final PhotoList createPhotoList(Element photosElement) {
+		PhotoList photos = new PhotoList();
+    	photos.setPage(photosElement.getAttribute("page"));
+    	photos.setPages(photosElement.getAttribute("pages"));
+    	photos.setPerPage(photosElement.getAttribute("perpage"));
+    	photos.setTotal(photosElement.getAttribute("total"));
+
+    	NodeList photoNodes = photosElement.getElementsByTagName("photo");
+    	for (int i = 0; i < photoNodes.getLength(); i++) {
+    		Element photoElement = (Element) photoNodes.item(i);
+    		photos.add(PhotoUtils.createPhoto(photoElement));
+    	}
+    	return photos;
 
 	}
 

@@ -34,6 +34,8 @@ import org.xml.sax.SAXException;
 public class PhotosInterface {
 
     public static final String METHOD_ADD_TAGS = "flickr.photos.addTags";
+    public static final String METHOD_DELETE = "flickr.photos.delete";
+    public static final String METHOD_GET_ALL_CONTEXTS = "flickr.photos.getAllContexts";
     public static final String METHOD_GET_CONTACTS_PHOTOS = "flickr.photos.getContactsPhotos";
     public static final String METHOD_GET_CONTACTS_PUBLIC_PHOTOS = "flickr.photos.getContactsPublicPhotos";
     public static final String METHOD_GET_CONTEXT = "flickr.photos.getContext";
@@ -88,7 +90,7 @@ public class PhotosInterface {
      */
     public void delete(String photoId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_ADD_TAGS));
+        parameters.add(new Parameter("method", METHOD_DELETE));
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
@@ -100,6 +102,41 @@ public class PhotosInterface {
         }
         // This method has no specific response - It returns an empty 
         // sucess response if it completes without error.
+    }
+    
+    /**
+     * Returns all visble sets and pools the photo belongs to.
+     * This method does not require authentication.
+     * @param photoId The photo to return information for.
+     * @return a list of {@link PhotoPlace} objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public List getAllContexts(String photoId) throws IOException, SAXException, FlickrException {
+    	List list = new ArrayList();
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_ALL_CONTEXTS));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photo_id", photoId));
+        
+        Response response = transport.get(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        
+        Collection coll = response.getPayloadCollection();
+        Iterator it = coll.iterator();
+        while (it.hasNext()) {
+        	Element el = (Element)it.next();
+        	String id = el.getAttribute("id");
+        	String title = el.getAttribute("title");
+        	String kind = el.getTagName();
+
+        	list.add(new PhotoPlace(kind, id, title));
+        }
+    	return list;
     }
 
     /**
@@ -778,7 +815,6 @@ public class PhotosInterface {
      * @throws SAXException
      */
     public PhotoList getWithGeoData(Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, int privacyFilter, String sort, Set extras, int perPage, int page) throws FlickrException, IOException, SAXException {
-    	PhotoList photos = new PhotoList();
     	List parameters = new ArrayList();
     	parameters.add(new Parameter("method", METHOD_GET_WITH_GEO_DATA));
     	parameters.add(new Parameter("api_key", apiKey));
@@ -823,16 +859,7 @@ public class PhotosInterface {
     		throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
     	}
     	Element photosElement = response.getPayload();
-    	photos.setPage(photosElement.getAttribute("page"));
-    	photos.setPages(photosElement.getAttribute("pages"));
-    	photos.setPerPage(photosElement.getAttribute("perpage"));
-    	photos.setTotal(photosElement.getAttribute("total"));
-
-    	NodeList photoNodes = photosElement.getElementsByTagName("photo");
-    	for (int i = 0; i < photoNodes.getLength(); i++) {
-    		Element photoElement = (Element) photoNodes.item(i);
-    		photos.add(PhotoFactory.createPhoto(photoElement));
-    	}
+    	PhotoList photos = PhotoUtils.createPhotoList(photosElement);
     	return photos;
     }
     
@@ -862,7 +889,6 @@ public class PhotosInterface {
      * @throws SAXException
      */
     public PhotoList getWithoutGeoData(Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, int privacyFilter, String sort, Set extras, int perPage, int page) throws FlickrException, IOException, SAXException {
-    	PhotoList photos = new PhotoList();
     	List parameters = new ArrayList();
     	parameters.add(new Parameter("method", METHOD_GET_WITHOUT_GEO_DATA));
     	parameters.add(new Parameter("api_key", apiKey));
@@ -907,16 +933,7 @@ public class PhotosInterface {
     		throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
     	}
     	Element photosElement = response.getPayload();
-    	photos.setPage(photosElement.getAttribute("page"));
-    	photos.setPages(photosElement.getAttribute("pages"));
-    	photos.setPerPage(photosElement.getAttribute("perpage"));
-    	photos.setTotal(photosElement.getAttribute("total"));
-
-    	NodeList photoNodes = photosElement.getElementsByTagName("photo");
-    	for (int i = 0; i < photoNodes.getLength(); i++) {
-    		Element photoElement = (Element) photoNodes.item(i);
-    		photos.add(PhotoFactory.createPhoto(photoElement));
-    	}
+    	PhotoList photos = PhotoUtils.createPhotoList(photosElement);
     	return photos;
     }
 
@@ -933,7 +950,6 @@ public class PhotosInterface {
      * @throws FlickrException
      */
     public PhotoList recentlyUpdated(Date minDate, Set extras, int perPage, int page) throws IOException, SAXException, FlickrException {
-    	PhotoList photos = new PhotoList();
     	List parameters = new ArrayList();
     	parameters.add(new Parameter("method", METHOD_GET_WITHOUT_GEO_DATA));
     	parameters.add(new Parameter("api_key", apiKey));
@@ -962,16 +978,7 @@ public class PhotosInterface {
     		throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
     	}
     	Element photosElement = response.getPayload();
-    	photos.setPage(photosElement.getAttribute("page"));
-    	photos.setPages(photosElement.getAttribute("pages"));
-    	photos.setPerPage(photosElement.getAttribute("perpage"));
-    	photos.setTotal(photosElement.getAttribute("total"));
-
-    	NodeList photoNodes = photosElement.getElementsByTagName("photo");
-    	for (int i = 0; i < photoNodes.getLength(); i++) {
-    		Element photoElement = (Element) photoNodes.item(i);
-    		photos.add(PhotoFactory.createPhoto(photoElement));
-    	}
+    	PhotoList photos = PhotoUtils.createPhotoList(photosElement);
     	return photos;
     }
 

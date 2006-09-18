@@ -24,7 +24,7 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.photos.PhotoFactory;
+import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.photos.PhotoList;
 
 public class InterestingnessInterface {
@@ -113,7 +113,7 @@ public class InterestingnessInterface {
     NodeList photoNodes = photosElement.getElementsByTagName("photo");
     for (int i = 0; i < photoNodes.getLength(); i++) {
     	Element photoElement = (Element)photoNodes.item(i);
-    	Photo photo = PhotoFactory.createPhoto(photoElement);
+    	Photo photo = PhotoUtils.createPhoto(photoElement);
         photos.add(photo);
         
  
