@@ -24,7 +24,8 @@ import org.xml.sax.SAXException;
  */
 public class LicensesInterface {
 
-    public static final String METHOD_GET_INFO = "flickr.photos.licenses.getInfo";
+    public static final String METHOD_GET_INFO    = "flickr.photos.licenses.getInfo";
+    public static final String METHOD_SET_LICENSE = "flickr.photos.licenses.setLicense";
 
     private String apiKey;
     private Transport transportAPI;
@@ -35,8 +36,6 @@ public class LicensesInterface {
     }
 
     /**
-     * Rotate the specified photo.  The only allowed values for degrees are 90, 180 and 270.
-     *
      * @return A collection of License objects
      */
     public Collection getInfo() throws IOException, SAXException, FlickrException {
@@ -60,6 +59,31 @@ public class LicensesInterface {
             licenses.add(license);
         }
         return licenses;
+    }
+    
+    /**
+     * Sets the license for a photo.
+     * This method requires authentication with 'write' permission.
+     * @param photoId The photo to update the license for.
+     * @param licenseId The license to apply, or 0 (zero) to remove the current license.
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void setLicense(String photoId, int licenseId) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_SET_LICENSE));
+        parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(new Parameter("license_id", licenseId));
+
+        // Note: This method requires an HTTP POST request.
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        // This method has no specific response - It returns an empty sucess response if it completes without error.
+
     }
 
 }
