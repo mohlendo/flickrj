@@ -53,3 +53,6 @@ Release 1.0a9 (August 31, 2005):
  - Implemented getUrls() in Photo class. Implemented getUrl() using first value from getUrls()
  - Added getXXXUrl() methods for getting URLs to get to different image sizes.
  - Fixed the getTitle() bug
+
+Release 1.0b1 (October 2, 2006):
+ - Updated to support changes to Flickr APIs
