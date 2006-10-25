@@ -457,7 +457,7 @@ public class PhotosInterface {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        Element photoElement = (Element)response.getPayload().getElementsByTagName( "photo" ).item( 0 );
+        Element photoElement = (Element)response.getPayload();
         Photo photo = new Photo();
         photo.setId(photoElement.getAttribute("id"));
         photo.setSecret(photoElement.getAttribute("secret"));
