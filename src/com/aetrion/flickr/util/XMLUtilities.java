@@ -71,5 +71,25 @@ public class XMLUtilities {
     public static String getChildValue(Element element, String name) {
         return getValue(getChild(element, name));
     }
+    
+    public static int getIntAttribute(Element el, String name) {
+    	String s = el.getAttribute(name);
+    	if (s != null || s.length() > 0) {
+    		return Integer.parseInt(s);
+    	}
+    	return 0;
+    }
+    
+    public static boolean getBooleanAttribute(Element el, String name) {
+    	String s = el.getAttribute(name);
+    	if (s == null || "0".equals(s)) {
+    		return false;
+    	}
+    	if ("1".equals(s)) {
+    		return true;
+    	}
+    	return new Boolean(s).booleanValue();
+    }
+
 
 }
