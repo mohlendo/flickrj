@@ -11,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.groups.Category;
 import com.aetrion.flickr.groups.Group;
+import com.aetrion.flickr.groups.GroupList;
 import com.aetrion.flickr.groups.GroupsInterface;
 import com.aetrion.flickr.util.IOUtilities;
 import com.aetrion.flickr.auth.AuthInterface;
@@ -83,6 +84,8 @@ public class GroupsInterfaceTest extends TestCase {
         Category cat = iface.browse("68"); // browse the Flickr category
         assertNotNull(cat);
         assertEquals("Flickr", cat.getName());
+        assertNotNull(cat.getPath());
+        assertNotNull(cat.getPathIds());
 
         Collection groups = cat.getGroups();
         assertNotNull(groups);
@@ -97,17 +100,37 @@ public class GroupsInterfaceTest extends TestCase {
     public void testGetInfo() throws FlickrException, IOException, SAXException {
         GroupsInterface iface = flickr.getGroupsInterface();
         Group group = iface.getInfo("34427469792@N01");
+
         assertNotNull(group);
         assertEquals("34427469792@N01", group.getId());
         assertEquals("FlickrCentral", group.getName());
+        assertTrue(group.getMembers() > 0);
+        
         System.out.println("group members: " + group.getMembers());
     }
 
     public void testSearch() throws FlickrException, IOException, SAXException {
         GroupsInterface iface = flickr.getGroupsInterface();
-        Collection groups = iface.search("java", -1, -1);
+        GroupList groups = (GroupList)iface.search("java", 0, 0);
         System.out.println("Group count: " + groups.size());
         assertTrue(groups.size() > 0);
+        assertEquals(1, groups.getPage());
+        assertTrue(groups.getPages() > 0);
+        assertEquals(100, groups.getPerPage());
+        assertTrue(groups.getTotal() > 0);
+    }
+    
+    public void testSearchPage() throws FlickrException, IOException, SAXException {
+    	GroupsInterface iface = flickr.getGroupsInterface();
+    	GroupList groups = (GroupList)iface.search("java", 10, 1);
+        System.out.println("Group count: " + groups.size());
+        assertTrue(groups.size() > 0);
+        assertEquals(1, groups.getPage());
+        assertTrue(groups.getPages() > 0);
+        assertEquals(10, groups.getPerPage());
+        assertTrue(groups.getTotal() > 0);
+
+        
     }
 
 }

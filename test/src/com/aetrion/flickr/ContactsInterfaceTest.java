@@ -5,10 +5,12 @@ package com.aetrion.flickr;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.aetrion.flickr.contacts.Contact;
 import com.aetrion.flickr.contacts.ContactsInterface;
 import com.aetrion.flickr.util.IOUtilities;
 import com.aetrion.flickr.auth.Auth;
@@ -51,14 +53,27 @@ public class ContactsInterfaceTest extends TestCase {
         ContactsInterface iface = flickr.getContactsInterface();
         Collection contacts = iface.getList();
         assertNotNull(contacts);
-        assertEquals(3, contacts.size());
+        assertTrue("No Contacts. (You need to have contacts for this test to succceed)", contacts.size() > 0);
+        Iterator it = contacts.iterator();
+        for (int i = 0; it.hasNext() && i < 10; i++) {
+        	Contact contact = (Contact)it.next();
+        	assertNotNull(contact.getUsername());
+        	assertNotNull(contact.getRealName());
+        	assertNotNull(contact.getId());
+        }
     }
 
     public void testGetPublicList() throws FlickrException, IOException, SAXException {
         ContactsInterface iface = flickr.getContactsInterface();
         Collection contacts = iface.getPublicList(properties.getProperty("nsid"));
         assertNotNull(contacts);
-        assertEquals(1, contacts.size());
+        assertTrue("No Contacts. (You need to have contacts for this test to succceed)", contacts.size() > 0);
+        Iterator it = contacts.iterator();
+        for (int i = 0; it.hasNext() && i < 10; i++) {
+        	Contact contact = (Contact)it.next();
+        	assertNotNull(contact.getUsername());
+        	assertNotNull(contact.getId());
+        }
     }
 
 }
