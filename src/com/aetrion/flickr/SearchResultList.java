@@ -13,7 +13,8 @@ import java.util.ArrayList;
  */
 public class SearchResultList extends ArrayList {
 
-    private int page;
+	private static final long serialVersionUID = -7962319033867024935L;
+	private int page;
     private int pages;
     private int perPage;
     private int total;

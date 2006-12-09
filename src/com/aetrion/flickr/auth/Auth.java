@@ -13,6 +13,10 @@ import java.io.Serializable;
  */
 public class Auth implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2254618470673679663L;
 	private String token;
     private Permission permission;
     private User user;
