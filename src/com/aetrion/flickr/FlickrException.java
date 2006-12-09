@@ -10,7 +10,8 @@ package com.aetrion.flickr;
  */
 public class FlickrException extends Exception {
 
-    private String errorCode;
+	  private static final long serialVersionUID = 7958091410349084831L;
+	  private String errorCode;
     private String errorMessage;
 
     public FlickrException(String errorCode, String errorMessage) {
