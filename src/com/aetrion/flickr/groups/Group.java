@@ -14,10 +14,15 @@ public class Group {
     private String id;
     private String name;
     private int members;
+    private String privacy;
+    private String iconServer;
+    private String description;
+    private Throttle throttle;
+    
+    // the following seem not to exist anymore
     private int online;
     private String chatId;
     private int inChat;
-    private String privacy;
     private boolean admin;
     private int photoCount;
     private boolean eighteenPlus;
@@ -61,6 +66,10 @@ public class Group {
     	}
     }
 
+    /**
+     * 
+     * @return the 
+     */
     public int getOnline() {
         return online;
     }
@@ -88,6 +97,9 @@ public class Group {
         this.chatId = chatId;
     }
 
+    /**
+     * @return the number of users in chat
+     */
     public int getInChat() {
         return inChat;
     }
@@ -151,5 +163,31 @@ public class Group {
     public void setEighteenPlus(boolean eighteenPlus) {
         this.eighteenPlus = eighteenPlus;
     }
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getIconServer() {
+		return iconServer;
+	}
+
+	public void setIconServer(String iconServer) {
+		this.iconServer = iconServer;
+	}
+
+	public Throttle getThrottle() {
+		return throttle;
+	}
+
+	public void setThrottle(Throttle throttle) {
+		this.throttle = throttle;
+	}
+	
+	
 
 }
