@@ -217,6 +217,7 @@ public class PhotosInterface {
 
             photo.setSecret(photoElement.getAttribute("secret"));
             photo.setServer(photoElement.getAttribute("server"));
+            photo.setFarm(photoElement.getAttribute("farm"));
             photo.setTitle(photoElement.getAttribute("title"));
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
@@ -285,6 +286,7 @@ public class PhotosInterface {
 
             photo.setSecret(photoElement.getAttribute("secret"));
             photo.setServer(photoElement.getAttribute("server"));
+            photo.setFarm(photoElement.getAttribute("farm"));
             photo.setTitle(photoElement.getAttribute("name"));
 
             photos.add(photo);
@@ -323,6 +325,7 @@ public class PhotosInterface {
                 photo.setId(payloadElement.getAttribute("id"));
                 photo.setSecret(payloadElement.getAttribute("secret"));
                 photo.setTitle(payloadElement.getAttribute("title"));
+                photo.setFarm(payloadElement.getAttribute("farm"));
                 photo.setUrl(payloadElement.getAttribute("url"));
                 photoContext.setPreviousPhoto(photo);
             } else if (tagName.equals("nextphoto")) {
@@ -330,6 +333,7 @@ public class PhotosInterface {
                 photo.setId(payloadElement.getAttribute("id"));
                 photo.setSecret(payloadElement.getAttribute("secret"));
                 photo.setTitle(payloadElement.getAttribute("title"));
+                photo.setFarm(payloadElement.getAttribute("farm"));
                 photo.setUrl(payloadElement.getAttribute("url"));
                 photoContext.setNextPhoto(photo);
             }
@@ -462,6 +466,7 @@ public class PhotosInterface {
         photo.setId(photoElement.getAttribute("id"));
         photo.setSecret(photoElement.getAttribute("secret"));
         photo.setServer(photoElement.getAttribute("server"));
+        photo.setFarm(photoElement.getAttribute("farm"));
         photo.setFavorite("1".equals(photoElement.getAttribute("isfavorite")));
         photo.setLicense(photoElement.getAttribute("license"));
 
@@ -596,6 +601,7 @@ public class PhotosInterface {
             photo.setId(photoElement.getAttribute("id"));
             photo.setSecret(photoElement.getAttribute("secret"));
             photo.setServer(photoElement.getAttribute("server"));
+            photo.setFarm(photoElement.getAttribute("farm"));
             photo.setTitle(photoElement.getAttribute("title"));
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
@@ -685,6 +691,7 @@ public class PhotosInterface {
 
             photo.setSecret(photoElement.getAttribute("secret"));
             photo.setServer(photoElement.getAttribute("server"));
+            photo.setFarm(photoElement.getAttribute("farm"));
             photo.setTitle(photoElement.getAttribute("name"));
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
@@ -779,6 +786,7 @@ public class PhotosInterface {
 
             photo.setSecret(photoElement.getAttribute("secret"));
             photo.setServer(photoElement.getAttribute("server"));
+            photo.setFarm(photoElement.getAttribute("farm"));
             photo.setTitle(photoElement.getAttribute("title"));
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
@@ -1053,6 +1061,7 @@ public class PhotosInterface {
 
             photo.setSecret(photoElement.getAttribute("secret"));
             photo.setServer(photoElement.getAttribute("server"));
+            photo.setFarm(photoElement.getAttribute("farm"));
             photo.setTitle(photoElement.getAttribute("title"));
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
@@ -1114,6 +1123,7 @@ public class PhotosInterface {
 
 			photo.setSecret(photoElement.getAttribute("secret"));
 			photo.setServer(photoElement.getAttribute("server"));
+	        photo.setFarm(photoElement.getAttribute("farm"));
 			photo.setTitle(photoElement.getAttribute("title"));
 			photo.setPublicFlag("1".equals(photoElement
 					.getAttribute("ispublic")));

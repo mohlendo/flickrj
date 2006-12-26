@@ -39,6 +39,7 @@ public class Photo {
     private String id;
     private User owner;
     private String secret;
+    private String farm;
     private String server;
     private boolean favorite;
     private String license;
@@ -89,6 +90,14 @@ public class Photo {
 
     public void setSecret(String secret) {
         this.secret = secret;
+    }
+
+    public String getFarm() {
+        return farm;
+    }
+
+    public void setFarm(String farm) {
+        this.farm = farm;
     }
 
     public String getServer() {
@@ -450,7 +459,9 @@ public class Photo {
 
     private StringBuffer getBaseImageUrl() {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("http://static.flickr.com/");
+        buffer.append("http://farm");
+        buffer.append(getFarm());
+        buffer.append(".static.flickr.com/");
         buffer.append(getServer());
         buffer.append("/");
         buffer.append(getId());
