@@ -16,6 +16,7 @@ import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotoContext;
 import com.aetrion.flickr.util.StringUtilities;
 import org.w3c.dom.Element;
@@ -151,9 +152,9 @@ public class PoolsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getPhotos(String groupId, String[] tags, int perPage, int page) throws IOException, SAXException,
+    public PhotoList getPhotos(String groupId, String[] tags, int perPage, int page) throws IOException, SAXException,
             FlickrException {
-        List photos = new ArrayList();
+        PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_PHOTOS));
@@ -175,6 +176,11 @@ public class PoolsInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photosElement = response.getPayload();
+        photos.setPage(photosElement.getAttribute("page"));
+        photos.setPages(photosElement.getAttribute("pages"));
+        photos.setPerPage(photosElement.getAttribute("perpage"));
+        photos.setTotal(photosElement.getAttribute("total"));
+
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
@@ -186,6 +192,9 @@ public class PoolsInterface {
             owner.setUsername(photoElement.getAttribute("ownername"));
             photo.setOwner(owner);
 
+            photo.setSecret(photoElement.getAttribute("secret"));
+            photo.setServer(photoElement.getAttribute("server"));
+            photo.setFarm(photoElement.getAttribute("farm"));
             photo.setTitle(photoElement.getAttribute("title"));
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
