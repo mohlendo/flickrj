@@ -16,6 +16,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
+ * @version $Id: SearchParameters.java,v 1.6 2007/02/19 22:55:46 x-mago Exp $
  */
 public class SearchParameters {
 
@@ -225,12 +226,12 @@ public class SearchParameters {
             parameters.add(new Parameter("max_upload_date", new Long(maxUploadDate.getTime())));
         }
 
-        Date minTakenDate = getMinUploadDate();
+        Date minTakenDate = getMinTakenDate();
         if (minTakenDate != null) {
             parameters.add(new Parameter("min_taken_date", new Long(minTakenDate.getTime())));
         }
 
-        Date maxTakenDate = getMinUploadDate();
+        Date maxTakenDate = getMaxTakenDate();
         if (maxTakenDate != null) {
             parameters.add(new Parameter("max_taken_date", new Long(maxTakenDate.getTime())));
         }
