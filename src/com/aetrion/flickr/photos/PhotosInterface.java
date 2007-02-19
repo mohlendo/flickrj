@@ -517,7 +517,8 @@ public class PhotosInterface {
             note.setAuthor(noteElement.getAttribute("author"));
             note.setAuthorName(noteElement.getAttribute("authorname"));
             note.setBounds(noteElement.getAttribute("x"), noteElement.getAttribute("y"),
-                    noteElement.getAttribute("w"), noteElement.getAttribute("h"));
+                noteElement.getAttribute("w"), noteElement.getAttribute("h"));
+            note.setText(noteElement.getTextContent());
             notes.add(note);
         }
         photo.setNotes(notes);
