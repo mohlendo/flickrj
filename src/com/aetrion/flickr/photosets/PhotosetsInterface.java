@@ -241,7 +241,7 @@ public class PhotosetsInterface {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        Element photosetElement = (Element)response.getPayload().getElementsByTagName( "photoset" ).item( 0 );
+        Element photosetElement = (Element)response.getPayload();
         Photoset photoset = new Photoset();
         photoset.setId(photosetElement.getAttribute("id"));
 
