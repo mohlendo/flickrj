@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr tags.
  *
  * @author Anthony Eden
+ * @version $Id: TagsInterface.java,v 1.10 2007/02/21 20:46:50 x-mago Exp $
  */
 public class TagsInterface {
 
@@ -73,6 +74,7 @@ public class TagsInterface {
         for (int i = 0; i < tagElements.getLength(); i++) {
             Element tagElement = (Element) tagElements.item(i);
             Tag tag = new Tag();
+            tag.setId(tagElement.getAttribute("id"));
             tag.setAuthor(tagElement.getAttribute("author"));
             tag.setAuthorName(tagElement.getAttribute("authorname"));
             tag.setValue(((Text) tagElement.getFirstChild()).getData());
