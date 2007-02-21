@@ -59,8 +59,6 @@ public class AuthUtilities {
             buffer.append(param.getValue());
         }
 
-        System.out.println("buffer: " + buffer);
-
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             return ByteUtilities.toHexString(md.digest(buffer.toString().getBytes()));
