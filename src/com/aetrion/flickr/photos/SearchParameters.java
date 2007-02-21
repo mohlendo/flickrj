@@ -16,7 +16,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.6 2007/02/19 22:55:46 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.7 2007/02/21 21:18:42 x-mago Exp $
  */
 public class SearchParameters {
 
@@ -218,22 +218,22 @@ public class SearchParameters {
 
         Date minUploadDate = getMinUploadDate();
         if (minUploadDate != null) {
-            parameters.add(new Parameter("min_upload_date", new Long(minUploadDate.getTime())));
+            parameters.add(new Parameter("min_upload_date", new Long(minUploadDate.getTime() / 1000L)));
         }
 
         Date maxUploadDate = getMaxUploadDate();
         if (maxUploadDate != null) {
-            parameters.add(new Parameter("max_upload_date", new Long(maxUploadDate.getTime())));
+            parameters.add(new Parameter("max_upload_date", new Long(maxUploadDate.getTime() / 1000L)));
         }
 
         Date minTakenDate = getMinTakenDate();
         if (minTakenDate != null) {
-            parameters.add(new Parameter("min_taken_date", new Long(minTakenDate.getTime())));
+            parameters.add(new Parameter("min_taken_date", new Long(minTakenDate.getTime() / 1000L)));
         }
 
         Date maxTakenDate = getMaxTakenDate();
         if (maxTakenDate != null) {
-            parameters.add(new Parameter("max_taken_date", new Long(maxTakenDate.getTime())));
+            parameters.add(new Parameter("max_taken_date", new Long(maxTakenDate.getTime() / 1000L)));
         }
 
         String license = getLicense();
