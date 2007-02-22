@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
  * Interface for working with photosets.
  *
  * @author Anthony Eden
+ * @version $Id: PhotosetsInterface.java,v 1.15 2007/02/22 22:23:31 x-mago Exp $
  */
 public class PhotosetsInterface {
 
@@ -251,12 +252,21 @@ public class PhotosetsInterface {
 
         Photo primaryPhoto = new Photo();
         primaryPhoto.setId(photosetElement.getAttribute("primary"));
+        primaryPhoto.setSecret(photosetElement.getAttribute("secret")); // TODO verify that this is the secret for the photo
+        primaryPhoto.setServer(photosetElement.getAttribute("server")); // TODO verify that this is the server for the photo
+        primaryPhoto.setFarm(photosetElement.getAttribute("farm"));
         photoset.setPrimaryPhoto(primaryPhoto);
 
+        // TODO remove secret/server/farm from photoset?
+        // It's rather related to the primaryPhoto, then to the photoset itself.
+        photoset.setSecret(photosetElement.getAttribute("secret"));
+        photoset.setServer(photosetElement.getAttribute("server"));
+        photoset.setFarm(photosetElement.getAttribute("farm"));
         photoset.setPhotoCount(photosetElement.getAttribute("photos"));
 
         photoset.setTitle(XMLUtilities.getChildValue(photosetElement, "title"));
         photoset.setDescription(XMLUtilities.getChildValue(photosetElement, "description"));
+        photoset.setPrimaryPhoto(primaryPhoto);
 
         return photoset;
     }
@@ -298,10 +308,12 @@ public class PhotosetsInterface {
             primaryPhoto.setId(photosetElement.getAttribute("primary"));
             primaryPhoto.setSecret(photosetElement.getAttribute("secret")); // TODO verify that this is the secret for the photo
             primaryPhoto.setServer(photosetElement.getAttribute("server")); // TODO verify that this is the server for the photo
+            primaryPhoto.setFarm(photosetElement.getAttribute("farm"));
             photoset.setPrimaryPhoto(primaryPhoto);
 
             photoset.setSecret(photosetElement.getAttribute("secret"));
             photoset.setServer(photosetElement.getAttribute("server"));
+            photoset.setFarm(photosetElement.getAttribute("farm"));
             photoset.setPhotoCount(photosetElement.getAttribute("photos"));
 
             photoset.setTitle(XMLUtilities.getChildValue(photosetElement, "title"));
@@ -350,6 +362,7 @@ public class PhotosetsInterface {
             photo.setTitle(photoElement.getAttribute("title"));
             photo.setSecret(photoElement.getAttribute("secret"));
             photo.setServer(photoElement.getAttribute("server"));
+            photo.setFarm(photoElement.getAttribute("farm"));
             photo.setPrimary(photoElement.getAttribute("isprimary"));
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));

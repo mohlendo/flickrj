@@ -10,6 +10,7 @@ import com.aetrion.flickr.photos.Photo;
  * Meta information about a photoset.  To retrieve the photos in the photoset use PhotosetsInterface.getPhotos().
  *
  * @author Anthony Eden
+ * @version $Id: Photoset.java,v 1.4 2007/02/22 22:23:30 x-mago Exp $
  */
 public class Photoset {
 
@@ -19,6 +20,7 @@ public class Photoset {
     private Photo primaryPhoto;
     private String secret;
     private String server;
+    private String farm;
     private int photoCount;
     private String title;
     private String description;
@@ -73,6 +75,14 @@ public class Photoset {
 
     public void setServer(String server) {
         this.server = server;
+    }
+
+    public String getFarm() {
+        return farm;
+    }
+    
+    public void setFarm(String farm) {
+        this.farm = farm;
     }
 
     public int getPhotoCount() {
