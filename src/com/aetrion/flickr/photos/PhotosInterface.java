@@ -30,6 +30,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
+ * @version $Id: PhotosInterface.java,v 1.31 2007/02/23 23:04:00 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -462,96 +463,8 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photoElement = (Element)response.getPayload();
-        Photo photo = new Photo();
-        photo.setId(photoElement.getAttribute("id"));
-        photo.setSecret(photoElement.getAttribute("secret"));
-        photo.setServer(photoElement.getAttribute("server"));
-        photo.setFarm(photoElement.getAttribute("farm"));
-        photo.setFavorite("1".equals(photoElement.getAttribute("isfavorite")));
-        photo.setLicense(photoElement.getAttribute("license"));
-
-        Element ownerElement = (Element) photoElement.getElementsByTagName("owner").item(0);
-        User owner = new User();
-        owner.setId(ownerElement.getAttribute("nsid"));
-        owner.setUsername(ownerElement.getAttribute("username"));
-        owner.setRealName(ownerElement.getAttribute("realname"));
-        owner.setLocation(ownerElement.getAttribute("location"));
-        photo.setOwner(owner);
-
-        photo.setTitle(XMLUtilities.getChildValue(photoElement, "title"));
-        photo.setDescription(XMLUtilities.getChildValue(photoElement, "description"));
-
-        Element visibilityElement = (Element) photoElement.getElementsByTagName("visibility").item(0);
-        photo.setPublicFlag("1".equals(visibilityElement.getAttribute("ispublic")));
-        photo.setFriendFlag("1".equals(visibilityElement.getAttribute("isfriend")));
-        photo.setFamilyFlag("1".equals(visibilityElement.getAttribute("isfamily")));
-
-        Element datesElement = XMLUtilities.getChild(photoElement, "dates");
-        photo.setDatePosted(datesElement.getAttribute("posted"));
-        photo.setDateTaken(datesElement.getAttribute("taken"));
-        photo.setTakenGranularity(datesElement.getAttribute("takengranularity"));
-
-        NodeList permissionsNodes = photoElement.getElementsByTagName("permissions");
-        if (permissionsNodes.getLength() > 0) {
-            Element permissionsElement = (Element) permissionsNodes.item(0);
-            Permissions permissions = new Permissions();
-            permissions.setComment(permissionsElement.getAttribute("permcomment"));
-            permissions.setAddmeta(permissionsElement.getAttribute("permaddmeta"));
-        }
-
-        Element editabilityElement = (Element) photoElement.getElementsByTagName("editability").item(0);
-        Editability editability = new Editability();
-        editability.setComment("1".equals(editabilityElement.getAttribute("cancomment")));
-        editability.setAddmeta("1".equals(editabilityElement.getAttribute("canaddmeta")));
-
-        Element commentsElement = (Element) photoElement.getElementsByTagName("comments").item(0);
-        photo.setComments(((Text) commentsElement.getFirstChild()).getData());
-
-        Element notesElement = (Element) photoElement.getElementsByTagName("notes").item(0);
-        List notes = new ArrayList();
-        NodeList noteNodes = notesElement.getElementsByTagName("note");
-        for (int i = 0; i < noteNodes.getLength(); i++) {
-            Element noteElement = (Element) noteNodes.item(i);
-            Note note = new Note();
-            note.setId(noteElement.getAttribute("id"));
-            note.setAuthor(noteElement.getAttribute("author"));
-            note.setAuthorName(noteElement.getAttribute("authorname"));
-            note.setBounds(noteElement.getAttribute("x"), noteElement.getAttribute("y"),
-                noteElement.getAttribute("w"), noteElement.getAttribute("h"));
-            note.setText(noteElement.getTextContent());
-            notes.add(note);
-        }
-        photo.setNotes(notes);
-
-        Element tagsElement = (Element) photoElement.getElementsByTagName("tags").item(0);
-        List tags = new ArrayList();
-        NodeList tagNodes = tagsElement.getElementsByTagName("tag");
-        for (int i = 0; i < tagNodes.getLength(); i++) {
-            Element tagElement = (Element) tagNodes.item(i);
-            Tag tag = new Tag();
-            tag.setId(tagElement.getAttribute("id"));
-            tag.setAuthor(tagElement.getAttribute("author"));
-            tag.setRaw(tagElement.getAttribute("raw"));
-            tag.setValue(((Text) tagElement.getFirstChild()).getData());
-            tags.add(tag);
-        }
-        photo.setTags(tags);
-
-        Element urlsElement = (Element) photoElement.getElementsByTagName("urls").item(0);
-        List urls = new ArrayList();
-        NodeList urlNodes = urlsElement.getElementsByTagName("url");
-        for (int i = 0; i < urlNodes.getLength(); i++) {
-            Element urlElement = (Element) urlNodes.item(i);
-            PhotoUrl photoUrl = new PhotoUrl();
-            photoUrl.setType(urlElement.getAttribute("type"));
-            photoUrl.setUrl(XMLUtilities.getValue(urlElement));
-            if (photoUrl.getType().equals("photopage")) {
-                photo.setUrl(photoUrl.getUrl());
-            }
-        }
-        photo.setUrls(urls);
-
-        return photo;
+        
+        return PhotoUtils.createPhoto(photoElement);
     }
 
     /**
@@ -789,6 +702,7 @@ public class PhotosInterface {
             photo.setServer(photoElement.getAttribute("server"));
             photo.setFarm(photoElement.getAttribute("farm"));
             photo.setTitle(photoElement.getAttribute("title"));
+            photo.setOriginalFormat(photoElement.getAttribute("originalformat"));
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
             photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
