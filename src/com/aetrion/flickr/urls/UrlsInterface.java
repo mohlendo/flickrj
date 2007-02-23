@@ -141,7 +141,7 @@ public class UrlsInterface {
         
         Element payload = response.getPayload();
         Element groupnameElement = (Element) payload.getElementsByTagName("groupname").item(0);
-        return (((Text)groupnameElement.getFirstChild()).getData()).toString();
+        return ((Text)groupnameElement.getFirstChild()).getData();
     }
     
     /**
@@ -167,7 +167,7 @@ public class UrlsInterface {
         
         Element payload = response.getPayload();
         Element groupnameElement = (Element) payload.getElementsByTagName("username").item(0);
-        return (((Text)groupnameElement.getFirstChild()).getData()).toString();
+        return ((Text) groupnameElement.getFirstChild()).getData();
     }
 
 }
