@@ -88,7 +88,7 @@ public class XMLUtilities {
     	if ("1".equals(s)) {
     		return true;
     	}
-    	return new Boolean(s).booleanValue();
+    	return Boolean.valueOf(s);
     }
 
 
