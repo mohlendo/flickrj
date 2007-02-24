@@ -3,6 +3,8 @@
  */
 package com.aetrion.flickr;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.blogs.BlogsInterface;
 import com.aetrion.flickr.contacts.ContactsInterface;
@@ -13,18 +15,18 @@ import com.aetrion.flickr.interestingness.InterestingnessInterface;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.licenses.LicensesInterface;
+import com.aetrion.flickr.photos.transform.TransformInterface;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
 import com.aetrion.flickr.reflection.ReflectionInterface;
 import com.aetrion.flickr.tags.TagsInterface;
 import com.aetrion.flickr.test.TestInterface;
 import com.aetrion.flickr.urls.UrlsInterface;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 /**
  * Main entry point for the Flickrj API.  This class is used to acquire Interface classes which wrap the Flickr API.
  *
  * @author Anthony Eden
+ * @version $Id: Flickr.java,v 1.27 2007/02/24 23:03:42 x-mago Exp $
  */
 public class Flickr {
 
@@ -42,7 +44,7 @@ public class Flickr {
      * Set to true to enable request debugging (print the request stream, used for "post")
      */
     public static boolean debugRequest = false;
-    
+
     /**
      * If set to true, trace messages will be printed to STDOUT.
      */
@@ -64,6 +66,7 @@ public class Flickr {
     private ReflectionInterface reflectionInterface;
     private TagsInterface tagsInterface;
     private TestInterface testInterface;
+    private TransformInterface transformInterface;
     private UrlsInterface urlsInterface;
     private InterestingnessInterface interestingnessInterface;
 
@@ -235,13 +238,20 @@ public class Flickr {
         return testInterface;
     }
 
+    public TransformInterface getTransformInterface() {
+        if (transformInterface == null) {
+            transformInterface = new TransformInterface(apiKey, transport);
+        }
+        return transformInterface;
+    }
+
     public UrlsInterface getUrlsInterface() {
         if (urlsInterface == null) {
             urlsInterface = new UrlsInterface(apiKey, transport);
         }
         return urlsInterface;
     }
-    
+
     /**
      * @return the interface to the flickr.interestingness methods
      */
