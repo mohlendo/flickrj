@@ -24,6 +24,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * obtain the photo data by calling one of the getXXXImage() or getXXXAsStream() methods in this class.
  *
  * @author Anthony Eden
+ * @version $Id: Photo.java,v 1.14 2007/02/24 20:01:42 x-mago Exp $
  */
 public class Photo {
 
@@ -60,12 +61,13 @@ public class Photo {
     private Collection tags;
     private Collection urls;
     private String iconServer;
+    private String iconFarm;
     private String url;
     private GeoData geoData;
     private String originalFormat;
+    private String originalSecret;
 
     public Photo() {
-
     }
 
     public String getId() {
@@ -212,13 +214,13 @@ public class Photo {
     }
 
     public Date getLastUpdate() {
-		return lastUpdate;
-	}
+        return lastUpdate;
+    }
 
-	public void setLastUpdate(Date lastUpdate) {
-		this.lastUpdate = lastUpdate;
-	}
-	
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
 	public void setLastUpdate(String lastUpdateStr) {
 		if (lastUpdateStr == null || "".equals(lastUpdateStr)) return;
 		long unixTime = Long.parseLong(lastUpdateStr);
@@ -293,6 +295,14 @@ public class Photo {
         this.iconServer = iconServer;
     }
 
+    public String getIconFarm() {
+        return iconFarm;
+    }
+
+    public void setIconFarm(String iconFarm) {
+        this.iconFarm = iconFarm;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -302,29 +312,37 @@ public class Photo {
     }
 
     public GeoData getGeoData() {
-		return geoData;
-	}
+        return geoData;
+    }
 
-	public void setGeoData(GeoData geoData) {
-		this.geoData = geoData;
-	}
-	
-	public boolean hasGeoData() {
-		return geoData != null;
-	}
+    public void setGeoData(GeoData geoData) {
+        this.geoData = geoData;
+    }
 
-	public String getOriginalFormat() {
-		return originalFormat;
-	}
+    public boolean hasGeoData() {
+        return geoData != null;
+    }
 
-	public void setOriginalFormat(String originalFormat) {
-		this.originalFormat = originalFormat;
-	}
+    public String getOriginalFormat() {
+        return originalFormat;
+    }
 
-	public BufferedImage getOriginalImage() throws IOException {
-		if (originalFormat != null) {
-			return getImage("_o." + originalFormat);
-		}
+    public void setOriginalFormat(String originalFormat) {
+        this.originalFormat = originalFormat;
+    }
+
+    public String getOriginalSecret() {
+        return originalSecret;
+    }
+
+    public void setOriginalSecret(String originalSecret) {
+        this.originalSecret = originalSecret;
+    }
+
+    public BufferedImage getOriginalImage() throws IOException {
+        if (originalFormat != null) {
+            return getImage("_o." + originalFormat);
+        }
         return getImage(DEFAULT_ORIGINAL_IMAGE_SUFFIX);
     }
 
@@ -335,9 +353,9 @@ public class Photo {
      * @throws IOException
      */
     public InputStream getOriginalAsStream() throws IOException {
-		if (originalFormat != null) {
-			return getImageAsStream("_o." + originalFormat);
-		}
+        if (originalFormat != null) {
+            return getImageAsStream("_o." + originalFormat);
+        }
         return getImageAsStream(DEFAULT_ORIGINAL_IMAGE_SUFFIX);
     }
 
