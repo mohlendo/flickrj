@@ -1,6 +1,6 @@
 /*
  *-------------------------------------------------------
- * (c) 2006 Das Büro am Draht GmbH - All Rights reserved
+ * (c) 2006 Das B&uuml;ro am Draht GmbH - All Rights reserved
  *-------------------------------------------------------
  */
 package com.aetrion.flickr.interestingness;
@@ -27,10 +27,14 @@ import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.photos.PhotoList;
 
+/**
+ * 
+ * @author till
+ * @version $Id: InterestingnessInterface.java,v 1.3 2007/02/24 14:10:46 x-mago Exp $
+ */
 public class InterestingnessInterface {
   
   public static final String METHOD_GET_LIST = "flickr.interestingness.getList";
-
 
   public static final String EXTRAS_LICENSE = "license";
   public static final String EXTRAS_DATE_UPLOAD = "date_upload";
@@ -115,8 +119,6 @@ public class InterestingnessInterface {
     	Element photoElement = (Element)photoNodes.item(i);
     	Photo photo = PhotoUtils.createPhoto(photoElement);
         photos.add(photo);
-        
- 
     }
     return photos;
   }
