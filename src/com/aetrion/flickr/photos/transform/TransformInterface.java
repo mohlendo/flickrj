@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
+ * @version $Id: TransformInterface.java,v 1.5 2007/02/24 22:55:05 x-mago Exp $
  */
 public class TransformInterface {
 
@@ -35,7 +36,8 @@ public class TransformInterface {
      * @param photoId The photo ID
      * @param degrees The degrees to rotate (90, 170 or 270)
      */
-    public void rotate(String photoId, double degrees) throws IOException, SAXException, FlickrException {
+    public void rotate(String photoId, int degrees)
+        throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_ROTATE));
         parameters.add(new Parameter("api_key", apiKey));
