@@ -20,17 +20,15 @@ import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.geo.GeoInterface;
-import com.aetrion.flickr.tags.Tag;
 import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.31 2007/02/23 23:04:00 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.32 2007/02/25 00:56:22 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -69,18 +67,18 @@ public class PhotosInterface {
         this.apiKey = apiKey;
         this.transport = transport;
     }
-    
+
     /**
      * Get the geo interface.
-     * @return Access class to the flickr.photos.geo methods. 
+     * @return Access class to the flickr.photos.geo methods.
      */
     public synchronized GeoInterface getGeoInterface() {
-    	if (geoInterface == null) {
-    		geoInterface = new GeoInterface(apiKey, transport);
-    	}
-    	return geoInterface;
+        if (geoInterface == null) {
+            geoInterface = new GeoInterface(apiKey, transport);
+        }
+        return geoInterface;
     }
-    
+
     /**
      * Delete a photo from flickr.
      * This method requires authentication with 'delete' permission.
@@ -89,13 +87,14 @@ public class PhotosInterface {
      * @throws IOException 
      * @throws FlickrException 
      */
-    public void delete(String photoId) throws IOException, SAXException, FlickrException {
+    public void delete(String photoId)
+        throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_DELETE));
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
-        
+
         // Note: This method requires an HTTP POST request.
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -104,7 +103,7 @@ public class PhotosInterface {
         // This method has no specific response - It returns an empty 
         // sucess response if it completes without error.
     }
-    
+
     /**
      * Returns all visble sets and pools the photo belongs to.
      * This method does not require authentication.
@@ -115,29 +114,29 @@ public class PhotosInterface {
      * @throws FlickrException
      */
     public List getAllContexts(String photoId) throws IOException, SAXException, FlickrException {
-    	List list = new ArrayList();
+        List list = new ArrayList();
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_ALL_CONTEXTS));
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
-        
+
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        
+
         Collection coll = response.getPayloadCollection();
         Iterator it = coll.iterator();
         while (it.hasNext()) {
-        	Element el = (Element)it.next();
-        	String id = el.getAttribute("id");
-        	String title = el.getAttribute("title");
-        	String kind = el.getTagName();
+            Element el = (Element) it.next();
+            String id = el.getAttribute("id");
+            String title = el.getAttribute("title");
+            String kind = el.getTagName();
 
-        	list.add(new PhotoPlace(kind, id, title));
+            list.add(new PhotoPlace(kind, id, title));
         }
-    	return list;
+        return list;
     }
 
     /**
@@ -271,9 +270,9 @@ public class PhotosInterface {
         }
         Element photosElement = response.getPayload();
         photos.setPage(photosElement.getAttribute("page"));
-		photos.setPages(photosElement.getAttribute("pages"));
-		photos.setPerPage(photosElement.getAttribute("perpage"));
-		photos.setTotal(photosElement.getAttribute("total"));
+        photos.setPages(photosElement.getAttribute("pages"));
+        photos.setPerPage(photosElement.getAttribute("perpage"));
+        photos.setTotal(photosElement.getAttribute("total"));
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
@@ -352,8 +351,8 @@ public class PhotosInterface {
      * @return A Collection of Photocount objects
      */
 
-    public Collection getCounts(Date[] dates, Date[] takenDates) throws IOException, SAXException,
-            FlickrException {
+    public Collection getCounts(Date[] dates, Date[] takenDates)
+        throws IOException, SAXException, FlickrException {
         List photocounts = new ArrayList();
 
         List parameters = new ArrayList();
@@ -407,7 +406,8 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getExif(String photoId, String secret) throws IOException, SAXException, FlickrException {
+    public Collection getExif(String photoId, String secret)
+        throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_EXIF));
         parameters.add(new Parameter("api_key", apiKey));
@@ -663,8 +663,8 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public PhotoList getUntagged(int perPage, int page) throws IOException, SAXException,
-            FlickrException {
+    public PhotoList getUntagged(int perPage, int page)
+        throws IOException, SAXException, FlickrException {
         PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
@@ -711,7 +711,7 @@ public class PhotosInterface {
         }
         return photos;
     }
-    
+
     /**
      * Returns a list of your geo-tagged photos.
      * This method requires authentication with 'read' permission.
@@ -737,55 +737,59 @@ public class PhotosInterface {
      * @throws IOException
      * @throws SAXException
      */
-    public PhotoList getWithGeoData(Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, int privacyFilter, String sort, Set extras, int perPage, int page) throws FlickrException, IOException, SAXException {
-    	List parameters = new ArrayList();
-    	parameters.add(new Parameter("method", METHOD_GET_WITH_GEO_DATA));
-    	parameters.add(new Parameter("api_key", apiKey));
+    public PhotoList getWithGeoData(
+        Date minUploadDate, Date maxUploadDate,
+        Date minTakenDate, Date maxTakenDate,
+        int privacyFilter, String sort, Set extras, int perPage, int page) 
+        throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_WITH_GEO_DATA));
+        parameters.add(new Parameter("api_key", apiKey));
 
-    	if (minUploadDate != null) {
-    		parameters.add(new Parameter("min_upload_date", minUploadDate.getTime() / 1000L));
-    	}
-    	if (maxUploadDate != null) {
-    		parameters.add(new Parameter("max_upload_date", maxUploadDate.getTime() / 1000L));
-    	}
-    	if (minTakenDate != null) {
-    		parameters.add(new Parameter("min_taken_date", minTakenDate.getTime() / 1000L));
-    	}
-    	if (maxTakenDate != null) {
-    		parameters.add(new Parameter("max_taken_date", maxTakenDate.getTime() / 1000L));
-    	}
-    	if (privacyFilter > 0) {
-    		parameters.add(new Parameter("privacy_filter", privacyFilter));        	
-    	}
-    	if (sort != null) {
-    		parameters.add(new Parameter("sort", sort));
-    	}
-    	if (extras != null && !extras.isEmpty()) {
-    		StringBuffer sb = new StringBuffer();
-    		Iterator it = extras.iterator();
-    		while (it.hasNext()) {
-    			if (sb.length() > 0) {
-    				sb.append(",");
-    			}
-    			sb.append(it.next());
-    		}
-    		parameters.add(new Parameter("extras", sb.toString()));
-    	}
-    	if (perPage > 0) {
-    		parameters.add(new Parameter("per_page", perPage));
-    	}
-    	if (page > 0) {
-    		parameters.add(new Parameter("page", page));
-    	}
-    	Response response = transport.get(transport.getPath(), parameters);
-    	if (response.isError()) {
-    		throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-    	}
-    	Element photosElement = response.getPayload();
-    	PhotoList photos = PhotoUtils.createPhotoList(photosElement);
-    	return photos;
+        if (minUploadDate != null) {
+            parameters.add(new Parameter("min_upload_date", minUploadDate.getTime() / 1000L));
+        }
+        if (maxUploadDate != null) {
+            parameters.add(new Parameter("max_upload_date", maxUploadDate.getTime() / 1000L));
+        }
+        if (minTakenDate != null) {
+            parameters.add(new Parameter("min_taken_date", minTakenDate.getTime() / 1000L));
+        }
+        if (maxTakenDate != null) {
+            parameters.add(new Parameter("max_taken_date", maxTakenDate.getTime() / 1000L));
+        }
+        if (privacyFilter > 0) {
+            parameters.add(new Parameter("privacy_filter", privacyFilter));        	
+        }
+        if (sort != null) {
+            parameters.add(new Parameter("sort", sort));
+        }
+        if (extras != null && !extras.isEmpty()) {
+            StringBuffer sb = new StringBuffer();
+            Iterator it = extras.iterator();
+            while (it.hasNext()) {
+                if (sb.length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(it.next());
+            }
+            parameters.add(new Parameter("extras", sb.toString()));
+        }
+        if (perPage > 0) {
+            parameters.add(new Parameter("per_page", perPage));
+        }
+        if (page > 0) {
+            parameters.add(new Parameter("page", page));
+        }
+        Response response = transport.get(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element photosElement = response.getPayload();
+        PhotoList photos = PhotoUtils.createPhotoList(photosElement);
+        return photos;
     }
-    
+
     /**
      * Returns a list of your photos which haven't been geo-tagged.
      * This method requires authentication with 'read' permission.
@@ -812,52 +816,52 @@ public class PhotosInterface {
      * @throws SAXException
      */
     public PhotoList getWithoutGeoData(Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, int privacyFilter, String sort, Set extras, int perPage, int page) throws FlickrException, IOException, SAXException {
-    	List parameters = new ArrayList();
-    	parameters.add(new Parameter("method", METHOD_GET_WITHOUT_GEO_DATA));
-    	parameters.add(new Parameter("api_key", apiKey));
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_WITHOUT_GEO_DATA));
+        parameters.add(new Parameter("api_key", apiKey));
 
-    	if (minUploadDate != null) {
-    		parameters.add(new Parameter("min_upload_date", minUploadDate.getTime() / 1000L));
-    	}
-    	if (maxUploadDate != null) {
-    		parameters.add(new Parameter("max_upload_date", maxUploadDate.getTime() / 1000L));
-    	}
-    	if (minTakenDate != null) {
-    		parameters.add(new Parameter("min_taken_date", minTakenDate.getTime() / 1000L));
-    	}
-    	if (maxTakenDate != null) {
-    		parameters.add(new Parameter("max_taken_date", maxTakenDate.getTime() / 1000L));
-    	}
-    	if (privacyFilter > 0) {
-    		parameters.add(new Parameter("privacy_filter", privacyFilter));        	
-    	}
-    	if (sort != null) {
-    		parameters.add(new Parameter("sort", sort));
-    	}
-    	if (extras != null && !extras.isEmpty()) {
-    		StringBuffer sb = new StringBuffer();
-    		Iterator it = extras.iterator();
-    		while (it.hasNext()) {
-    			if (sb.length() > 0) {
-    				sb.append(",");
-    			}
-    			sb.append(it.next());
-    		}
-    		parameters.add(new Parameter("extras", sb.toString()));
-    	}
-    	if (perPage > 0) {
-    		parameters.add(new Parameter("per_page", perPage));
-    	}
-    	if (page > 0) {
-    		parameters.add(new Parameter("page", page));
-    	}
-    	Response response = transport.get(transport.getPath(), parameters);
-    	if (response.isError()) {
-    		throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-    	}
-    	Element photosElement = response.getPayload();
-    	PhotoList photos = PhotoUtils.createPhotoList(photosElement);
-    	return photos;
+        if (minUploadDate != null) {
+            parameters.add(new Parameter("min_upload_date", minUploadDate.getTime() / 1000L));
+        }
+        if (maxUploadDate != null) {
+            parameters.add(new Parameter("max_upload_date", maxUploadDate.getTime() / 1000L));
+        }
+        if (minTakenDate != null) {
+            parameters.add(new Parameter("min_taken_date", minTakenDate.getTime() / 1000L));
+        }
+        if (maxTakenDate != null) {
+            parameters.add(new Parameter("max_taken_date", maxTakenDate.getTime() / 1000L));
+        }
+        if (privacyFilter > 0) {
+            parameters.add(new Parameter("privacy_filter", privacyFilter));        	
+        }
+        if (sort != null) {
+            parameters.add(new Parameter("sort", sort));
+        }
+        if (extras != null && !extras.isEmpty()) {
+            StringBuffer sb = new StringBuffer();
+            Iterator it = extras.iterator();
+            while (it.hasNext()) {
+                if (sb.length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(it.next());
+            }
+            parameters.add(new Parameter("extras", sb.toString()));
+        }
+        if (perPage > 0) {
+            parameters.add(new Parameter("per_page", perPage));
+        }
+        if (page > 0) {
+            parameters.add(new Parameter("page", page));
+        }
+        Response response = transport.get(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element photosElement = response.getPayload();
+        PhotoList photos = PhotoUtils.createPhotoList(photosElement);
+        return photos;
     }
 
     /**
@@ -873,36 +877,36 @@ public class PhotosInterface {
      * @throws FlickrException
      */
     public PhotoList recentlyUpdated(Date minDate, Set extras, int perPage, int page) throws IOException, SAXException, FlickrException {
-    	List parameters = new ArrayList();
-    	parameters.add(new Parameter("method", METHOD_GET_WITHOUT_GEO_DATA));
-    	parameters.add(new Parameter("api_key", apiKey));
-    	
-    	parameters.add(new Parameter("min_date", minDate.getTime() / 1000L));
-    	
-    	if (extras != null && !extras.isEmpty()) {
-    		StringBuffer sb = new StringBuffer();
-    		Iterator it = extras.iterator();
-    		while (it.hasNext()) {
-    			if (sb.length() > 0) {
-    				sb.append(",");
-    			}
-    			sb.append(it.next());
-    		}
-    		parameters.add(new Parameter("extras", sb.toString()));
-    	}
-    	if (perPage > 0) {
-    		parameters.add(new Parameter("per_page", perPage));
-    	}
-    	if (page > 0) {
-    		parameters.add(new Parameter("page", page));
-    	}
-    	Response response = transport.get(transport.getPath(), parameters);
-    	if (response.isError()) {
-    		throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-    	}
-    	Element photosElement = response.getPayload();
-    	PhotoList photos = PhotoUtils.createPhotoList(photosElement);
-    	return photos;
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_WITHOUT_GEO_DATA));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("min_date", minDate.getTime() / 1000L));
+
+        if (extras != null && !extras.isEmpty()) {
+            StringBuffer sb = new StringBuffer();
+            Iterator it = extras.iterator();
+            while (it.hasNext()) {
+                if (sb.length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(it.next());
+            }
+            parameters.add(new Parameter("extras", sb.toString()));
+        }
+        if (perPage > 0) {
+            parameters.add(new Parameter("per_page", perPage));
+        }
+        if (page > 0) {
+            parameters.add(new Parameter("page", page));
+        }
+        Response response = transport.get(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element photosElement = response.getPayload();
+        PhotoList photos = PhotoUtils.createPhotoList(photosElement);
+        return photos;
     }
 
     /**
@@ -999,60 +1003,58 @@ public class PhotosInterface {
      * @throws FlickrException
      */
     public PhotoList searchInterestingness(SearchParameters params, int perPage, int page)
-			throws IOException, SAXException, FlickrException {
-		PhotoList photos = new PhotoList();
+        throws IOException, SAXException, FlickrException {
+        PhotoList photos = new PhotoList();
 
-		List parameters = new ArrayList();
-		parameters.add(new Parameter("method", METHOD_GET_INTERESTINGNESS));
-		parameters.add(new Parameter("api_key", apiKey));
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_INTERESTINGNESS));
+        parameters.add(new Parameter("api_key", apiKey));
 
-		parameters.addAll(params.getAsParameters());
+        parameters.addAll(params.getAsParameters());
 
-		if (perPage > 0) {
-			parameters.add(new Parameter("per_page", new Integer(perPage)));
-		}
-		if (page > 0) {
-			parameters.add(new Parameter("page", new Integer(page)));
-		}
+        if (perPage > 0) {
+            parameters.add(new Parameter("per_page", new Integer(perPage)));
+        }
+        if (page > 0) {
+            parameters.add(new Parameter("page", new Integer(page)));
+        }
 
-		Response response = transport.get(transport.getPath(), parameters);
-		if (response.isError()) {
-			throw new FlickrException(response.getErrorCode(), response
-					.getErrorMessage());
-		}
-		Element photosElement = response.getPayload();
-		photos.setPage(photosElement.getAttribute("page"));
-		photos.setPages(photosElement.getAttribute("pages"));
-		photos.setPerPage(photosElement.getAttribute("perpage"));
-		photos.setTotal(photosElement.getAttribute("total"));
+        Response response = transport.get(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response
+                .getErrorMessage());
+        }
+        Element photosElement = response.getPayload();
+        photos.setPage(photosElement.getAttribute("page"));
+        photos.setPages(photosElement.getAttribute("pages"));
+        photos.setPerPage(photosElement.getAttribute("perpage"));
+        photos.setTotal(photosElement.getAttribute("total"));
 
-		NodeList photoNodes = photosElement.getElementsByTagName("photo");
-		for (int i = 0; i < photoNodes.getLength(); i++) {
-			Element photoElement = (Element) photoNodes.item(i);
-			Photo photo = new Photo();
-			photo.setId(photoElement.getAttribute("id"));
+        NodeList photoNodes = photosElement.getElementsByTagName("photo");
+        for (int i = 0; i < photoNodes.getLength(); i++) {
+            Element photoElement = (Element) photoNodes.item(i);
+            Photo photo = new Photo();
+            photo.setId(photoElement.getAttribute("id"));
 
-			User owner = new User();
-			owner.setId(photoElement.getAttribute("owner"));
-			photo.setOwner(owner);
+            User owner = new User();
+            owner.setId(photoElement.getAttribute("owner"));
+            photo.setOwner(owner);
 
-			photo.setSecret(photoElement.getAttribute("secret"));
-			photo.setServer(photoElement.getAttribute("server"));
-	        photo.setFarm(photoElement.getAttribute("farm"));
-			photo.setTitle(photoElement.getAttribute("title"));
-			photo.setPublicFlag("1".equals(photoElement
-					.getAttribute("ispublic")));
-			photo.setFriendFlag("1".equals(photoElement
-					.getAttribute("isfriend")));
-			photo.setFamilyFlag("1".equals(photoElement
-					.getAttribute("isfamily")));
+            photo.setSecret(photoElement.getAttribute("secret"));
+            photo.setServer(photoElement.getAttribute("server"));
+            photo.setFarm(photoElement.getAttribute("farm"));
+            photo.setTitle(photoElement.getAttribute("title"));
+            photo.setPublicFlag("1".equals(photoElement
+                .getAttribute("ispublic")));
+            photo.setFriendFlag("1".equals(photoElement
+                .getAttribute("isfriend")));
+            photo.setFamilyFlag("1".equals(photoElement
+                .getAttribute("isfamily")));
+            photos.add(photo);
+        }
+        return photos;
+    }
 
-			photos.add(photo);
-		}
-		return photos;
-	}
-    
-    
     /**
      * Set the dates for the specified photo.
      *
@@ -1100,8 +1102,8 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public void setMeta(String photoId, String title, String description) throws IOException,
-            SAXException, FlickrException {
+    public void setMeta(String photoId, String title, String description)
+        throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_META));
         parameters.add(new Parameter("api_key", apiKey));
@@ -1153,8 +1155,8 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public void setTags(String photoId, String[] tags) throws IOException, SAXException,
-            FlickrException {
+    public void setTags(String photoId, String[] tags)
+        throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_TAGS));
         parameters.add(new Parameter("api_key", apiKey));
@@ -1194,6 +1196,5 @@ public class PhotosInterface {
     public Photo getPhoto(String id, String secret) throws IOException, FlickrException, SAXException {
         return getInfo(id, secret);
     }
-
 
 }
