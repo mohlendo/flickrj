@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.3 2007/02/25 00:54:39 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.4 2007/02/25 17:33:13 x-mago Exp $
  */
 public final class PhotoUtils {
 
@@ -184,12 +184,13 @@ public final class PhotoUtils {
             latitude = geoElement.getAttribute("latitude");
             accuracy = geoElement.getAttribute("accuracy");
         } catch (NullPointerException e) {
+        	// Geodata may be available as attributes in the photo-tag itself!
             try {
                 longitude = photoElement.getAttribute("longitude");
                 latitude = photoElement.getAttribute("latitude");
                 accuracy = photoElement.getAttribute("accuracy");
             } catch (NullPointerException e2) {
-            	// no geodata at all
+                // no geodata at all
             }
         }
         if (longitude != null && latitude != null) {
