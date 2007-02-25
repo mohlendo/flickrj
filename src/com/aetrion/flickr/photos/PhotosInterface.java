@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.32 2007/02/25 00:56:22 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.33 2007/02/25 17:29:48 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -200,30 +200,14 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photosElement = response.getPayload();
-        photos.setPage(photosElement.getAttribute("page"));
-		photos.setPages(photosElement.getAttribute("pages"));
-		photos.setPerPage(photosElement.getAttribute("perpage"));
-		photos.setTotal(photosElement.getAttribute("total"));
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
+        photos.setPage("1");
+		photos.setPages("1");
+		photos.setPerPage("" + photoNodes.getLength());
+		photos.setTotal("" + photoNodes.getLength());
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
-            Photo photo = new Photo();
-            photo.setId(photoElement.getAttribute("id"));
-
-            User owner = new User();
-            owner.setId(photoElement.getAttribute("owner"));
-            owner.setUsername(photoElement.getAttribute("username"));
-            photo.setOwner(owner);
-
-            photo.setSecret(photoElement.getAttribute("secret"));
-            photo.setServer(photoElement.getAttribute("server"));
-            photo.setFarm(photoElement.getAttribute("farm"));
-            photo.setTitle(photoElement.getAttribute("title"));
-            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-            photos.add(photo);
+            photos.add(PhotoUtils.createPhoto(photoElement));
         }
         return photos;
     }
@@ -269,27 +253,14 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photosElement = response.getPayload();
-        photos.setPage(photosElement.getAttribute("page"));
-        photos.setPages(photosElement.getAttribute("pages"));
-        photos.setPerPage(photosElement.getAttribute("perpage"));
-        photos.setTotal(photosElement.getAttribute("total"));
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
+        photos.setPage("1");
+		photos.setPages("1");
+		photos.setPerPage("" + photoNodes.getLength());
+		photos.setTotal("" + photoNodes.getLength());
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
-            Photo photo = new Photo();
-            photo.setId(photoElement.getAttribute("id"));
-
-            User owner = new User();
-            owner.setId(photoElement.getAttribute("owner"));
-            owner.setUsername(photoElement.getAttribute("username"));
-            photo.setOwner(owner);
-
-            photo.setSecret(photoElement.getAttribute("secret"));
-            photo.setServer(photoElement.getAttribute("server"));
-            photo.setFarm(photoElement.getAttribute("farm"));
-            photo.setTitle(photoElement.getAttribute("name"));
-
-            photos.add(photo);
+            photos.add(PhotoUtils.createPhoto(photoElement));
         }
         return photos;
     }
@@ -366,17 +337,17 @@ public class PhotosInterface {
         if (dates != null) {
             List dateList = new ArrayList();
             for (int i = 0; i < dates.length; i++) {
-                dateList.add(dates[i]);
+                dateList.add(String.valueOf(dates[i].getTime() / 1000L));
             }
             parameters.add(new Parameter("dates", StringUtilities.join(dateList, ",")));
         }
 
         if (takenDates != null) {
-            List dateList = new ArrayList();
-            for (int i = 0; i < dates.length; i++) {
-                dateList.add(dates[i]);
+            List takenDateList = new ArrayList();
+            for (int i = 0; i < takenDates.length; i++) {
+                takenDateList.add(String.valueOf(takenDates[i].getTime() / 1000L));
             }
-            parameters.add(new Parameter("taken_dates", StringUtilities.join(dateList, ",")));
+            parameters.add(new Parameter("taken_dates", StringUtilities.join(takenDateList, ",")));
         }
 
         Response response = transport.get(transport.getPath(), parameters);
@@ -462,8 +433,8 @@ public class PhotosInterface {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        Element photoElement = (Element)response.getPayload();
-        
+        Element photoElement = (Element) response.getPayload();
+
         return PhotoUtils.createPhoto(photoElement);
     }
 
@@ -504,9 +475,9 @@ public class PhotosInterface {
         }
         Element photosElement = response.getPayload();
         photos.setPage(photosElement.getAttribute("page"));
-		photos.setPages(photosElement.getAttribute("pages"));
-		photos.setPerPage(photosElement.getAttribute("perpage"));
-		photos.setTotal(photosElement.getAttribute("total"));
+        photos.setPages(photosElement.getAttribute("pages"));
+        photos.setPerPage(photosElement.getAttribute("perpage"));
+        photos.setTotal(photosElement.getAttribute("total"));
 
         NodeList photoElements = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoElements.getLength(); i++) {
@@ -590,9 +561,9 @@ public class PhotosInterface {
         }
         Element photosElement = response.getPayload();
         photos.setPage(photosElement.getAttribute("page"));
-		photos.setPages(photosElement.getAttribute("pages"));
-		photos.setPerPage(photosElement.getAttribute("perpage"));
-		photos.setTotal(photosElement.getAttribute("total"));
+        photos.setPages(photosElement.getAttribute("pages"));
+        photos.setPerPage(photosElement.getAttribute("perpage"));
+        photos.setTotal(photosElement.getAttribute("total"));
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
@@ -684,9 +655,9 @@ public class PhotosInterface {
         }
         Element photosElement = response.getPayload();
         photos.setPage(photosElement.getAttribute("page"));
-		photos.setPages(photosElement.getAttribute("pages"));
-		photos.setPerPage(photosElement.getAttribute("perpage"));
-		photos.setTotal(photosElement.getAttribute("total"));
+        photos.setPages(photosElement.getAttribute("pages"));
+        photos.setPerPage(photosElement.getAttribute("perpage"));
+        photos.setTotal(photosElement.getAttribute("total"));
 
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
@@ -941,8 +912,8 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public PhotoList search(SearchParameters params, int perPage, int page) throws IOException, SAXException,
-            FlickrException {
+    public PhotoList search(SearchParameters params, int perPage, int page)
+        throws IOException, SAXException, FlickrException {
         PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
