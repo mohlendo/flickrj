@@ -56,3 +56,14 @@ Release 1.0a9 (August 31, 2005):
 
 Release 1.0b1 (October 2, 2006):
  - Updated to support changes to Flickr APIs
+ 
+Release 1.0b2 (February 25, 2007):
+ - Added farm-attribute to photo-URL
+ - PoolsInterface.getPhotos() now returns a PhotoList
+ - Added Throttle to Group
+ - XMLUtilities has two new helper functions getIntAttribute and getBooleanAttribute
+ - Fixed Auth-Issue
+ - More Interfaces that read lists of Photos now return PhotoList
+ - changed TransformationInterface degree-format from double to int
+ - generating timestamps from Dates in PhotosInterface.getCounts()
+ 
