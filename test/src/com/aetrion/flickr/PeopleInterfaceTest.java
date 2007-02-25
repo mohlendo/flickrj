@@ -19,6 +19,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
+ * @version $Id: PeopleInterfaceTest.java,v 1.6 2007/02/25 16:38:15 x-mago Exp $
  */
 public class PeopleInterfaceTest extends TestCase {
 
@@ -26,7 +27,7 @@ public class PeopleInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
-        Flickr.debugStream = true;
+        //Flickr.debugStream = true;
 
         InputStream in = null;
         try {
@@ -85,7 +86,7 @@ public class PeopleInterfaceTest extends TestCase {
         PeopleInterface iface = flickr.getPeopleInterface();
         Collection photos = iface.getPublicPhotos(properties.getProperty("nsid"), 0, 0);
         assertNotNull(photos);
-        assertEquals(3, photos.size());
+        assertEquals(62, photos.size());
     }
 
     public void testGetUploadStatus() {
