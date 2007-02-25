@@ -121,6 +121,7 @@
         <test name="com.aetrion.flickr.FavoritesInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.GroupsInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PeopleInterfaceTest" todir="${test.reports}"/>
+        <test name="com.aetrion.flickr.PhotosInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.TestInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.ReflectionInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.InterestingnessInterfaceTest" todir="${test.reports}"/>
