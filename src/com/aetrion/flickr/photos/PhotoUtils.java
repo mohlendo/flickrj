@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.4 2007/02/25 17:33:13 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.5 2007/02/26 19:15:30 x-mago Exp $
  */
 public final class PhotoUtils {
 
@@ -41,6 +41,12 @@ public final class PhotoUtils {
         photo.setOriginalSecret(photoElement.getAttribute("originalsecret"));
         photo.setIconServer(photoElement.getAttribute("iconserver"));
         photo.setIconFarm(photoElement.getAttribute("iconfarm"));
+
+        // Most interfaces provide the originalformat, but some do not.
+        // Like PeopleInterface.getPublicPhotos()...
+        if (photo.getOriginalFormat().equals("")) {
+            photo.setOriginalFormat("jpg");
+        }
 
         Element ownerElement = (Element) photoElement.getElementsByTagName("owner").item(0);
         if (ownerElement == null) {

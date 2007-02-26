@@ -4,10 +4,10 @@
 package com.aetrion.flickr.people;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Iterator;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -20,10 +20,9 @@ import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.contacts.OnlineStatus;
 import com.aetrion.flickr.groups.Group;
-import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.util.XMLUtilities;
-import java.net.URLEncoder;
 /**
  * Interface for finding Flickr users.
  *
@@ -256,21 +255,7 @@ public class PeopleInterface {
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
-            Photo photo = new Photo();
-            photo.setId(photoElement.getAttribute("id"));
-
-            User owner = new User();
-            owner.setId(photoElement.getAttribute("owner"));
-            photo.setOwner(owner);
-
-            photo.setSecret(photoElement.getAttribute("secret"));
-            photo.setServer(photoElement.getAttribute("server"));
-            photo.setTitle(photoElement.getAttribute("title"));
-            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-            photos.add(photo);
+            photos.add(PhotoUtils.createPhoto(photoElement));
         }
         return photos;
     }
