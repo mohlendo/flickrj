@@ -67,3 +67,6 @@ Release 1.0b2 (February 25, 2007):
  - changed TransformationInterface degree-format from double to int
  - generating timestamps from Dates in PhotosInterface.getCounts()
  
+Release 1.0b3 (February 26, 2007):
+ - The PhotoList requested in PeopleList contains no originalformat.
+   PhotoUtils.createPhoto() now sets jpg as originalformat if none is available.
