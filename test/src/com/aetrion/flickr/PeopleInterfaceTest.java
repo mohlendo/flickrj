@@ -4,22 +4,26 @@ package com.aetrion.flickr;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 import java.util.Collection;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import junit.framework.TestCase;
+
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.people.User;
+import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.util.IOUtilities;
-import com.aetrion.flickr.auth.AuthInterface;
-import com.aetrion.flickr.auth.Auth;
-import junit.framework.TestCase;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
- * @version $Id: PeopleInterfaceTest.java,v 1.6 2007/02/25 16:38:15 x-mago Exp $
+ * @version $Id: PeopleInterfaceTest.java,v 1.7 2007/02/26 18:39:43 x-mago Exp $
  */
 public class PeopleInterfaceTest extends TestCase {
 
@@ -84,9 +88,15 @@ public class PeopleInterfaceTest extends TestCase {
 
     public void testGetPublicPhotos() throws FlickrException, IOException, SAXException {
         PeopleInterface iface = flickr.getPeopleInterface();
-        Collection photos = iface.getPublicPhotos(properties.getProperty("nsid"), 0, 0);
+        PhotoList photos = iface.getPublicPhotos(properties.getProperty("nsid"), 0, 0);
         assertNotNull(photos);
-        assertEquals(62, photos.size());
+        assertTrue(photos.size() > 60);
+	    Photo photo = (Photo) photos.get(0);
+        assertTrue(photo.getOriginalUrl().endsWith("jpg"));
+        assertEquals("jpg", photo.getOriginalFormat());
+	    photo = (Photo) photos.get(50);
+        assertTrue(photo.getOriginalUrl().endsWith("jpg"));
+        assertEquals("jpg", photo.getOriginalFormat());
     }
 
     public void testGetUploadStatus() {
