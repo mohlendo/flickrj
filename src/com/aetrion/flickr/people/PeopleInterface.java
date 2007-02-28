@@ -23,10 +23,12 @@ import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.util.XMLUtilities;
+
 /**
  * Interface for finding Flickr users.
  *
  * @author Anthony Eden
+ * @version $Id: PeopleInterface.java,v 1.19 2007/02/28 18:57:15 x-mago Exp $
  */
 public class PeopleInterface {
 
@@ -186,7 +188,8 @@ public class PeopleInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getPublicGroups(String userId) throws IOException, SAXException, FlickrException {
+    public Collection getPublicGroups(String userId)
+      throws IOException, SAXException, FlickrException {
         List groups = new ArrayList();
 
         List parameters = new ArrayList();
@@ -200,7 +203,7 @@ public class PeopleInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element groupsElement = response.getPayload();
-        NodeList groupNodes = groupsElement.getElementsByTagName("photo");
+        NodeList groupNodes = groupsElement.getElementsByTagName("group");
         for (int i = 0; i < groupNodes.getLength(); i++) {
             Element groupElement = (Element) groupNodes.item(i);
             Group group = new Group();
@@ -210,10 +213,9 @@ public class PeopleInterface {
             group.setEighteenPlus("1".equals(groupElement.getAttribute("eighteenplus")));
             groups.add(group);
         }
-
         return groups;
     }
-    
+
     /**
      * Get a collection of public photos for the specified user ID.
      *
