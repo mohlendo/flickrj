@@ -15,6 +15,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.groups.Group;
 
 /**
  * Interface for testing Flickr connectivity.
@@ -31,7 +32,7 @@ public class UrlsInterface {
 
     private String apiKey;
     private Transport transport;
-    
+
     /**
      * Construct a UrlsInterface.
      *
@@ -42,7 +43,7 @@ public class UrlsInterface {
         this.apiKey = apiKey;
         this.transport = transport;
     }
-    
+
     /**
      * Get the group URL for the specified group ID
      *
@@ -56,18 +57,18 @@ public class UrlsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_GROUP));
         parameters.add(new Parameter("api_key", apiKey));
-        
+
         parameters.add(new Parameter("group_id", groupId));
-        
+
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } 
-        
+        }
+
         Element payload = response.getPayload();
         return payload.getAttribute("url");
     }
-    
+
     /**
      * Get the URL for the user's photos.
      *
@@ -81,18 +82,18 @@ public class UrlsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_USER_PHOTOS));
         parameters.add(new Parameter("api_key", apiKey));
-        
+
         parameters.add(new Parameter("user_id", userId));
-        
+
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } 
-        
+        }
+
         Element payload = response.getPayload();
         return payload.getAttribute("url");
     }
-    
+
     /**
      * Get the URL for the user's profile.
      *
@@ -106,44 +107,47 @@ public class UrlsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_USER_PROFILE));
         parameters.add(new Parameter("api_key", apiKey));
-        
+
         parameters.add(new Parameter("user_id", userId));
-        
+
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } 
-        
+        }
+
         Element payload = response.getPayload();
         return payload.getAttribute("url");
     }
-    
+
     /**
-     * Lookup the group name for the specified URL.
+     * Lookup the group for the specified URL.
      *
      * @param url The url
-     * @return The group name
+     * @return The group
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
      */
-    public String lookupGroup(String url) throws IOException, SAXException, FlickrException {
+    public Group lookupGroup(String url) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_LOOKUP_GROUP));
         parameters.add(new Parameter("api_key", apiKey));
-        
+
         parameters.add(new Parameter("url", url));
-        
+
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } 
-        
+        }
+
+        Group group = new Group();
         Element payload = response.getPayload();
         Element groupnameElement = (Element) payload.getElementsByTagName("groupname").item(0);
-        return ((Text)groupnameElement.getFirstChild()).getData();
+        group.setId(payload.getAttribute("id"));
+        group.setName(((Text) groupnameElement.getFirstChild()).getData());
+        return group;
     }
-    
+
     /**
      * Lookup the username for the specified User URL.
      *
@@ -153,18 +157,19 @@ public class UrlsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public String lookupUser(String url) throws IOException, SAXException, FlickrException {
+    public String lookupUser(String url)
+      throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_LOOKUP_USER));
         parameters.add(new Parameter("api_key", apiKey));
-        
+
         parameters.add(new Parameter("url", url));
-        
+
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } 
-        
+        }
+
         Element payload = response.getPayload();
         Element groupnameElement = (Element) payload.getElementsByTagName("username").item(0);
         return ((Text) groupnameElement.getFirstChild()).getData();
