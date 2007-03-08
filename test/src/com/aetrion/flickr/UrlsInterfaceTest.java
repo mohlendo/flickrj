@@ -8,12 +8,15 @@ import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import junit.framework.TestCase;
+
+import org.xml.sax.SAXException;
+
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.urls.UrlsInterface;
 import com.aetrion.flickr.util.IOUtilities;
-import junit.framework.TestCase;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
@@ -66,8 +69,9 @@ public class UrlsInterfaceTest extends TestCase {
 
     public void testLookupGroup() throws FlickrException, IOException, SAXException {
         UrlsInterface iface = flickr.getUrlsInterface();
-        String groupname = iface.lookupGroup("http://www.flickr.com/groups/central/");
-        assertEquals("FlickrCentral", groupname);
+        Group group = iface.lookupGroup("http://www.flickr.com/groups/central/");
+        assertEquals("FlickrCentral", group.getName());
+        assertEquals("34427469792@N01", group.getId());
     }
 
     public void testLookupUser() throws FlickrException, IOException, SAXException {

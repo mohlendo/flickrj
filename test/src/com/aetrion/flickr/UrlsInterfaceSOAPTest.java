@@ -2,16 +2,19 @@
 
 package com.aetrion.flickr;
 
-import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.aetrion.flickr.util.IOUtilities;
-import com.aetrion.flickr.urls.UrlsInterface;
 import junit.framework.TestCase;
+
 import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.groups.Group;
+import com.aetrion.flickr.urls.UrlsInterface;
+import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Anthony Eden
@@ -61,8 +64,9 @@ public class UrlsInterfaceSOAPTest extends TestCase {
 
     public void testLookupGroup() throws FlickrException, IOException, SAXException {
         UrlsInterface iface = flickr.getUrlsInterface();
-        String groupname = iface.lookupGroup("http://www.flickr.com/groups/central/");
-        assertEquals("FlickrCentral", groupname);
+        Group group = iface.lookupGroup("http://www.flickr.com/groups/central/");
+        assertEquals("FlickrCentral", group.getName());
+        assertEquals("34427469792@N01", group.getId());
     }
 
     public void testLookupUser() throws FlickrException, IOException, SAXException {
