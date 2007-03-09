@@ -9,13 +9,17 @@ import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthUtilities;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
 /** @author Anthony Eden */
 public class UrlUtilities {
+
+    private static final String UTF8 = "UTF-8";
 
     /**
      * Build a request URL.
@@ -49,7 +53,16 @@ public class UrlUtilities {
             Parameter p = (Parameter) iter.next();
             buffer.append(p.getName());
             buffer.append("=");
-            buffer.append(p.getValue());
+	    Object value = p.getValue();
+	    if (value != null) {
+		String string = value.toString();
+		try {
+		    string = URLEncoder.encode(string, UTF8);
+		} catch(UnsupportedEncodingException e) {
+		    // Should never happen, but just in case
+		}
+		buffer.append(string);
+	    }
             if (iter.hasNext()) buffer.append("&");
         }
 

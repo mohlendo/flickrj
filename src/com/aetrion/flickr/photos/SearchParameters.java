@@ -16,7 +16,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.7 2007/02/21 21:18:42 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.8 2007/03/09 01:16:31 ianslai Exp $
  */
 public class SearchParameters {
 
@@ -31,6 +31,7 @@ public class SearchParameters {
     private Date interestingnessDate;
     private String license;
     private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormat MYSQLDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private boolean extrasLicense = false;
 	private boolean extrasDateUpload = false;
 	private boolean extrasDateTaken = false;
@@ -228,12 +229,12 @@ public class SearchParameters {
 
         Date minTakenDate = getMinTakenDate();
         if (minTakenDate != null) {
-            parameters.add(new Parameter("min_taken_date", new Long(minTakenDate.getTime() / 1000L)));
+            parameters.add(new Parameter("min_taken_date", MYSQLDF.format(minTakenDate)));
         }
 
         Date maxTakenDate = getMaxTakenDate();
         if (maxTakenDate != null) {
-            parameters.add(new Parameter("max_taken_date", new Long(maxTakenDate.getTime() / 1000L)));
+            parameters.add(new Parameter("max_taken_date", MYSQLDF.format(maxTakenDate)));
         }
 
         String license = getLicense();
