@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.5 2007/02/26 19:15:30 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.6 2007/03/11 23:24:55 x-mago Exp $
  */
 public final class PhotoUtils {
 
@@ -41,9 +41,11 @@ public final class PhotoUtils {
         photo.setOriginalSecret(photoElement.getAttribute("originalsecret"));
         photo.setIconServer(photoElement.getAttribute("iconserver"));
         photo.setIconFarm(photoElement.getAttribute("iconfarm"));
+        // flickr.groups.pools.getPhotos provides this value!
+        photo.setDateAdded(photoElement.getAttribute("dateadded"));
 
-        // Most interfaces provide the originalformat, but some do not.
-        // Like PeopleInterface.getPublicPhotos()...
+        // Searches, or other list may contain orginal_format.
+        // If not choosen via extras, set jpg as default.
         if (photo.getOriginalFormat().equals("")) {
             photo.setOriginalFormat("jpg");
         }
@@ -92,13 +94,14 @@ public final class PhotoUtils {
             // nop
         }
 
+        // Parse either photo by getInfo, or from list
         try {
             Element datesElement = XMLUtilities.getChild(photoElement, "dates");
             photo.setDatePosted(datesElement.getAttribute("posted"));
             photo.setDateTaken(datesElement.getAttribute("taken"));
             photo.setTakenGranularity(datesElement.getAttribute("takengranularity"));
         } catch (NullPointerException e) {
-            // nop
+            photo.setDateTaken(photoElement.getAttribute("datetaken"));
         }
 
         NodeList permissionsNodes = photoElement.getElementsByTagName("permissions");
