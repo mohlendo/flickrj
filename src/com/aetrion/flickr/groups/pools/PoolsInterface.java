@@ -8,23 +8,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.groups.Group;
-import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotoContext;
+import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.util.StringUtilities;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
+ * @version $Id: PoolsInterface.java,v 1.11 2007/03/11 23:08:31 x-mago Exp $
  */
 public class PoolsInterface {
 
@@ -145,6 +149,7 @@ public class PoolsInterface {
      *
      * @param groupId The group ID
      * @param tags The optional tags (may be null)
+     * @param extras Set of extra-attributes to include (may be null)
      * @param perPage The number of photos per page (0 to ignore)
      * @param page The page offset (0 to ignore)
      * @return A Collection of Photo objects
@@ -152,8 +157,8 @@ public class PoolsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public PhotoList getPhotos(String groupId, String[] tags, int perPage, int page) throws IOException, SAXException,
-            FlickrException {
+    public PhotoList getPhotos(String groupId, String[] tags, Set extras, int perPage, int page)
+      throws IOException, SAXException, FlickrException {
         PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
@@ -171,6 +176,18 @@ public class PoolsInterface {
             parameters.add(new Parameter("page", new Integer(page)));
         }
 
+        if (extras != null) {
+            StringBuffer sb = new StringBuffer();
+            Iterator it = extras.iterator();
+            for (int i = 0; it.hasNext(); i++) {
+                if (i > 0) {
+                    sb.append(",");
+                }
+                sb.append(it.next());
+            }
+            parameters.add(new Parameter(Flickr.KEY_EXTRAS, sb.toString()));
+        }
+
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -184,26 +201,24 @@ public class PoolsInterface {
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
-            Photo photo = new Photo();
-            photo.setId(photoElement.getAttribute("id"));
-
-            User owner = new User();
-            owner.setId(photoElement.getAttribute("owner"));
-            owner.setUsername(photoElement.getAttribute("ownername"));
-            photo.setOwner(owner);
-
-            photo.setSecret(photoElement.getAttribute("secret"));
-            photo.setServer(photoElement.getAttribute("server"));
-            photo.setFarm(photoElement.getAttribute("farm"));
-            photo.setTitle(photoElement.getAttribute("title"));
-            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-            photos.add(photo);
+            photos.add(PhotoUtils.createPhoto(photoElement));
         }
 
         return photos;
+    }
+
+    /**
+     * Convinience/Compatibility method.
+     *
+     * @param groupId The group ID
+     * @param tags The optional tags (may be null)
+     * @param perPage The number of photos per page (0 to ignore)
+     * @param page The page offset (0 to ignore)
+     * @return A Collection of Photo objects
+     */
+    public PhotoList getPhotos(String groupId, String[] tags, int perPage, int page)
+      throws IOException, SAXException, FlickrException {
+        return getPhotos(groupId, tags, Flickr.MIN_EXTRAS, perPage, page);
     }
 
     /**
