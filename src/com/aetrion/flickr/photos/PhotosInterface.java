@@ -13,6 +13,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.RequestContext;
@@ -22,13 +27,10 @@ import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.geo.GeoInterface;
 import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.33 2007/02/25 17:29:48 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.34 2007/03/11 23:18:53 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -40,6 +42,7 @@ public class PhotosInterface {
     public static final String METHOD_GET_CONTEXT = "flickr.photos.getContext";
     public static final String METHOD_GET_COUNTS = "flickr.photos.getCounts";
     public static final String METHOD_GET_EXIF = "flickr.photos.getExif";
+    public static final String METHOD_GET_FAVORITES = "flickr.photos.getFavorites";
     public static final String METHOD_GET_INFO = "flickr.photos.getInfo";
     public static final String METHOD_GET_NOT_IN_SET = "flickr.photos.getNotInSet";
     public static final String METHOD_GET_PERMS = "flickr.photos.getPerms";
@@ -226,7 +229,12 @@ public class PhotosInterface {
      * @throws FlickrException
      */
     public PhotoList getContactsPublicPhotos(String userId, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
-            throws IOException, SAXException, FlickrException {
+      throws IOException, SAXException, FlickrException {
+        return getContactsPublicPhotos(userId, Flickr.MIN_EXTRAS, count, justFriends, singlePhoto, includeSelf);
+    }
+
+    public PhotoList getContactsPublicPhotos(String userId, Set extras, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
+      throws IOException, SAXException, FlickrException {
         PhotoList photos = new PhotoList();
 
         List parameters = new ArrayList();
@@ -246,6 +254,18 @@ public class PhotosInterface {
         }
         if (includeSelf) {
             parameters.add(new Parameter("include_self", "1"));
+        }
+
+        if (extras != null) {
+            StringBuffer sb = new StringBuffer();
+            Iterator it = extras.iterator();
+            for (int i = 0; it.hasNext(); i++) {
+                if (i > 0) {
+                    sb.append(",");
+                }
+                sb.append(it.next());
+            }
+            parameters.add(new Parameter(Flickr.KEY_EXTRAS, sb.toString()));
         }
 
         Response response = transport.get(transport.getPath(), parameters);
@@ -365,6 +385,51 @@ public class PhotosInterface {
             photocounts.add(photocount);
         }
         return photocounts;
+    }
+
+    /**
+     * Returns the list of people who have favorited a given photo.
+     *
+     * @param photoId
+     * @param perPage
+     * @param page
+     * @return List of User
+     */
+    public Collection getFavorites(String photoId, int perPage, int page)
+        throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+
+        parameters.add(new Parameter("method", METHOD_GET_FAVORITES));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photo_id", photoId));
+
+        if (perPage > 0) {
+            parameters.add(new Parameter("per_page", new Integer(perPage)));
+        }
+
+        if (page > 0) {
+            parameters.add(new Parameter("page", new Integer(page)));
+        }
+
+        Response response = transport.get(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        List users = new ArrayList();
+
+        Element userRoot = response.getPayload();
+        NodeList userNodes = userRoot.getElementsByTagName("person");
+        User user = new User();
+        for (int i = 0; i < userNodes.getLength(); i++) {
+            Element userElement = (Element) userNodes.item(i);
+            user.setId(userElement.getAttribute("nsid"));
+            user.setUsername(userElement.getAttribute("username"));
+            user.setFaveDate(userElement.getAttribute("favedate"));
+            users.add(user);
+        }
+
+        return users;
     }
 
     /**
@@ -942,22 +1007,7 @@ public class PhotosInterface {
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
-            Photo photo = new Photo();
-            photo.setId(photoElement.getAttribute("id"));
-
-            User owner = new User();
-            owner.setId(photoElement.getAttribute("owner"));
-            photo.setOwner(owner);
-
-            photo.setSecret(photoElement.getAttribute("secret"));
-            photo.setServer(photoElement.getAttribute("server"));
-            photo.setFarm(photoElement.getAttribute("farm"));
-            photo.setTitle(photoElement.getAttribute("title"));
-            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-            photos.add(photo);
+            photos.add(PhotoUtils.createPhoto(photoElement));
         }
         return photos;
     }
