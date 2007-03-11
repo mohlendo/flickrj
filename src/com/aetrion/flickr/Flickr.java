@@ -3,8 +3,12 @@
  */
 package com.aetrion.flickr;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.aetrion.flickr.activity.ActivityInterface;
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.blogs.BlogsInterface;
 import com.aetrion.flickr.contacts.ContactsInterface;
@@ -26,7 +30,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * Main entry point for the Flickrj API.  This class is used to acquire Interface classes which wrap the Flickr API.
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.27 2007/02/24 23:03:42 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.28 2007/03/11 23:02:23 x-mago Exp $
  */
 public class Flickr {
 
@@ -54,6 +58,7 @@ public class Flickr {
     private Transport transport;
 
     private AuthInterface authInterface;
+    private ActivityInterface activityInterface;
     private BlogsInterface blogsInterface;
     private ContactsInterface contactsInterface;
     private FavoritesInterface favoritesInterface;
@@ -69,6 +74,47 @@ public class Flickr {
     private TransformInterface transformInterface;
     private UrlsInterface urlsInterface;
     private InterestingnessInterface interestingnessInterface;
+
+    public static final String KEY_EXTRAS = "extras";
+
+    public static final String EXTRAS_LICENSE = "license";
+    public static final String EXTRAS_DATE_UPLOAD = "date_upload";
+    public static final String EXTRAS_DATE_TAKEN = "date_taken";
+    public static final String EXTRAS_OWNER_NAME = "owner_name";
+    public static final String EXTRAS_ICON_SERVER = "icon_server";
+    public static final String EXTRAS_ORIGINAL_FORMAT = "original_format";
+    public static final String EXTRAS_LAST_UPDATE = "last_update";
+    public static final String EXTRAS_GEO = "geo";
+    public static final String EXTRAS_TAGS = "tags";
+    public static final String EXTRAS_MACHINE_TAGS = "machine_tags";
+
+    /**
+     * Set of extra-arguments. Used for requesting lists of photos in the
+     * following methods:<p>
+     * PeopleInterface.getPublicPhotos()<br>
+     * PoolsInterface.getPhotos()<br>
+     * PhotosetsInterface.getPhotos()<br>
+     * 
+     */
+    public static final Set ALL_EXTRAS = new HashSet();
+    public static final Set MIN_EXTRAS = new HashSet();
+
+    static {
+        ALL_EXTRAS.add(EXTRAS_DATE_TAKEN);
+        ALL_EXTRAS.add(EXTRAS_DATE_UPLOAD);
+        ALL_EXTRAS.add(EXTRAS_ICON_SERVER);
+        ALL_EXTRAS.add(EXTRAS_LAST_UPDATE);
+        ALL_EXTRAS.add(EXTRAS_LICENSE);
+        ALL_EXTRAS.add(EXTRAS_ORIGINAL_FORMAT);
+        ALL_EXTRAS.add(EXTRAS_OWNER_NAME);
+        ALL_EXTRAS.add(EXTRAS_GEO);
+        ALL_EXTRAS.add(EXTRAS_TAGS);
+        ALL_EXTRAS.add(EXTRAS_MACHINE_TAGS);
+    }
+
+    static {
+        MIN_EXTRAS.add(EXTRAS_ORIGINAL_FORMAT);
+    }
 
     /**
      * Construct a new Flickr gateway instance.  Defaults to a REST transport.
@@ -147,6 +193,18 @@ public class Flickr {
             authInterface = new AuthInterface(apiKey, transport);
         }
         return authInterface;
+    }
+
+    /**
+     * Get the ActivityInterface.
+     *
+     * @return The ActivityInterface
+     */
+    public ActivityInterface getActivityInterface() {
+        if (activityInterface == null) {
+            activityInterface = new ActivityInterface(apiKey, transport);
+        }
+        return activityInterface;
     }
 
     public synchronized BlogsInterface getBlogsInterface() {
