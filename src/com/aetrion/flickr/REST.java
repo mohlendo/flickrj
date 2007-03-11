@@ -208,7 +208,17 @@ public class REST extends Transport {
 
     private void writeParam(String name, Object value, DataOutputStream out, String boundary)
             throws IOException {
-        if (value instanceof byte[]) {
+        if (value instanceof InputStream) {
+            out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"image.jpg\";\r\n");
+            out.writeBytes("Content-Type: image/jpeg" + "\r\n\r\n");
+            InputStream in = (InputStream) value;
+            byte[] buf = new byte[512];
+            int res = -1;
+            while ((res = in.read(buf)) != -1) {
+                out.write(buf);
+            }
+            out.writeBytes("\r\n" + "--" + boundary + "\r\n");
+        } else if (value instanceof byte[]) {
             out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"image.jpg\";\r\n");
             out.writeBytes("Content-Type: image/jpeg" + "\r\n\r\n");
             out.write((byte[]) value);

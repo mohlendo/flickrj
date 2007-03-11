@@ -24,6 +24,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
+ * @version $Id: Uploader.java,v 1.7 2007/03/11 23:05:27 x-mago Exp $
  */
 public class Uploader {
 
@@ -92,17 +93,38 @@ public class Uploader {
         UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        } 
+        }
         return response.getPhotoId();
     }
 
     public String upload(InputStream in, UploadMetaData metaData) throws IOException, FlickrException, SAXException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int b = -1;
-        while ((b = in.read()) != -1) {
-            out.write((byte) b);
+        List parameters = new ArrayList();
+
+        parameters.add(new Parameter("api_key", apiKey));
+
+        String title = metaData.getTitle();
+        if (title != null)
+            parameters.add(new Parameter("title", title));
+
+        String description = metaData.getDescription();
+        if (description != null)
+            parameters.add(new Parameter("description", description));
+
+        Collection tags = metaData.getTags();
+        if (tags != null)
+            parameters.add(new Parameter("tags", StringUtilities.join(tags, " ")));
+
+        parameters.add(new Parameter("is_public", metaData.isPublicFlag() ? "1" : "0"));
+        parameters.add(new Parameter("is_family", metaData.isFamilyFlag() ? "1" : "0"));
+        parameters.add(new Parameter("is_friend", metaData.isFriendFlag() ? "1" : "0"));
+
+        parameters.add(new Parameter("photo", in));
+
+        UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        return upload(out.toByteArray(), metaData);
+        return response.getPhotoId();
     }
 
 }
