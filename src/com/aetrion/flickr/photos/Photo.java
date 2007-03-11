@@ -16,6 +16,7 @@ import java.util.Date;
 
 import javax.imageio.ImageIO;
 
+import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.util.IOUtilities;
 
@@ -24,7 +25,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * obtain the photo data by calling one of the getXXXImage() or getXXXAsStream() methods in this class.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.14 2007/02/24 20:01:42 x-mago Exp $
+ * @version $Id: Photo.java,v 1.15 2007/03/11 23:23:22 x-mago Exp $
  */
 public class Photo {
 
@@ -50,6 +51,7 @@ public class Photo {
     private boolean publicFlag;
     private boolean friendFlag;
     private boolean familyFlag;
+    private Date dateAdded;
     private Date datePosted;
     private Date dateTaken;
     private Date lastUpdate;
@@ -178,6 +180,23 @@ public class Photo {
         this.familyFlag = familyFlag;
     }
 
+    public Date getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(Date dateAdded) {
+        this.dateAdded = dateAdded;
+    }
+
+    public void setDateAdded(long dateAdded) {
+        setDateAdded(new Date(dateAdded));
+    }
+
+    public void setDateAdded(String dateAdded) {
+        if (dateAdded == null || "".equals(dateAdded)) return;
+        setDateAdded(Long.parseLong(dateAdded) * (long) 1000);
+    }
+        
     public Date getDatePosted() {
         return datePosted;
     }
@@ -339,11 +358,11 @@ public class Photo {
         this.originalSecret = originalSecret;
     }
 
-    public BufferedImage getOriginalImage() throws IOException {
+    public BufferedImage getOriginalImage() throws IOException, FlickrException {
         if (originalFormat != null) {
-            return getImage("_o." + originalFormat);
+            return getOriginalImage("_o." + originalFormat);
         }
-        return getImage(DEFAULT_ORIGINAL_IMAGE_SUFFIX);
+        return getOriginalImage(DEFAULT_ORIGINAL_IMAGE_SUFFIX);
     }
 
     /**
@@ -352,11 +371,11 @@ public class Photo {
      * @return The InputStream
      * @throws IOException
      */
-    public InputStream getOriginalAsStream() throws IOException {
+    public InputStream getOriginalAsStream() throws IOException, FlickrException {
         if (originalFormat != null) {
-            return getImageAsStream("_o." + originalFormat);
+            return getOriginalImageAsStream("_o." + originalFormat);
         }
-        return getImageAsStream(DEFAULT_ORIGINAL_IMAGE_SUFFIX);
+        return getOriginalImageAsStream(DEFAULT_ORIGINAL_IMAGE_SUFFIX);
     }
 
     /**
@@ -364,11 +383,11 @@ public class Photo {
      *
      * @return The original image URL
      */
-    public String getOriginalUrl() {
-    	if (originalFormat != null) {
-    		return getBaseImageUrl() + "_o." + originalFormat;
-    	}
-        return getBaseImageUrl() + DEFAULT_ORIGINAL_IMAGE_SUFFIX;
+    public String getOriginalUrl() throws FlickrException {
+        if (originalFormat != null) {
+            return getOriginalBaseImageUrl() + "_o." + originalFormat;
+        }
+        return getOriginalBaseImageUrl() + DEFAULT_ORIGINAL_IMAGE_SUFFIX;
     }
 
     /**
@@ -447,7 +466,24 @@ public class Photo {
     private BufferedImage getImage(String suffix) throws IOException {
         StringBuffer buffer = getBaseImageUrl();
         buffer.append(suffix);
-        URL url = new URL(buffer.toString());
+        return _getImage(buffer.toString());
+    }
+
+    /**
+     * Get the original-image using the specified URL suffix.
+     * @param suffix The URL suffix, including the .extension
+     * @return The BufferedImage object
+     * @throws IOException
+     * @throws FlickrException
+     */
+    private BufferedImage getOriginalImage(String suffix) throws IOException, FlickrException {
+        StringBuffer buffer = getOriginalBaseImageUrl();
+        buffer.append(suffix);
+        return _getImage(buffer.toString());
+    }
+
+    private BufferedImage _getImage(String urlStr) throws IOException {
+        URL url = new URL(urlStr);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.connect();
         InputStream in = null;
@@ -469,13 +505,43 @@ public class Photo {
     private InputStream getImageAsStream(String suffix) throws IOException {
         StringBuffer buffer = getBaseImageUrl();
         buffer.append(suffix);
-        URL url = new URL(buffer.toString());
+        return _getImageAsStream(buffer.toString());
+    }
+
+    private InputStream getOriginalImageAsStream(String suffix) throws IOException, FlickrException {
+        StringBuffer buffer = getOriginalBaseImageUrl();
+        buffer.append(suffix);
+        return _getImageAsStream(buffer.toString());
+    }
+
+    private InputStream _getImageAsStream(String urlStr) throws IOException {
+        URL url = new URL(urlStr);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.connect();
         return conn.getInputStream();
     }
 
     private StringBuffer getBaseImageUrl() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(_getBaseImageUrl());
+        buffer.append(getSecret());
+        return buffer;
+    }
+
+    private StringBuffer getOriginalBaseImageUrl() throws FlickrException {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(_getBaseImageUrl());
+        if (getOriginalSecret().length() > 8) {
+            buffer.append(getOriginalSecret());
+        } else {
+            throw new FlickrException(
+              "0",
+              "OriginalUrl not available because of missing originalsecret.");
+        }
+        return buffer;
+    }
+
+    private StringBuffer _getBaseImageUrl() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("http://farm");
         buffer.append(getFarm());
@@ -484,7 +550,6 @@ public class Photo {
         buffer.append("/");
         buffer.append(getId());
         buffer.append("_");
-        buffer.append(getSecret());
         return buffer;
     }
 
