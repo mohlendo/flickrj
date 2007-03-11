@@ -7,13 +7,16 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
+import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
@@ -28,7 +31,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for finding Flickr users.
  *
  * @author Anthony Eden
- * @version $Id: PeopleInterface.java,v 1.19 2007/02/28 18:57:15 x-mago Exp $
+ * @version $Id: PeopleInterface.java,v 1.20 2007/03/11 23:14:36 x-mago Exp $
  */
 public class PeopleInterface {
 
@@ -216,10 +219,16 @@ public class PeopleInterface {
         return groups;
     }
 
+    public PhotoList getPublicPhotos(String userId, int perPage, int page)
+    throws IOException, SAXException, FlickrException {
+        return getPublicPhotos(userId, Flickr.MIN_EXTRAS, perPage, page);
+    }
+
     /**
      * Get a collection of public photos for the specified user ID.
      *
      * @param userId The User ID
+     * @param extras Set of extra-attributes to include (may be null)
      * @param perPage The number of photos per page
      * @param page The page offset
      * @return The PhotoList collection
@@ -227,7 +236,7 @@ public class PeopleInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public PhotoList getPublicPhotos(String userId, int perPage, int page) throws IOException, SAXException,
+    public PhotoList getPublicPhotos(String userId, Set extras, int perPage, int page) throws IOException, SAXException,
             FlickrException {
         PhotoList photos = new PhotoList();
 
@@ -242,6 +251,18 @@ public class PeopleInterface {
         }
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
+        }
+
+        if (extras != null) {
+            StringBuffer sb = new StringBuffer();
+            Iterator it = extras.iterator();
+            for (int i = 0; it.hasNext(); i++) {
+                if (i > 0) {
+                    sb.append(",");
+                }
+                sb.append(it.next());
+            }
+            parameters.add(new Parameter(Flickr.KEY_EXTRAS, sb.toString()));
         }
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
