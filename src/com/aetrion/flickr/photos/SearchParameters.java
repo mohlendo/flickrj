@@ -16,7 +16,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.8 2007/03/09 01:16:31 ianslai Exp $
+ * @version $Id: SearchParameters.java,v 1.9 2007/03/11 23:44:51 x-mago Exp $
  */
 public class SearchParameters {
 
@@ -32,12 +32,17 @@ public class SearchParameters {
     private String license;
     private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
     private static final DateFormat MYSQLDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private boolean extrasLicense = false;
-	private boolean extrasDateUpload = false;
-	private boolean extrasDateTaken = false;
-	private boolean extrasOwnerName = false;
-	private boolean extrasIconServer = false;
-	private boolean extrasOriginalFormat = false;
+    private boolean extrasLicense = false;
+    private boolean extrasDateUpload = false;
+    private boolean extrasDateTaken = false;
+    private boolean extrasOwnerName = false;
+    private boolean extrasIconServer = false;
+    // default true, to ensure it's possible to generate a valid original-URL for requested Photos.
+    private boolean extrasOriginalFormat = true;
+    private boolean extrasLastUpdate = false;
+    private boolean extrasGeo = false;
+    private boolean extrasTags = false;
+    private boolean extrasMachineTags = false;
 
 	/** order argument */
 	public static int DATE_POSTED_DESC = 0;
@@ -134,7 +139,7 @@ public class SearchParameters {
     public Date getInterestingnessDate() {
         return interestingnessDate;
     }
-    
+
     /**
      * Set the date, for which interesting Photos to request.
      * 
@@ -143,7 +148,7 @@ public class SearchParameters {
     public void setInterestingnessDate(Date intrestingnessDate) {
         this.interestingnessDate = intrestingnessDate;
     }
-	
+
     /**
      * Setting all toogles to get extra-fields in Photos-search.<br>
      * The default is false.
@@ -157,8 +162,12 @@ public class SearchParameters {
         setExtrasOwnerName(toggle);
         setExtrasIconServer(toggle);
         setExtrasOriginalFormat(toggle);
+        setExtrasLastUpdate(toggle);
+        setExtrasGeo(toggle);
+        setExtrasTags(toggle);
+        setExtrasMachineTags(toggle);
     }
-	
+
     public void setExtrasLicense(boolean toggle) {
         this.extrasLicense = toggle;
     }
@@ -177,11 +186,23 @@ public class SearchParameters {
     public void setExtrasOriginalFormat(boolean toggle) {
         this.extrasOriginalFormat = toggle;
     }
-	
+    public void setExtrasGeo(boolean extrasGeo) {
+        this.extrasGeo = extrasGeo;
+    }
+    public void setExtrasLastUpdate(boolean extrasLastUpdate) {
+        this.extrasLastUpdate = extrasLastUpdate;
+    }
+    public void setExtrasMachineTags(boolean extrasMachineTags) {
+        this.extrasMachineTags = extrasMachineTags;
+    }
+    public void setExtrasTags(boolean extrasTags) {
+        this.extrasTags = extrasTags;
+    }
+
     public int getSort() {
         return sort;
     }
-	
+
     /**
      * Set the sort-order to one of the following constants 
      * DATE_POSTED_ASC, DATE_TAKEN_DESC, DATE_TAKEN_ASC, 
@@ -193,7 +214,7 @@ public class SearchParameters {
     public void setSort(int sort) {
         this.sort = sort;
     }
-	
+
     public Collection getAsParameters() {
         List parameters = new ArrayList();
 
@@ -241,26 +262,32 @@ public class SearchParameters {
         if (license != null) {
             parameters.add(new Parameter("license", license));
         }
-        
+
         Date intrestingnessDate = getInterestingnessDate();
         if (intrestingnessDate != null) {
             parameters.add(new Parameter("date", DF.format(intrestingnessDate)));
         }
-        
-        if(extrasLicense || extrasDateUpload ||
+
+        if (extrasLicense || extrasDateUpload ||
            extrasDateTaken || extrasOwnerName ||
-           extrasIconServer || extrasOriginalFormat) {
+           extrasIconServer || extrasOriginalFormat ||
+           extrasLastUpdate || extrasGeo ||
+           extrasTags || extrasMachineTags) {
             Vector argsList = new Vector();
-            if(extrasLicense) argsList.add("license");
-            if(extrasDateUpload) argsList.add("date_upload");
-            if(extrasDateTaken) argsList.add("date_taken");
-            if(extrasOwnerName) argsList.add("owner_name");
-            if(extrasIconServer) argsList.add("icon_server");
-            if(extrasOriginalFormat) argsList.add("original_format");
+            if (extrasLicense) argsList.add("license");
+            if (extrasDateUpload) argsList.add("date_upload");
+            if (extrasDateTaken) argsList.add("date_taken");
+            if (extrasOwnerName) argsList.add("owner_name");
+            if (extrasIconServer) argsList.add("icon_server");
+            if (extrasOriginalFormat) argsList.add("original_format");
+            if (extrasLastUpdate) argsList.add("last_update");
+            if (extrasGeo) argsList.add("geo");
+            if (extrasTags) argsList.add("tags");
+            if (extrasMachineTags) argsList.add("machine_tags");
             parameters.add(new Parameter("extras", StringUtilities.join(argsList,",")));
         }
-    	
-        if(sort != DATE_POSTED_DESC) {
+
+        if (sort != DATE_POSTED_DESC) {
             String sortArg = null;
             if(sort == DATE_POSTED_ASC) sortArg = "date-posted-asc";
             if(sort == DATE_TAKEN_DESC) sortArg = "date-taken-desc";
@@ -270,7 +297,8 @@ public class SearchParameters {
             if(sort == RELEVANCE) sortArg = "relevance";
             if(sortArg != null) parameters.add(new Parameter("sort", sortArg));
         }
-		
+
         return parameters;
     }
+
 }
