@@ -13,6 +13,7 @@ import com.aetrion.flickr.contacts.OnlineStatus;
 
 /**
  * @author Anthony Eden
+ * @version $Id: User.java,v 1.9 2007/03/11 23:16:45 x-mago Exp $
  */
 public class User implements Serializable {
 
@@ -28,6 +29,7 @@ public class User implements Serializable {
     private String location;
     private Date photosFirstDate;
     private Date photosFirstDateTaken;
+    private Date faveDate;
     private int photosCount;
     private OnlineStatus online;
     private String awayMessage;
@@ -35,7 +37,7 @@ public class User implements Serializable {
     private int bandwidthUsed;
     private int filesizeMax;
     private String mbox_sha1sum;
-    
+
     public User() {
 
     }
@@ -130,6 +132,29 @@ public class User implements Serializable {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setFaveDate(String faveDate) {
+        setFaveDate(Long.parseLong(faveDate) * (long) 1000);
+    }
+
+    public void setFaveDate(long faveDate) {
+        setFaveDate(new Date(faveDate));
+    }
+
+    /**
+     * Date when User has faved a Photo.<br>
+     * flickr.photos.getFavorites returns person-data where this
+     * Date will be set.
+     *
+     * @param faveDate
+     */
+    public void setFaveDate(Date faveDate) {
+        this.faveDate = faveDate;
+    }
+
+    public Date getFaveDate() {
+        return faveDate;
     }
 
     public int getPhotosCount() {
