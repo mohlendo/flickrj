@@ -1,14 +1,30 @@
 package flickrj.samples;
-import com.aetrion.flickr.*;
-import com.aetrion.flickr.auth.*;
-import com.aetrion.flickr.photos.*;
-import com.aetrion.flickr.photosets.*;
-import com.aetrion.flickr.util.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.auth.Permission;
+import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.photos.PhotosInterface;
+import com.aetrion.flickr.photosets.Photoset;
+import com.aetrion.flickr.photosets.PhotosetsInterface;
+import com.aetrion.flickr.util.AuthStore;
+import com.aetrion.flickr.util.FileAuthStore;
 
 
 /**
@@ -18,7 +34,7 @@ import org.xml.sax.SAXException;
  * This sample also uses the AuthStore interface, so users will only be asked to authorize on the first run.
  * 
  * @author Matthew MacKenzie
- *
+ * @version $Id: Backup.java,v 1.2 2007/03/12 10:13:27 x-mago Exp $
  */
 
 public class Backup {
@@ -74,7 +90,7 @@ public class Backup {
 		
 		while (sets.hasNext()) {
 			Photoset set = (Photoset)sets.next();
-			Collection photos = pi.getPhotos(set.getId());
+			PhotoList photos = pi.getPhotos(set.getId(), 500, 1);
 			allPhotos.put(set.getTitle(), photos);
 		}
 		
