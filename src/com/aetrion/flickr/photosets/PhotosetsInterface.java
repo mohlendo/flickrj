@@ -31,7 +31,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with photosets.
  *
  * @author Anthony Eden
- * @version $Id: PhotosetsInterface.java,v 1.16 2007/03/11 23:12:15 x-mago Exp $
+ * @version $Id: PhotosetsInterface.java,v 1.17 2007/03/13 22:59:05 x-mago Exp $
  */
 public class PhotosetsInterface {
 
@@ -109,7 +109,7 @@ public class PhotosetsInterface {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        Element photosetElement = (Element)response.getPayload().getElementsByTagName("photoset").item(0);
+        Element photosetElement = (Element) response.getPayload();
         Photoset photoset = new Photoset();
         photoset.setId(photosetElement.getAttribute("id"));
         photoset.setUrl(photosetElement.getAttribute("url"));
@@ -226,6 +226,8 @@ public class PhotosetsInterface {
                 Photo photo = new Photo();
                 photo.setId(element.getAttribute("id"));
                 photoContext.setNextPhoto(photo);
+            } else if (elementName.equals("count")) {
+            	// TODO: process this information
             } else {
                 System.err.println("unsupported element name: " + elementName);
             }
