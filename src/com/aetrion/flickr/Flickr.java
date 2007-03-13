@@ -30,7 +30,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * Main entry point for the Flickrj API.  This class is used to acquire Interface classes which wrap the Flickr API.
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.28 2007/03/11 23:02:23 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.29 2007/03/13 22:53:37 x-mago Exp $
  */
 public class Flickr {
 
@@ -114,6 +114,7 @@ public class Flickr {
 
     static {
         MIN_EXTRAS.add(EXTRAS_ORIGINAL_FORMAT);
+        MIN_EXTRAS.add(EXTRAS_OWNER_NAME);
     }
 
     /**
