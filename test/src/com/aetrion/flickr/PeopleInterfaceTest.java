@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PeopleInterfaceTest.java,v 1.8 2007/02/28 18:57:15 x-mago Exp $
+ * @version $Id: PeopleInterfaceTest.java,v 1.9 2007/03/13 23:01:45 x-mago Exp $
  */
 public class PeopleInterfaceTest extends TestCase {
 
@@ -83,18 +83,18 @@ public class PeopleInterfaceTest extends TestCase {
         PeopleInterface iface = flickr.getPeopleInterface();
         Collection groups = iface.getPublicGroups(properties.getProperty("nsid"));
         assertNotNull(groups);
-        assertTrue(groups.size() > 40);
+        assertTrue(groups.size() == 1);
     }
 
     public void testGetPublicPhotos() throws FlickrException, IOException, SAXException {
         PeopleInterface iface = flickr.getPeopleInterface();
         PhotoList photos = iface.getPublicPhotos(properties.getProperty("nsid"), 0, 0);
         assertNotNull(photos);
-        assertTrue(photos.size() > 60);
+        assertTrue(photos.size() == 4);
 	    Photo photo = (Photo) photos.get(0);
         assertTrue(photo.getOriginalUrl().endsWith("jpg"));
         assertEquals("jpg", photo.getOriginalFormat());
-	    photo = (Photo) photos.get(50);
+	    photo = (Photo) photos.get(3);
         assertTrue(photo.getOriginalUrl().endsWith("jpg"));
         assertEquals("jpg", photo.getOriginalFormat());
     }

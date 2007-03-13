@@ -13,6 +13,7 @@ import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
+import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photosets.Photoset;
 import com.aetrion.flickr.photosets.Photosets;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
@@ -98,9 +99,14 @@ public class PhotosetsInterfaceSOAPTest extends TestCase {
 
     public void testGetPhotos() throws FlickrException, IOException, SAXException {
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
-        Collection photos = iface.getPhotos(properties.getProperty("photosetid"));
+        PhotoList photos = iface.getPhotos(
+            properties.getProperty("photosetid"),
+            10,
+            1
+        );
         assertNotNull(photos);
         assertEquals(3, photos.size());
+        assertEquals("javatest", ((Photo) photos.get(0)).getOwner().getUsername()); 
     }
 
     public void testOrderSets() throws FlickrException, IOException, SAXException {

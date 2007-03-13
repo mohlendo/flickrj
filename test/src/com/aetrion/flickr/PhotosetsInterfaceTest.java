@@ -2,21 +2,23 @@ package com.aetrion.flickr;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
+
+import junit.framework.TestCase;
+
+import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
+import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photosets.Photoset;
 import com.aetrion.flickr.photosets.Photosets;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
 import com.aetrion.flickr.util.IOUtilities;
-import junit.framework.TestCase;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
@@ -27,7 +29,7 @@ public class PhotosetsInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
-        Flickr.debugStream = true;
+        //Flickr.debugStream = true;
 
         InputStream in = null;
         try {
@@ -83,7 +85,7 @@ public class PhotosetsInterfaceTest extends TestCase {
         Photoset photoset = iface.getInfo(properties.getProperty("photosetid"));
         assertNotNull(photoset);
         assertNotNull(photoset.getPrimaryPhoto());
-        assertEquals(3, photoset.getPhotoCount());
+        assertEquals(2, photoset.getPhotoCount());
     }
 
     public void testGetList() throws FlickrException, IOException, SAXException {
@@ -101,9 +103,14 @@ public class PhotosetsInterfaceTest extends TestCase {
 
     public void testGetPhotos() throws FlickrException, IOException, SAXException {
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
-        Collection photos = iface.getPhotos(properties.getProperty("photosetid"));
+        PhotoList photos = iface.getPhotos(
+            properties.getProperty("photosetid"),
+            10,
+            1
+        );
         assertNotNull(photos);
-        assertEquals(3, photos.size());
+        assertEquals(2, photos.size());
+        assertEquals("javatest3", ((Photo) photos.get(0)).getOwner().getUsername()); 
     }
 
     public void testOrderSets() throws FlickrException, IOException, SAXException {
