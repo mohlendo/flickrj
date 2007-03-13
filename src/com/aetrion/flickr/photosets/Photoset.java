@@ -12,14 +12,11 @@ import com.aetrion.flickr.photos.Photo;
  * Meta information about a photoset.  To retrieve the photos in the photoset use PhotosetsInterface.getPhotos().
  *
  * @author Anthony Eden
- * @version $Id: Photoset.java,v 1.5 2007/02/23 22:03:14 x-mago Exp $
+ * @version $Id: Photoset.java,v 1.6 2007/03/13 22:57:43 x-mago Exp $
  */
 public class Photoset {
 
     private String id;
-    /**
-     * @deprecated no more static URL
-     */
     private String url;
     private User owner;
     private Photo primaryPhoto;
@@ -43,20 +40,19 @@ public class Photoset {
     }
 
     public String getUrl() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("http://www.flickr.com/photos/");
-        sb.append(getOwner().getId());
-        sb.append("/sets/");
-        sb.append(getId());
-        sb.append("/");
-        return sb.toString();
+    	if(url == null) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("http://www.flickr.com/photos/");
+            sb.append(getOwner().getId());
+            sb.append("/sets/");
+            sb.append(getId());
+            sb.append("/");
+            return sb.toString();
+        } else {
+            return url;
+        }
     }
 
-    /**
-     * URL is created dynamically. No need/possibility to set it.
-     * 
-     * @deprecated
-     */
     public void setUrl(String url) {
         this.url = url;
     }
@@ -96,7 +92,7 @@ public class Photoset {
     public String getFarm() {
         return farm;
     }
-    
+
     public void setFarm(String farm) {
         this.farm = farm;
     }
