@@ -30,7 +30,7 @@ import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.34 2007/03/11 23:18:53 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.35 2007/04/04 19:44:16 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -51,7 +51,7 @@ public class PhotosInterface {
     public static final String METHOD_GET_UNTAGGED = "flickr.photos.getUntagged";
     public static final String METHOD_GET_WITH_GEO_DATA = "flickr.photos.getWithGeoData";
     public static final String METHOD_GET_WITHOUT_GEO_DATA = "flickr.photos.getWithoutGeoData";
-    public static final String METHOD_RECENTLY_UPLOADED ="flickr.photos.recentlyUpdated";
+    public static final String METHOD_RECENTLY_UPDATED ="flickr.photos.recentlyUpdated";
     public static final String METHOD_REMOVE_TAG = "flickr.photos.removeTag";
     public static final String METHOD_SEARCH = "flickr.photos.search";
     public static final String METHOD_SET_DATES = "flickr.photos.setDates";
@@ -914,7 +914,7 @@ public class PhotosInterface {
      */
     public PhotoList recentlyUpdated(Date minDate, Set extras, int perPage, int page) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_WITHOUT_GEO_DATA));
+        parameters.add(new Parameter("method", METHOD_RECENTLY_UPDATED));
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("min_date", minDate.getTime() / 1000L));
