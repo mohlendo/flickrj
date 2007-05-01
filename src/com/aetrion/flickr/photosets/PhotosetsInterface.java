@@ -31,7 +31,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with photosets.
  *
  * @author Anthony Eden
- * @version $Id: PhotosetsInterface.java,v 1.17 2007/03/13 22:59:05 x-mago Exp $
+ * @version $Id: PhotosetsInterface.java,v 1.18 2007/05/01 16:31:51 x-mago Exp $
  */
 public class PhotosetsInterface {
 
@@ -298,7 +298,9 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
 
-        parameters.add(new Parameter("user_id", userId));
+        if (userId != null) {
+            parameters.add(new Parameter("user_id", userId));
+        }
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
