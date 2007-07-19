@@ -19,12 +19,14 @@ import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * Interface for working with Flickr favorites.
  *
  * @author Anthony Eden
+ * @version $Id: FavoritesInterface.java,v 1.14 2007/07/19 21:00:55 x-mago Exp $
  */
 public class FavoritesInterface {
 
@@ -107,21 +109,7 @@ public class FavoritesInterface {
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
-            Photo photo = new Photo();
-            photo.setId(photoElement.getAttribute("id"));
-
-            User owner = new User();
-            owner.setId(photoElement.getAttribute("owner"));
-            photo.setOwner(owner);
-
-            photo.setSecret(photoElement.getAttribute("secret"));
-            photo.setServer(photoElement.getAttribute("server"));
-            photo.setTitle(photoElement.getAttribute("title"));
-            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-            photos.add(photo);
+            photos.add(PhotoUtils.createPhoto(photoElement));
         }
         return photos;
     }
@@ -171,28 +159,7 @@ public class FavoritesInterface {
         NodeList photoNodes = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoNodes.getLength(); i++) {
             Element photoElement = (Element) photoNodes.item(i);
-            Photo photo = new Photo();
-            photo.setId(photoElement.getAttribute("id"));
-
-            User owner = new User();
-            owner.setId(photoElement.getAttribute("owner"));
-            owner.setRealName(photoElement.getAttribute("ownername"));
-            photo.setOwner(owner);
-
-            photo.setSecret(photoElement.getAttribute("secret"));
-            photo.setServer(photoElement.getAttribute("server"));
-            photo.setTitle(photoElement.getAttribute("title"));
-            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-            photo.setLicense(photoElement.getAttribute("license"));
-            photo.setDatePosted(photoElement.getAttribute("dateupload"));
-            photo.setDateTaken(photoElement.getAttribute("datetaken"));
-            photo.setTakenGranularity(photoElement.getAttribute("datetakengranularity"));
-            photo.setIconServer(photoElement.getAttribute("iconserver"));
-
-            photos.add(photo);
+            photos.add(PhotoUtils.createPhoto(photoElement));
         }
         return photos;
     }
