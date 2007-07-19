@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.6 2007/03/11 23:24:55 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.7 2007/07/19 21:29:24 x-mago Exp $
  */
 public final class PhotoUtils {
 
@@ -86,12 +86,16 @@ public final class PhotoUtils {
         photo.setDescription(XMLUtilities.getChildValue(photoElement, "description"));
 
         try {
+        	// here the flags are set, if the photo is read by getInfo().
             Element visibilityElement = (Element) photoElement.getElementsByTagName("visibility").item(0);
             photo.setPublicFlag("1".equals(visibilityElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(visibilityElement.getAttribute("isfriend")));
             photo.setFamilyFlag("1".equals(visibilityElement.getAttribute("isfamily")));
         } catch (NullPointerException e) {
-            // nop
+            // these flags are set here, if photos read from a list.
+            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
+            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
+            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
         }
 
         // Parse either photo by getInfo, or from list
