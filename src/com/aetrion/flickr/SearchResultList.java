@@ -10,11 +10,12 @@ import java.util.ArrayList;
  * Search result list with additional meta data.
  *
  * @author Anthony Eden
+ * @version $Id: SearchResultList.java,v 1.3 2007/07/20 19:06:27 x-mago Exp $
  */
 public class SearchResultList extends ArrayList {
 
-	private static final long serialVersionUID = -7962319033867024935L;
-	private int page;
+    private static final long serialVersionUID = -7962319033867024935L;
+    private int page;
     private int pages;
     private int perPage;
     private int total;
@@ -28,7 +29,9 @@ public class SearchResultList extends ArrayList {
     }
 
     public void setPage(String page) {
-        if (page != null) setPage(Integer.parseInt(page));
+        if (page != null && page.length() != 0) {
+            setPage(Integer.parseInt(page));
+        }
     }
 
     public int getPages() {
@@ -40,7 +43,9 @@ public class SearchResultList extends ArrayList {
     }
 
     public void setPages(String pages) {
-        if (pages != null) setPages(Integer.parseInt(pages));
+        if (pages != null && pages.length() != 0) {
+            setPages(Integer.parseInt(pages));
+        }
     }
 
     public int getPerPage() {
@@ -52,7 +57,9 @@ public class SearchResultList extends ArrayList {
     }
 
     public void setPerPage(String perPage) {
-        if (perPage != null) setPerPage(Integer.parseInt(perPage));
+        if (perPage != null && perPage.length() != 0) {
+            setPerPage(Integer.parseInt(perPage));
+        }
     }
 
     public int getTotal() {
@@ -64,7 +71,9 @@ public class SearchResultList extends ArrayList {
     }
 
     public void setTotal(String total) {
-        if (total != null) setTotal(Integer.parseInt(total));
+        if (total != null && total.length() != 0) {
+            setTotal(Integer.parseInt(total));
+        }
     }
 
 }
