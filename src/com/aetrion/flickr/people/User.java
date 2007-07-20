@@ -13,7 +13,7 @@ import com.aetrion.flickr.contacts.OnlineStatus;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.9 2007/03/11 23:16:45 x-mago Exp $
+ * @version $Id: User.java,v 1.10 2007/07/20 20:19:08 x-mago Exp $
  */
 public class User implements Serializable {
 
@@ -53,7 +53,7 @@ public class User implements Serializable {
     public String getUsername() {
         return username;
     }
-    
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -115,7 +115,9 @@ public class User implements Serializable {
     }
 
     public void setPhotosFirstDate(String photosFirstDate) {
-        setPhotosFirstDate(Long.parseLong(photosFirstDate) * (long) 1000);
+        if (photosFirstDate != null) {
+            setPhotosFirstDate(Long.parseLong(photosFirstDate) * (long) 1000);
+        }
     }
 
     public Date getPhotosFirstDateTaken() {
@@ -127,10 +129,12 @@ public class User implements Serializable {
     }
 
     public void setPhotosFirstDateTaken(String photosFirstDateTaken) {
-        try {
-            setPhotosFirstDateTaken(DF.parse(photosFirstDateTaken));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+        if (photosFirstDateTaken != null) {
+            try {
+                setPhotosFirstDateTaken(DF.parse(photosFirstDateTaken));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
