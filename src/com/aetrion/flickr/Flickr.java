@@ -21,16 +21,18 @@ import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.licenses.LicensesInterface;
 import com.aetrion.flickr.photos.transform.TransformInterface;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
+import com.aetrion.flickr.prefs.PrefsInterface;
 import com.aetrion.flickr.reflection.ReflectionInterface;
 import com.aetrion.flickr.tags.TagsInterface;
 import com.aetrion.flickr.test.TestInterface;
 import com.aetrion.flickr.urls.UrlsInterface;
 
 /**
- * Main entry point for the Flickrj API.  This class is used to acquire Interface classes which wrap the Flickr API.
+ * Main entry point for the Flickrj API.
+ * This class is used to acquire Interface classes which wrap the Flickr API.
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.29 2007/03/13 22:53:37 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.30 2007/07/21 23:02:33 x-mago Exp $
  */
 public class Flickr {
 
@@ -68,12 +70,45 @@ public class Flickr {
     private PeopleInterface peopleInterface;
     private PhotosInterface photosInterface;
     private PhotosetsInterface photosetsInterface;
+    private PrefsInterface prefsInterface;
     private ReflectionInterface reflectionInterface;
     private TagsInterface tagsInterface;
     private TestInterface testInterface;
     private TransformInterface transformInterface;
     private UrlsInterface urlsInterface;
     private InterestingnessInterface interestingnessInterface;
+
+    /**
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getContentType()
+     * @see com.aetrion.flickr.uploader.UploadMetaData#setContentType(String)
+     */
+    public static final String CONTENTTYPE_PHOTO = "1";
+    /**
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getContentType()
+     * @see com.aetrion.flickr.uploader.UploadMetaData#setContentType(String)
+     */
+    public static final String CONTENTTYPE_SCREENSHOT = "2";
+    /**
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getContentType()
+     * @see com.aetrion.flickr.uploader.UploadMetaData#setContentType(String)
+     */
+    public static final String CONTENTTYPE_OTHER = "3";
+
+    /**
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getSafetyLevel()
+     * @see com.aetrion.flickr.uploader.UploadMetaData#setSafetyLevel(String)
+     */
+    public static final String SAFETYLEVEL_SAFE = "1";
+    /**
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getSafetyLevel()
+     * @see com.aetrion.flickr.uploader.UploadMetaData#setSafetyLevel(String)
+     */
+    public static final String SAFETYLEVEL_MODERATE = "2";
+    /**
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getSafetyLevel()
+     * @see com.aetrion.flickr.uploader.UploadMetaData#setSafetyLevel(String)
+     */
+    public static final String SAFETYLEVEL_RESTRICTED = "3";
 
     public static final String KEY_EXTRAS = "extras";
 
@@ -164,7 +199,7 @@ public class Flickr {
     }
 
     /**
-     * Get the Transport interface
+     * Get the Transport interface.
      *
      * @return The Tranport interface
      */
@@ -269,6 +304,13 @@ public class Flickr {
             photosetsInterface = new PhotosetsInterface(apiKey, transport);
         }
         return photosetsInterface;
+    }
+
+    public PrefsInterface getPrefsInterface() {
+        if (prefsInterface == null) {
+            prefsInterface = new PrefsInterface(apiKey, transport);
+        }
+        return prefsInterface;
     }
 
     public ReflectionInterface getReflectionInterface() {
