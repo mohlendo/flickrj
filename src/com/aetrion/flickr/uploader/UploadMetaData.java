@@ -17,6 +17,9 @@ public class UploadMetaData {
     private boolean publicFlag;
     private boolean friendFlag;
     private boolean familyFlag;
+    private Boolean hidden;
+    private String safetyLevel;
+    private String contentType;
 
     public String getTitle() {
         return title;
@@ -64,6 +67,62 @@ public class UploadMetaData {
 
     public void setFamilyFlag(boolean familyFlag) {
         this.familyFlag = familyFlag;
+    }
+
+    /**
+     * Get the Content-type of the Photo.
+     *
+     * @see com.aetrion.flickr.Flickr#CONTENTTYPE_OTHER
+     * @see com.aetrion.flickr.Flickr#CONTENTTYPE_PHOTO
+     * @see com.aetrion.flickr.Flickr#CONTENTTYPE_SCREENSHOT
+     * @return contentType
+     */
+    public String getContentType() {
+        return contentType;
+    }
+
+    /**
+     * Set the Content-type of the Photo.
+     *
+     * @see com.aetrion.flickr.Flickr#CONTENTTYPE_OTHER
+     * @see com.aetrion.flickr.Flickr#CONTENTTYPE_PHOTO
+     * @see com.aetrion.flickr.Flickr#CONTENTTYPE_SCREENSHOT
+     * @param contentType
+     */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public Boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    /**
+     * Get the safety-level.
+     *
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_MODERATE
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_RESTRICTED
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_SAFE
+     * @return The safety-level
+     */
+    public String getSafetyLevel() {
+        return safetyLevel;
+    }
+
+    /**
+     * Set the safety level (adultness) of a photo.<p>
+     *
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_MODERATE
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_RESTRICTED
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_SAFE
+     * @param safetyLevel
+     */
+    public void setSafetyLevel(String safetyLevel) {
+        this.safetyLevel = safetyLevel;
     }
 
 }
