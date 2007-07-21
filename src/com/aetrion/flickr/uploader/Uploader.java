@@ -4,7 +4,6 @@
 
 package com.aetrion.flickr.uploader;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: Uploader.java,v 1.7 2007/03/11 23:05:27 x-mago Exp $
+ * @version $Id: Uploader.java,v 1.8 2007/07/21 23:13:42 x-mago Exp $
  */
 public class Uploader {
 
@@ -89,6 +88,18 @@ public class Uploader {
         parameters.add(new Parameter("is_friend", metaData.isFriendFlag() ? "1" : "0"));
 
         parameters.add(new Parameter("photo", data));
+
+        if (metaData.isHidden() != null) {
+            parameters.add(new Parameter("hidden", metaData.isHidden().booleanValue() ? "1" : "0"));
+        }
+
+        if (metaData.getSafetyLevel() != null) {
+            parameters.add(new Parameter("safety_level", metaData.getSafetyLevel()));
+        }
+
+        if (metaData.getContentType() != null) {
+            parameters.add(new Parameter("content_type", metaData.getContentType()));
+        }
 
         UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true);
         if (response.isError()) {

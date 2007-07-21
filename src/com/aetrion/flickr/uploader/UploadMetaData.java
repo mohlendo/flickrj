@@ -8,6 +8,7 @@ import java.util.Collection;
 
 /**
  * @author Anthony Eden
+ * @version $Id: UploadMetaData.java,v 1.6 2007/07/21 23:13:42 x-mago Exp $
  */
 public class UploadMetaData {
 
