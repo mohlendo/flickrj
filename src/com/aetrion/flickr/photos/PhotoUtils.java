@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.7 2007/07/19 21:29:24 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.8 2007/07/22 20:48:44 x-mago Exp $
  */
 public final class PhotoUtils {
 
@@ -86,7 +86,7 @@ public final class PhotoUtils {
         photo.setDescription(XMLUtilities.getChildValue(photoElement, "description"));
 
         try {
-        	// here the flags are set, if the photo is read by getInfo().
+            // here the flags are set, if the photo is read by getInfo().
             Element visibilityElement = (Element) photoElement.getElementsByTagName("visibility").item(0);
             photo.setPublicFlag("1".equals(visibilityElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(visibilityElement.getAttribute("isfriend")));
@@ -207,7 +207,7 @@ public final class PhotoUtils {
             }
         }
         if (longitude != null && latitude != null) {
-            if(longitude.length() > 0 && latitude.length() > 0
+            if (longitude.length() > 0 && latitude.length() > 0
                 && !("0".equals(longitude) && "0".equals(latitude))) {
                 photo.setGeoData(new GeoData(longitude, latitude, accuracy));
             }

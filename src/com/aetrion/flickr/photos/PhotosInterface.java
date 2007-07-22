@@ -30,7 +30,7 @@ import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.35 2007/04/04 19:44:16 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.36 2007/07/22 20:48:44 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -54,9 +54,11 @@ public class PhotosInterface {
     public static final String METHOD_RECENTLY_UPDATED ="flickr.photos.recentlyUpdated";
     public static final String METHOD_REMOVE_TAG = "flickr.photos.removeTag";
     public static final String METHOD_SEARCH = "flickr.photos.search";
+    public static final String METHOD_SET_CONTENTTYPE = "flickr.photos.setCotentType";
     public static final String METHOD_SET_DATES = "flickr.photos.setDates";
     public static final String METHOD_SET_META = "flickr.photos.setMeta";
     public static final String METHOD_SET_PERMS = "flickr.photos.setPerms";
+    public static final String METHOD_SET_SAFETYLEVEL = "flickr.photos.setSafetyLevel";
     public static final String METHOD_SET_TAGS = "flickr.photos.setTags";
     public static final String METHOD_GET_INTERESTINGNESS = "flickr.interestingness.getList";
 
@@ -1077,6 +1079,36 @@ public class PhotosInterface {
     }
 
     /**
+     * Set the content type of a photo.
+     *
+     * The allowed types provided as constants:<br>
+     *
+     * Flickr.CONTENTTYPE_PHOTO<br>
+     * Flickr.CONTENTTYPE_SCREENSHOT<br>
+     * Flickr.CONTENTTYPE_OTHER<br>
+     *
+     * @param photoId The photo ID
+     * @param contentType The contentType to set
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void setContentType(String photoId, String contentType) throws IOException,
+            SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_SET_META));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(new Parameter("content_type", contentType));
+
+        Response response = transport.post(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+    }
+
+    /**
      * Set the dates for the specified photo.
      *
      * @param photoId The photo ID
@@ -1160,6 +1192,44 @@ public class PhotosInterface {
         parameters.add(new Parameter("is_family", permissions.isFamilyFlag() ? "1" : "0"));
         parameters.add(new Parameter("perm_comment", new Integer(permissions.getComment())));
         parameters.add(new Parameter("perm_addmeta", new Integer(permissions.getAddmeta())));
+
+        Response response = transport.post(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+    }
+
+    /**
+     * Set the safety level (adultness) of a photo.<p>
+     *
+     * The allowed levels provided as constants:<br>
+     *
+     * Flickr.SAFETYLEVEL_SAFE<br>
+     * Flickr.SAFETYLEVEL_MODERATE<br>
+     * Flickr.SAFETYLEVEL_RESTRICTED<br>
+     *
+     * @param photoId The photo ID
+     * @param savetyLevel The safety level of the photo or null
+     * @param hidden Hidden from public searches or not or null
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void setSafetyLevel(String photoId, String safetyLevel, Boolean hidden)
+            throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_SET_SAFETYLEVEL));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photo_id", photoId));
+
+        if (safetyLevel != null) {
+            parameters.add(new Parameter("safety_level", safetyLevel));
+        }
+
+        if (hidden != null) {
+            parameters.add(new Parameter("hidden", hidden.booleanValue() ? "1" : "0"));
+        }
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
