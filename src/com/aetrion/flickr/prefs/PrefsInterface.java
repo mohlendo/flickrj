@@ -19,7 +19,7 @@ import com.aetrion.flickr.Transport;
  * Requesting preferences for the current authenticated user.
  *
  * @author Martin Goebel
- * @version $Id: PrefsInterface.java,v 1.1 2007/07/21 23:07:21 x-mago Exp $
+ * @version $Id: PrefsInterface.java,v 1.2 2007/07/22 20:06:47 x-mago Exp $
  */
 public class PrefsInterface {
     public static final String METHOD_GET_CONTENT_TYPE = "flickr.prefs.getContentType";
@@ -51,7 +51,7 @@ public class PrefsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public String getContentType() throws IOException, SAXException, FlickrException {
+    public int getContentType() throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_CONTENT_TYPE));
         parameters.add(new Parameter("api_key", apiKey));
@@ -62,7 +62,7 @@ public class PrefsInterface {
         }
 
         Element personElement = response.getPayload();
-        return personElement.getAttribute("content_type");
+        return Integer.parseInt(personElement.getAttribute("content_type"));
     }
 
     /**
@@ -98,7 +98,7 @@ public class PrefsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public String getSafetyLevel() throws IOException, SAXException, FlickrException {
+    public int getSafetyLevel() throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_SAFETY_LEVEL));
         parameters.add(new Parameter("api_key", apiKey));
@@ -109,6 +109,6 @@ public class PrefsInterface {
         }
 
         Element personElement = response.getPayload();
-        return personElement.getAttribute("safety_level");
+        return Integer.parseInt(personElement.getAttribute("safety_level"));
     }
 }
