@@ -1,13 +1,14 @@
 package com.aetrion.flickr.activity;
 
-import java.util.Collection;
 import java.util.Date;
 
 /**
- * <event type="comment" commentid="2534331-103114080-72157594354563260" user="2034
- * 8269@N00" username="x-mago" dateadded="1162339918">Well done!</event>
- * @author mago
+ * Activity-Event. It's type is either 'note' or 'comment', or 'fave'.
+ * id is set only, if the type of the Event is 'note' or 'comment'.
  *
+ * @see com.aetrion.flickr.activity.Item
+ * @author mago
+ * @version $Id: Event.java,v 1.2 2007/07/22 16:18:20 x-mago Exp $
  */
 public class Event {
     private String id;

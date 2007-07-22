@@ -3,9 +3,12 @@ package com.aetrion.flickr.activity;
 import java.util.Collection;
 
 /**
+ * Item with activity can be of type 'photo' or 'photoset'.
+ * It contains a list of Event.
  *
+ * @see com.aetrion.flickr.activity.Event
  * @author mago
- * @version $Id: Item.java,v 1.1 2007/03/11 23:00:59 x-mago Exp $
+ * @version $Id: Item.java,v 1.2 2007/07/22 16:18:20 x-mago Exp $
  */
 public class Item {
     private String type;
@@ -199,4 +202,5 @@ public class Item {
     public void setNotesOld(int notesOld) {
         this.notesOld = notesOld;
     }
+
 }

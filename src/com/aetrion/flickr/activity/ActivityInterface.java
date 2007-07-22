@@ -16,8 +16,10 @@ import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
+ * Gather activity information belonging to the calling user.
+ *
  * @author Martin Goebel
- * @version $Id: ActivityInterface.java,v 1.1 2007/03/11 23:00:58 x-mago Exp $
+ * @version $Id: ActivityInterface.java,v 1.2 2007/07/22 16:18:20 x-mago Exp $
  */
 public class ActivityInterface {
 
@@ -79,7 +81,9 @@ public class ActivityInterface {
     }
 
     /**
-     * 
+     * Returns a list of recent activity on photos belonging to the calling user.<br>
+     * Flickr says: Do not poll this method more than once an hour.
+     *
      * @param perPage
      * @param page
      * @param timeframe
