@@ -23,14 +23,19 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr tags.
  *
  * @author Anthony Eden
- * @version $Id: TagsInterface.java,v 1.10 2007/02/21 20:46:50 x-mago Exp $
+ * @version $Id: TagsInterface.java,v 1.11 2007/07/22 17:34:47 x-mago Exp $
  */
 public class TagsInterface {
 
+    public static final String METHOD_GET_HOT_LIST = "flickr.tags.getHotList";
     public static final String METHOD_GET_LIST_PHOTO = "flickr.tags.getListPhoto";
     public static final String METHOD_GET_LIST_USER = "flickr.tags.getListUser";
     public static final String METHOD_GET_LIST_USER_POPULAR = "flickr.tags.getListUserPopular";
+    public static final String METHOD_GET_LIST_USER_RAW = "flickr.tags.getListUserRaw";
     public static final String METHOD_GET_RELATED = "flickr.tags.getRelated";
+
+    public static final String PERIOD_WEEK = "week";
+    public static final String PERIOD_DAY = "day";
 
     private String apiKey;
     private Transport transportAPI;
@@ -44,6 +49,41 @@ public class TagsInterface {
     public TagsInterface(String apiKey, Transport transport) {
         this.apiKey = apiKey;
         this.transportAPI = transport;
+    }
+
+    /**
+     * Returns a list of hot tags for the given period.
+     *
+     * @param period valid values are 'day' or 'week'
+     * @param count maximum is 200
+     * @return The collection of HotlistTag objects
+     */
+    public Collection getHotList(String period, int count) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_HOT_LIST));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("period", period));
+        parameters.add(new Parameter("count", new Integer(count)));
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+
+        Element listElement = response.getPayload();
+
+        List tags = new ArrayList();
+        Element tagsElement = (Element) listElement.getElementsByTagName("hottags").item(0);
+        NodeList tagElements = tagsElement.getElementsByTagName("tag");
+        for (int i = 0; i < tagElements.getLength(); i++) {
+            Element tagElement = (Element) tagElements.item(i);
+            HotlistTag tag = new HotlistTag();
+            tag.setScore(tagElement.getAttribute("score"));
+            tag.setValue(((Text) tagElement.getFirstChild()).getData());
+            tags.add(tag);
+        }
+        return tags;
     }
 
     /**
@@ -150,6 +190,49 @@ public class TagsInterface {
             Tag tag = new Tag();
             tag.setCount(tagElement.getAttribute("count"));
             tag.setValue(((Text) tagElement.getFirstChild()).getData());
+            tags.add(tag);
+        }
+        return tags;
+    }
+
+    /**
+     * Get a list of the user's (identified by token) popular tags.
+     *
+     * @param tagVal a tag to search for, or null
+     * @return The collection of Tag objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+
+    public Collection getListUserRaw(String tagVal) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_LIST_USER_RAW));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        if(tagVal != null) {
+            parameters.add(new Parameter("tag", tagVal));
+        }
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+
+        Element whoElement = response.getPayload();
+
+        List tags = new ArrayList();
+        Element tagsElement = (Element) whoElement.getElementsByTagName("tags").item(0);
+        NodeList tagElements = tagsElement.getElementsByTagName("tag");
+        for (int i = 0; i < tagElements.getLength(); i++) {
+            Element tagElement = (Element) tagElements.item(i);
+            TagRaw tag = new TagRaw();
+            tag.setClean(tagElement.getAttribute("clean"));
+            NodeList rawElements = tagElement.getElementsByTagName("raw");
+            for (int j = 0; j < rawElements.getLength(); j++) {
+                Element rawElement = (Element) rawElements.item(j);
+                tag.addRaw(((Text) rawElement.getFirstChild()).getData());
+            }
             tags.add(tag);
         }
         return tags;
