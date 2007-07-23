@@ -18,7 +18,7 @@ import com.aetrion.flickr.util.IOUtilities;
 /**
  * 
  * @author till
- * @version $Id: GeoInterfaceTest.java,v 1.2 2007/02/25 16:38:15 x-mago Exp $
+ * @version $Id: GeoInterfaceTest.java,v 1.3 2007/07/23 20:28:02 x-mago Exp $
  */
 public class GeoInterfaceTest extends TestCase {
 
@@ -64,7 +64,7 @@ public class GeoInterfaceTest extends TestCase {
     }
 
     public void testGetPerms() throws IOException, SAXException, FlickrException {
-        String photoId = "281432030";
+        String photoId = "419231219";
         GeoInterface geo = flickr.getPhotosInterface().getGeoInterface();
         GeoPermissions perms = geo.getPerms(photoId);
         assertNotNull(perms);
