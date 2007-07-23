@@ -70,3 +70,28 @@ Release 1.0b2 (February 25, 2007):
 Release 1.0b3 (February 26, 2007):
  - The PhotoList requested in PeopleList contains no originalformat.
    PhotoUtils.createPhoto() now sets jpg as originalformat if none is available.
+
+Release 1.0b4 (July 23, 2007):
+ - Fixed bug in PeopleInterface.getPublicGroups()
+ - PhotosetsInterface.getPhotos() now has full functionality.
+ - PeoplesInterface.getPhotos() added missing extras
+ - Added ActivityInterface
+ - Added PhotosInterface.getFavorites()
+ - Added TagsInterface.getHotList()
+ - Added TagsInterface.getListUserRaw()
+ - Photo.getOriginalUrl() now throws Exception if originalsecret is not available!
+ - UrlsInterface.lookupGroup() now returns a Group. Not only the groupname!
+ - The default for extrasOriginalFormat in SearchParameters is no true.
+ - Uploader uses a less memory-consuming way to upload large images (by Vijay)
+ - Urlencoding SearchParameters.setText(). Encoding is done in UrlUtilities.
+ - added TagsInterface.getHotList()
+ - added TagsInterface.getListUserRaw()
+ - PhotoSetsInterface.getList() the argument (userId) is now optional. Can be null.
+ - FavoritesInterface uses PhotoUtils.createPhoto() on getList()/getPublicList()
+   to generate correct Photos
+ - PhotoUtils.createPhoto() setting of The flags isPublic, isFriend and isFamily fixed.
+ - SearchResultList added checks to prevent NumberFormatException
+ - User.setPhotosFirstDateTaken() and User.setPhotosFirstDate() args can be null.
+ - Two new methods in PhotosInterface setContentType() and setSafetyLevel()
+ - Added PrefsInterface
+ 
