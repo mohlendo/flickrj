@@ -31,7 +31,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for finding Flickr users.
  *
  * @author Anthony Eden
- * @version $Id: PeopleInterface.java,v 1.20 2007/03/11 23:14:36 x-mago Exp $
+ * @version $Id: PeopleInterface.java,v 1.21 2007/08/05 13:42:32 x-mago Exp $
  */
 public class PeopleInterface {
 
@@ -130,6 +130,7 @@ public class PeopleInterface {
         user.setId(userElement.getAttribute("nsid"));
         user.setAdmin("1".equals(userElement.getAttribute("isadmin")));
         user.setPro("1".equals(userElement.getAttribute("ispro")));
+        user.setIconFarm(userElement.getAttribute("iconfarm"));
         user.setIconServer(userElement.getAttribute("iconserver"));
         user.setUsername(XMLUtilities.getChildValue(userElement, "username"));
         user.setRealName(XMLUtilities.getChildValue(userElement, "realname"));

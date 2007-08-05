@@ -13,7 +13,7 @@ import com.aetrion.flickr.contacts.OnlineStatus;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.10 2007/07/20 20:19:08 x-mago Exp $
+ * @version $Id: User.java,v 1.11 2007/08/05 13:42:32 x-mago Exp $
  */
 public class User implements Serializable {
 
@@ -24,6 +24,7 @@ public class User implements Serializable {
     private String username;
     private boolean admin;
     private boolean pro;
+    private int iconFarm;
     private int iconServer;
     private String realName;
     private String location;
@@ -74,6 +75,18 @@ public class User implements Serializable {
         this.pro = pro;
     }
 
+    public int getIconFarm() {
+        return iconFarm;
+    }
+
+    public void setIconFarm(int iconFarm) {
+        this.iconFarm = iconFarm;
+    }
+
+    public void setIconFarm(String iconFarm) {
+        if (iconFarm != null) setIconFarm(Integer.parseInt(iconFarm));
+    }
+
     public int getIconServer() {
         return iconServer;
     }
@@ -96,6 +109,27 @@ public class User implements Serializable {
 
     public String getLocation() {
         return location;
+    }
+
+    /**
+     * Construct the BuddyIconUrl. Either the default, or assembled
+     * from farm, iconserver and nsid.
+     *
+     * @see http://flickr.com/services/api/misc.buddyicons.html
+     * @return The BuddyIconUrl
+     */
+    public String getBuddyIconUrl() {
+        /**
+         * The default-URL, if the iconServer equals 0.
+         */
+        String iconUrl = "http://www.flickr.com/images/buddyicon.jpg";
+        if (iconServer > 0) {
+            iconUrl = "http://farm"
+            + iconFarm + ".static.flickr.com/"
+            + iconServer + "/buddyicons/"
+            + id + ".jpg";
+        }
+        return iconUrl;
     }
 
     public void setLocation(String location) {
@@ -232,12 +266,12 @@ public class User implements Serializable {
             setFilesizeMax(Integer.parseInt(filesizeMax));
         }
     }
-    
+
     public void setMbox_sha1sum(String mbox_sha1sum) {
-    	this.mbox_sha1sum = mbox_sha1sum;
+        this.mbox_sha1sum = mbox_sha1sum;
     }
-    
+
     public String getMbox_sha1sum() {
-    	return this.mbox_sha1sum;
+        return this.mbox_sha1sum;
     }
 }
