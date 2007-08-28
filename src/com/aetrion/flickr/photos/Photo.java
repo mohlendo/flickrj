@@ -25,7 +25,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * obtain the photo data by calling one of the getXXXImage() or getXXXAsStream() methods in this class.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.15 2007/03/11 23:23:22 x-mago Exp $
+ * @version $Id: Photo.java,v 1.16 2007/08/28 19:44:48 x-mago Exp $
  */
 public class Photo {
 
@@ -59,6 +59,8 @@ public class Photo {
     private Permissions permissions;
     private Editability editability;
     private int comments;
+    private int views;
+    private int rotation;
     private Collection notes;
     private Collection tags;
     private Collection urls;
@@ -306,6 +308,30 @@ public class Photo {
         this.urls = urls;
     }
 
+    public void setViews(String views) {
+        if (views != null) setViews(Integer.parseInt(views));
+    }
+    
+    public void setViews(int views) {
+        this.views = views;
+    }
+    
+    public int getViews() {
+        return views;
+    }
+    
+    public void setRotation(String rotation) {
+        if (rotation != null) setRotation(Integer.parseInt(rotation));
+    }
+    
+    public void setRotation(int rotation) {
+        this.rotation = rotation;
+    }
+    
+    public int getRotation() {
+        return rotation;
+    }
+    
     public String getIconServer() {
         return iconServer;
     }
