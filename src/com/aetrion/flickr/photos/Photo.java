@@ -25,7 +25,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * obtain the photo data by calling one of the getXXXImage() or getXXXAsStream() methods in this class.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.16 2007/08/28 19:44:48 x-mago Exp $
+ * @version $Id: Photo.java,v 1.17 2007/08/31 20:46:44 x-mago Exp $
  */
 public class Photo {
 
@@ -308,14 +308,32 @@ public class Photo {
         this.urls = urls;
     }
 
+    /**
+     * Sets the number of views for this Photo.
+     * For un-authenticated calls this value is not available
+     * and will be set to -1.
+     *
+     * @param views
+     */
     public void setViews(String views) {
-        if (views != null) setViews(Integer.parseInt(views));
+        if (views != null) {
+        	try {
+                setViews(Integer.parseInt(views));
+        	} catch (NumberFormatException e) {
+        		setViews(-1);
+        	}
+        }
     }
     
     public void setViews(int views) {
         this.views = views;
     }
     
+    /**
+     * Number of views. Set to -1 if the value is not available.
+     * 
+     * @return Number of views
+     */
     public int getViews() {
         return views;
     }
