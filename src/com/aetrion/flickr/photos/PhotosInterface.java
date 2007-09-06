@@ -30,7 +30,7 @@ import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.36 2007/07/22 20:48:44 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.37 2007/09/06 22:27:37 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -609,8 +609,6 @@ public class PhotosInterface {
      * @throws FlickrException
      */
     public PhotoList getRecent(int perPage, int page) throws IOException, SAXException, FlickrException {
-        PhotoList photos = new PhotoList();
-
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_RECENT));
         parameters.add(new Parameter("api_key", apiKey));
@@ -627,30 +625,7 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photosElement = response.getPayload();
-        photos.setPage(photosElement.getAttribute("page"));
-        photos.setPages(photosElement.getAttribute("pages"));
-        photos.setPerPage(photosElement.getAttribute("perpage"));
-        photos.setTotal(photosElement.getAttribute("total"));
-        NodeList photoNodes = photosElement.getElementsByTagName("photo");
-        for (int i = 0; i < photoNodes.getLength(); i++) {
-            Element photoElement = (Element) photoNodes.item(i);
-            Photo photo = new Photo();
-            photo.setId(photoElement.getAttribute("id"));
-
-            User owner = new User();
-            owner.setId(photoElement.getAttribute("owner"));
-            photo.setOwner(owner);
-
-            photo.setSecret(photoElement.getAttribute("secret"));
-            photo.setServer(photoElement.getAttribute("server"));
-            photo.setFarm(photoElement.getAttribute("farm"));
-            photo.setTitle(photoElement.getAttribute("name"));
-            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-            photos.add(photo);
-        }
+        PhotoList photos = PhotoUtils.createPhotoList(photosElement);
         return photos;
     }
 
@@ -703,8 +678,6 @@ public class PhotosInterface {
      */
     public PhotoList getUntagged(int perPage, int page)
         throws IOException, SAXException, FlickrException {
-        PhotoList photos = new PhotoList();
-
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_UNTAGGED));
         parameters.add(new Parameter("api_key", apiKey));
@@ -721,32 +694,7 @@ public class PhotosInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element photosElement = response.getPayload();
-        photos.setPage(photosElement.getAttribute("page"));
-        photos.setPages(photosElement.getAttribute("pages"));
-        photos.setPerPage(photosElement.getAttribute("perpage"));
-        photos.setTotal(photosElement.getAttribute("total"));
-
-        NodeList photoNodes = photosElement.getElementsByTagName("photo");
-        for (int i = 0; i < photoNodes.getLength(); i++) {
-            Element photoElement = (Element) photoNodes.item(i);
-            Photo photo = new Photo();
-            photo.setId(photoElement.getAttribute("id"));
-
-            User owner = new User();
-            owner.setId(photoElement.getAttribute("owner"));
-            photo.setOwner(owner);
-
-            photo.setSecret(photoElement.getAttribute("secret"));
-            photo.setServer(photoElement.getAttribute("server"));
-            photo.setFarm(photoElement.getAttribute("farm"));
-            photo.setTitle(photoElement.getAttribute("title"));
-            photo.setOriginalFormat(photoElement.getAttribute("originalformat"));
-            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-            photos.add(photo);
-        }
+        PhotoList photos = PhotoUtils.createPhotoList(photosElement);
         return photos;
     }
 
