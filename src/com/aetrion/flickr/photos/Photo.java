@@ -25,7 +25,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * obtain the photo data by calling one of the getXXXImage() or getXXXAsStream() methods in this class.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.17 2007/08/31 20:46:44 x-mago Exp $
+ * @version $Id: Photo.java,v 1.18 2007/09/07 00:33:49 x-mago Exp $
  */
 public class Photo {
 
@@ -338,10 +338,22 @@ public class Photo {
         return views;
     }
     
+    /**
+     * Sets the degrees of rotation. Value will be set to -1,
+     * if not available.
+     *
+     * @param rotation
+     */
     public void setRotation(String rotation) {
-        if (rotation != null) setRotation(Integer.parseInt(rotation));
+        if (rotation != null) {
+            try {
+                setRotation(Integer.parseInt(rotation));
+            } catch(NumberFormatException e) {
+                setRotation(-1);
+            }
+        }
     }
-    
+
     public void setRotation(int rotation) {
         this.rotation = rotation;
     }
@@ -440,7 +452,8 @@ public class Photo {
      * @return An Image
      * @throws IOException
      */
-    public BufferedImage getSmallSquareImage() throws IOException {
+    public BufferedImage getSmallSquareImage()
+      throws IOException {
         return getImage(SMALL_SQUARE_IMAGE_SUFFIX);
     }
 
@@ -507,7 +520,8 @@ public class Photo {
      * @return The BufferedImage object
      * @throws IOException
      */
-    private BufferedImage getImage(String suffix) throws IOException {
+    private BufferedImage getImage(String suffix)
+      throws IOException {
         StringBuffer buffer = getBaseImageUrl();
         buffer.append(suffix);
         return _getImage(buffer.toString());
@@ -520,13 +534,15 @@ public class Photo {
      * @throws IOException
      * @throws FlickrException
      */
-    private BufferedImage getOriginalImage(String suffix) throws IOException, FlickrException {
+    private BufferedImage getOriginalImage(String suffix)
+      throws IOException, FlickrException {
         StringBuffer buffer = getOriginalBaseImageUrl();
         buffer.append(suffix);
         return _getImage(buffer.toString());
     }
 
-    private BufferedImage _getImage(String urlStr) throws IOException {
+    private BufferedImage _getImage(String urlStr)
+      throws IOException {
         URL url = new URL(urlStr);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.connect();
