@@ -18,8 +18,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,9 +29,11 @@ import java.util.List;
  * Transport implementation using the REST interface.
  *
  * @author Anthony Eden
+ * @version $Id: REST.java,v 1.18 2007/09/09 22:33:18 x-mago Exp $
  */
 public class REST extends Transport {
 
+    private static final String UTF8 = "UTF-8";
     public static final String PATH = "/services/rest/";
 
     private DocumentBuilder builder;
@@ -164,7 +168,17 @@ public class REST extends Transport {
                         Parameter p = (Parameter) iter.next();
                         out.writeBytes(p.getName());
                         out.writeBytes("=");
-                        out.writeBytes(String.valueOf(p.getValue()));
+                        
+                		try {
+                            out.writeBytes(
+                                URLEncoder.encode(
+                                    String.valueOf(p.getValue()),
+                                    UTF8
+                                )
+                            );
+                		} catch(UnsupportedEncodingException e) {
+                		    // Should never happen, but just in case
+                		}
                         if (iter.hasNext()) out.writeBytes("&");
                     }
 
