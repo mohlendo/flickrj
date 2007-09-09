@@ -9,6 +9,7 @@ import java.util.Collection;
 
 /**
  * @author Anthony Eden
+ * @version $Id: Method.java,v 1.4 2007/09/09 17:20:04 x-mago Exp $
  */
 public class Method {
 
@@ -33,18 +34,9 @@ public class Method {
         this.name = name;
     }
 
-    /**
-     * @deprecated, use needsLogin() instead
-     * @return
-     */
-    public boolean isNeedsLogin() {
-        return needsLogin;
-    }
-    
     public boolean needsLogin() {
         return needsLogin;
     }
-
 
     public void setNeedsLogin(boolean needsLogin) {
         this.needsLogin = needsLogin;
