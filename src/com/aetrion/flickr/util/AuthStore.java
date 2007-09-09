@@ -11,7 +11,7 @@ import com.aetrion.flickr.auth.Auth;
  * Defines an interface for possibly persistent storage of token information.
  * 
  * @author Matthew MacKenzie
- *
+ * @version $Id: AuthStore.java,v 1.2 2007/09/09 17:15:57 x-mago Exp $
  */
 public interface AuthStore {
 	/**
@@ -30,7 +30,8 @@ public interface AuthStore {
 	
 	/**
 	 * Retrieve all Auth objects being stored.
-	 * @return
+	 *
+	 * @return Auth objects
 	 */
 	Auth[] retrieveAll();
 	

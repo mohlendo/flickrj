@@ -11,6 +11,7 @@ import java.util.Iterator;
  * String utility methods.
  *
  * @author Anthony Eden
+ * @version $Id: StringUtilities.java,v 1.4 2007/09/09 17:13:39 x-mago Exp $
  */
 public class StringUtilities {
 
@@ -39,7 +40,7 @@ public class StringUtilities {
      * @param s The String collection
      * @param delimiter the delimiter String
      * @param doQuote whether or not to quote the Strings
-     * @return
+     * @return The joined String
      */
     public static String join( Collection s, String delimiter, boolean doQuote ) {
         StringBuffer buffer = new StringBuffer();
