@@ -9,7 +9,7 @@ package com.aetrion.flickr.photos;
  * 	<li>POOL this is a groups photo pool</li>
  * </ul>
  * @author till (Till Krech) flickr:extranoise
- *
+ * @version $Id: PhotoPlace.java,v 1.2 2007/09/09 17:35:23 x-mago Exp $
  */
 public class PhotoPlace {
 	public static final int SET = 1;
@@ -21,6 +21,7 @@ public class PhotoPlace {
 	
 	/**
 	 * creates a new one.
+	 *
 	 * @param kind either SET or POOL
 	 * @param id id of the pool or set
 	 * @param title name of the pool or set
@@ -34,13 +35,14 @@ public class PhotoPlace {
 	
 	/**
 	 * creates a new one where the kind may be specified as String "set" or "pool"
+	 *
 	 * @param kind either "set" or "pool"
 	 * @param id id of the pool or set
 	 * @param title name of the pool or set
 	 * @throws IllegalArgumentException if kind is invalid
 	 */
-	public PhotoPlace(String kindStr, String id, String title) {
-		setKind(kindStr);
+	public PhotoPlace(String kind, String id, String title) {
+		setKind(kind);
 		this.id = id;
 		this.title = title;
 	}

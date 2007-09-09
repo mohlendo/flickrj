@@ -30,7 +30,7 @@ import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.37 2007/09/06 22:27:37 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.38 2007/09/09 17:32:28 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -718,7 +718,7 @@ public class PhotosInterface {
      * @param extras A set of Strings controlling the extra information to fetch for each returned record. Currently supported fields are: license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo. Set to null or an empty set to not specify any extras.
      * @param perPage Number of photos to return per page. If this argument is 0, it defaults to 100. The maximum allowed value is 500.
      * @param page The page of results to return. If this argument is 0, it defaults to 1.
-     * @return
+     * @return photos
      * @throws FlickrException
      * @throws IOException
      * @throws SAXException
@@ -1150,15 +1150,12 @@ public class PhotosInterface {
     /**
      * Set the safety level (adultness) of a photo.<p>
      *
-     * The allowed levels provided as constants:<br>
-     *
-     * Flickr.SAFETYLEVEL_SAFE<br>
-     * Flickr.SAFETYLEVEL_MODERATE<br>
-     * Flickr.SAFETYLEVEL_RESTRICTED<br>
-     *
      * @param photoId The photo ID
-     * @param savetyLevel The safety level of the photo or null
+     * @param safetyLevel The safety level of the photo or null
      * @param hidden Hidden from public searches or not or null
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_SAFE
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_MODERATE
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_RESTRICTED
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
