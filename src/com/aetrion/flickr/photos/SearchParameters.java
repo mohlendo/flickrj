@@ -16,11 +16,12 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.9 2007/03/11 23:44:51 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.10 2007/09/10 13:50:51 x-mago Exp $
  */
 public class SearchParameters {
 
     private String userId;
+    private String groupId;
     private String[] tags;
     private String tagMode;
     private String text;
@@ -43,6 +44,9 @@ public class SearchParameters {
     private boolean extrasGeo = false;
     private boolean extrasTags = false;
     private boolean extrasMachineTags = false;
+    private String[] bbox;
+    private int accuracy = 0;
+    private int saveSearch = 0;
 
 	/** order argument */
 	public static int DATE_POSTED_DESC = 0;
@@ -58,6 +62,7 @@ public class SearchParameters {
 	public static int INTERESTINGNESS_ASC = 5;
 	/** order argument */
 	public static int RELEVANCE = 6;
+		
 	private int sort = 0;
 
     public SearchParameters() {
@@ -72,6 +77,19 @@ public class SearchParameters {
         this.userId = userId;
     }
 
+    public String getGroupId() {
+        return groupId;
+    }
+
+    /**
+     * The id of a group who's pool to search. If specified, only matching photos posted to the group's pool will be returned.
+     *
+     * @param groupId
+     */
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+    
     public String[] getTags() {
         return tags;
     }
@@ -199,20 +217,109 @@ public class SearchParameters {
         this.extrasTags = extrasTags;
     }
 
+    /**
+     * 4 values defining the Bounding Box of the area that 
+     * will be searched.<p>
+     * The 4 values represent the bottom-left corner of the box
+     * and the top-right corner, minimum_longitude, minimum_latitude,
+     * maximum_longitude, maximum_latitude.<p>
+     *
+     * Longitude has a range of -180 to 180,
+     * latitude of -90 to 90. Defaults to -180,
+     * -90, 180, 90 if not specified.<p>
+     *
+     * Unlike standard photo queries, geo (or bounding box)
+     * queries will only return 250 results per page.<p>
+     *
+     * Geo queries require some sort of limiting agent in
+     * order to prevent the database from crying.
+     * This is basically like the check against "parameterless searches"
+     * for queries without a geo component.<p>
+     *
+     * A tag, for instance, is considered a limiting agent as are
+     * user defined min_date_taken and min_date_upload parameters.
+     * If no limiting factor is passed flickr returns only photos
+     * added in the last 12 hours (though flickr may extend the
+     * limit in the future).
+     *
+     * @param minimum_longitude
+     * @param minimum_latitude
+     * @param maximum_longitude
+     * @param maximum_latitude
+     */
+    public void setBBox(
+        String minimum_longitude,
+        String minimum_latitude,
+        String maximum_longitude,
+        String maximum_latitude
+    ) {
+        this.bbox = new String[] {
+            minimum_longitude,
+            minimum_latitude,
+            maximum_longitude,
+            maximum_latitude
+        };
+    }
+
+    public String[] getBBox() {
+        return bbox;
+    }
+
+    /**
+     * Optional to use, if BBox is set.<p>
+     * Defaults to maximum value if not specified.
+     *
+     * @param accuracy from 1 to 16
+     * @see com.aetrion.flickr.Flickr#ACCURACY_WORLD
+     * @see com.aetrion.flickr.Flickr#ACCURACY_COUNTRY
+     * @see com.aetrion.flickr.Flickr#ACCURACY_REGION
+     * @see com.aetrion.flickr.Flickr#ACCURACY_CITY
+     * @see com.aetrion.flickr.Flickr#ACCURACY_STREET
+     */
+    public void setAccuracy(int accuracy) {
+    	this.accuracy = accuracy;
+    }
+
+    public int getAccuracy() {
+    	return accuracy;
+    }
+
+    /**
+     * Optional safe search setting.<br>
+     * Un-authed calls can only see Safe content.
+     *
+     * @param level 1, 2 or 3
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_SAFE
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_MODERATE
+     * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_RESTRICTED
+     */
+    public void setSaveSearch(int level) {
+    	this.saveSearch = level;
+    }
+    
+    public int getSaveSearch() {
+    	return saveSearch;
+    }
+
     public int getSort() {
         return sort;
     }
 
     /**
-     * Set the sort-order to one of the following constants 
-     * DATE_POSTED_ASC, DATE_TAKEN_DESC, DATE_TAKEN_ASC, 
-     * INTERESTINGNESS_DESC, INTERESTINGNESS_ASC, RELEVANCE<br>
-     * The default is DATE_POSTED_DESC
-     * 
-     * @param order constant
+     * Set the sort-order.<p>
+     * The default is <a href="#DATE_POSTED_DESC">DATE_POSTED_DESC</a>
+     *
+     * @see com.aetrion.flickr.photos.SearchParameters#DATE_POSTED_ASC
+     * @see com.aetrion.flickr.photos.SearchParameters#DATE_POSTED_DESC
+     * @see com.aetrion.flickr.photos.SearchParameters#DATE_TAKEN_ASC
+     * @see com.aetrion.flickr.photos.SearchParameters#DATE_TAKEN_DESC
+     * @see com.aetrion.flickr.photos.SearchParameters#INTERESTINGNESS_ASC
+     * @see com.aetrion.flickr.photos.SearchParameters#INTERESTINGNESS_DESC
+     * @see com.aetrion.flickr.photos.SearchParameters#RELEVANCE
+     * @param order
      */
-    public void setSort(int sort) {
-        this.sort = sort;
+    public void setSort(int order) {
+        this.sort = order;
     }
 
     public Collection getAsParameters() {
@@ -221,6 +328,11 @@ public class SearchParameters {
         String userId = getUserId();
         if (userId != null) {
             parameters.add(new Parameter("user_id", userId));
+        }
+
+        String groupId = getGroupId();
+        if (groupId != null) {
+            parameters.add(new Parameter("group_id", groupId));
         }
 
         String[] tags = getTags();
@@ -266,6 +378,19 @@ public class SearchParameters {
         Date intrestingnessDate = getInterestingnessDate();
         if (intrestingnessDate != null) {
             parameters.add(new Parameter("date", DF.format(intrestingnessDate)));
+        }
+
+        String[] bbox = getBBox();
+        if (bbox != null) {
+            parameters.add(new Parameter("bbox", StringUtilities.join(bbox, ",")));
+            if (accuracy > 0) {
+                parameters.add(new Parameter("accuracy", accuracy));
+            }
+        }
+        
+        int saveSearch = getSaveSearch();
+        if (saveSearch > 0) {
+            parameters.add(new Parameter("save_search", saveSearch));
         }
 
         if (extrasLicense || extrasDateUpload ||
