@@ -20,6 +20,7 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.people.User;
+import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
 import com.aetrion.flickr.photos.PhotoList;
@@ -31,7 +32,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with photosets.
  *
  * @author Anthony Eden
- * @version $Id: PhotosetsInterface.java,v 1.18 2007/05/01 16:31:51 x-mago Exp $
+ * @version $Id: PhotosetsInterface.java,v 1.19 2007/09/11 22:33:12 x-mago Exp $
  */
 public class PhotosetsInterface {
 
@@ -344,6 +345,7 @@ public class PhotosetsInterface {
     /**
      * Get a collection of Photo objects for the specified Photoset.
      *
+     * @see com.aetrion.flickr.photos.Extras
      * @param photosetId The photoset ID
      * @param extras Hash of extra-fields
      * @param privacy_filter filter value for authenticated calls
@@ -385,7 +387,7 @@ public class PhotosetsInterface {
                 }
                 sb.append(it.next());
             }
-            parameters.add(new Parameter(Flickr.KEY_EXTRAS, sb.toString()));
+            parameters.add(new Parameter(Extras.KEY_EXTRAS, sb.toString()));
         }
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
@@ -411,6 +413,7 @@ public class PhotosetsInterface {
     /**
      * Convenience method.
      *
+     * @see com.aetrion.flickr.photos.Extras
      * @param photosetId The photoset ID
      * @param perPage The number of photos per page
      * @param page The page offset
@@ -421,7 +424,7 @@ public class PhotosetsInterface {
      */
     public PhotoList getPhotos(String photosetId, int perPage, int page) 
       throws IOException, SAXException, FlickrException {
-        return getPhotos(photosetId, Flickr.MIN_EXTRAS, PRIVACY_FILTER_NO_FILTER, perPage, page);
+        return getPhotos(photosetId, Extras.MIN_EXTRAS, PRIVACY_FILTER_NO_FILTER, perPage, page);
     }
 
     /**
