@@ -16,7 +16,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.10 2007/09/10 13:50:51 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.11 2007/09/12 22:20:49 x-mago Exp $
  */
 public class SearchParameters {
 
@@ -46,7 +46,7 @@ public class SearchParameters {
     private boolean extrasMachineTags = false;
     private String[] bbox;
     private int accuracy = 0;
-    private int saveSearch = 0;
+    private String safeSearch;
 
 	/** order argument */
 	public static int DATE_POSTED_DESC = 0;
@@ -293,12 +293,12 @@ public class SearchParameters {
      * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_MODERATE
      * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_RESTRICTED
      */
-    public void setSaveSearch(int level) {
-    	this.saveSearch = level;
+    public void setSafeSearch(String level) {
+    	this.safeSearch = level;
     }
     
-    public int getSaveSearch() {
-    	return saveSearch;
+    public String getSafeSearch() {
+    	return safeSearch;
     }
 
     public int getSort() {
@@ -388,9 +388,9 @@ public class SearchParameters {
             }
         }
         
-        int saveSearch = getSaveSearch();
-        if (saveSearch > 0) {
-            parameters.add(new Parameter("save_search", saveSearch));
+        String safeSearch = getSafeSearch();
+        if (safeSearch != null) {
+            parameters.add(new Parameter("safe_search", safeSearch));
         }
 
         if (extrasLicense || extrasDateUpload ||
