@@ -17,7 +17,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.RequestContext;
@@ -30,7 +29,7 @@ import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.38 2007/09/09 17:32:28 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.39 2007/09/12 22:24:19 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -220,6 +219,7 @@ public class PhotosInterface {
     /**
      * Get public photos from the user's contacts.
      *
+     * @see com.aetrion.flickr.photos.Extras
      * @param userId The user ID
      * @param count The number of photos to return
      * @param justFriends True to include friends
@@ -232,7 +232,7 @@ public class PhotosInterface {
      */
     public PhotoList getContactsPublicPhotos(String userId, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
       throws IOException, SAXException, FlickrException {
-        return getContactsPublicPhotos(userId, Flickr.MIN_EXTRAS, count, justFriends, singlePhoto, includeSelf);
+        return getContactsPublicPhotos(userId, Extras.MIN_EXTRAS, count, justFriends, singlePhoto, includeSelf);
     }
 
     public PhotoList getContactsPublicPhotos(String userId, Set extras, int count, boolean justFriends, boolean singlePhoto, boolean includeSelf)
@@ -267,7 +267,7 @@ public class PhotosInterface {
                 }
                 sb.append(it.next());
             }
-            parameters.add(new Parameter(Flickr.KEY_EXTRAS, sb.toString()));
+            parameters.add(new Parameter(Extras.KEY_EXTRAS, sb.toString()));
         }
 
         Response response = transport.get(transport.getPath(), parameters);
@@ -714,6 +714,8 @@ public class PhotosInterface {
      * <li>5 completely private photos</li>
      * </ul>
      * Set to 0 to not specify a privacy Filter.
+     *
+     * @see com.aetrion.flickr.photos.Extras
      * @param sort The order in which to sort returned photos. Deafults to date-posted-desc. The possible values are: date-posted-asc, date-posted-desc, date-taken-asc, date-taken-desc, interestingness-desc, and interestingness-asc.
      * @param extras A set of Strings controlling the extra information to fetch for each returned record. Currently supported fields are: license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo. Set to null or an empty set to not specify any extras.
      * @param perPage Number of photos to return per page. If this argument is 0, it defaults to 100. The maximum allowed value is 500.
@@ -792,6 +794,8 @@ public class PhotosInterface {
      * <li>5 completely private photos</li>
      * </ul>
      * Set to 0 to not specify a privacy Filter.
+     *
+     * @see com.aetrion.flickr.photos.Extras
      * @param sort The order in which to sort returned photos. Deafults to date-posted-desc. The possible values are: date-posted-asc, date-posted-desc, date-taken-asc, date-taken-desc, interestingness-desc, and interestingness-asc.
      * @param extras A set of Strings controlling the extra information to fetch for each returned record. Currently supported fields are: license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo. Set to null or an empty set to not specify any extras.
      * @param perPage Number of photos to return per page. If this argument is 0, it defaults to 100. The maximum allowed value is 500.
@@ -853,6 +857,8 @@ public class PhotosInterface {
     /**
      * Return a list of your photos that have been recently created or which have been recently modified. 
      * Recently modified may mean that the photo's metadata (title, description, tags) may have been changed or a comment has been added (or just modified somehow :-)
+     *
+     * @see com.aetrion.flickr.photos.Extras
      * @param minDate Date indicating the date from which modifications should be compared. Must be given.
      * @param extras A set of Strings controlling the extra information to fetch for each returned record. Currently supported fields are: license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo. Set to null or an empty set to not specify any extras.
      * @param perPage Number of photos to return per page. If this argument is 0, it defaults to 100. The maximum allowed value is 500.
