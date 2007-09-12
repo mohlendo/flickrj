@@ -14,12 +14,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.groups.Group;
+import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoContext;
 import com.aetrion.flickr.photos.PhotoList;
@@ -28,7 +28,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PoolsInterface.java,v 1.11 2007/03/11 23:08:31 x-mago Exp $
+ * @version $Id: PoolsInterface.java,v 1.12 2007/09/12 22:39:27 x-mago Exp $
  */
 public class PoolsInterface {
 
@@ -147,6 +147,7 @@ public class PoolsInterface {
     /**
      * Get the photos for the specified group pool, optionally filtering by taf.
      *
+     * @see com.aetrion.flickr.photos.Extras
      * @param groupId The group ID
      * @param tags The optional tags (may be null)
      * @param extras Set of extra-attributes to include (may be null)
@@ -185,7 +186,7 @@ public class PoolsInterface {
                 }
                 sb.append(it.next());
             }
-            parameters.add(new Parameter(Flickr.KEY_EXTRAS, sb.toString()));
+            parameters.add(new Parameter(Extras.KEY_EXTRAS, sb.toString()));
         }
 
         Response response = transport.get(transport.getPath(), parameters);
@@ -208,8 +209,9 @@ public class PoolsInterface {
     }
 
     /**
-     * Convinience/Compatibility method.
+     * Convenience/Compatibility method.
      *
+     * @see com.aetrion.flickr.photos.Extras
      * @param groupId The group ID
      * @param tags The optional tags (may be null)
      * @param perPage The number of photos per page (0 to ignore)
@@ -218,7 +220,7 @@ public class PoolsInterface {
      */
     public PhotoList getPhotos(String groupId, String[] tags, int perPage, int page)
       throws IOException, SAXException, FlickrException {
-        return getPhotos(groupId, tags, Flickr.MIN_EXTRAS, perPage, page);
+        return getPhotos(groupId, tags, Extras.MIN_EXTRAS, perPage, page);
     }
 
     /**

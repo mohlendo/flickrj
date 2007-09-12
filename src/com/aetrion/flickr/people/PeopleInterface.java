@@ -16,13 +16,13 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.contacts.OnlineStatus;
 import com.aetrion.flickr.groups.Group;
+import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.util.XMLUtilities;
@@ -31,7 +31,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for finding Flickr users.
  *
  * @author Anthony Eden
- * @version $Id: PeopleInterface.java,v 1.21 2007/08/05 13:42:32 x-mago Exp $
+ * @version $Id: PeopleInterface.java,v 1.22 2007/09/12 22:39:27 x-mago Exp $
  */
 public class PeopleInterface {
 
@@ -222,12 +222,13 @@ public class PeopleInterface {
 
     public PhotoList getPublicPhotos(String userId, int perPage, int page)
     throws IOException, SAXException, FlickrException {
-        return getPublicPhotos(userId, Flickr.MIN_EXTRAS, perPage, page);
+        return getPublicPhotos(userId, Extras.MIN_EXTRAS, perPage, page);
     }
 
     /**
      * Get a collection of public photos for the specified user ID.
      *
+     * @see com.aetrion.flickr.photos.Extras
      * @param userId The User ID
      * @param extras Set of extra-attributes to include (may be null)
      * @param perPage The number of photos per page
@@ -263,7 +264,7 @@ public class PeopleInterface {
                 }
                 sb.append(it.next());
             }
-            parameters.add(new Parameter(Flickr.KEY_EXTRAS, sb.toString()));
+            parameters.add(new Parameter(Extras.KEY_EXTRAS, sb.toString()));
         }
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
