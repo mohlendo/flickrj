@@ -25,7 +25,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * obtain the photo data by calling one of the getXXXImage() or getXXXAsStream() methods in this class.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.18 2007/09/07 00:33:49 x-mago Exp $
+ * @version $Id: Photo.java,v 1.19 2007/09/12 22:34:27 x-mago Exp $
  */
 public class Photo {
 
@@ -339,7 +339,7 @@ public class Photo {
     }
     
     /**
-     * Sets the degrees of rotation. Value will be set to -1,
+     * Set the degrees of rotation. Value will be set to -1,
      * if not available.
      *
      * @param rotation
@@ -588,7 +588,7 @@ public class Photo {
         return buffer;
     }
 
-    private StringBuffer getOriginalBaseImageUrl() throws FlickrException {
+    private StringBuffer getOriginalBaseImageUrl() throws FlickrException, NullPointerException {
         StringBuffer buffer = new StringBuffer();
         buffer.append(_getBaseImageUrl());
         if (getOriginalSecret().length() > 8) {
