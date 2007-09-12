@@ -19,6 +19,7 @@ import com.aetrion.flickr.interestingness.InterestingnessInterface;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.licenses.LicensesInterface;
+import com.aetrion.flickr.photos.notes.NotesInterface;
 import com.aetrion.flickr.photos.transform.TransformInterface;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
 import com.aetrion.flickr.prefs.PrefsInterface;
@@ -32,7 +33,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * This class is used to acquire Interface classes which wrap the Flickr API.
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.30 2007/07/21 23:02:33 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.31 2007/09/12 22:18:37 x-mago Exp $
  */
 public class Flickr {
 
@@ -66,6 +67,7 @@ public class Flickr {
     private FavoritesInterface favoritesInterface;
     private GroupsInterface groupsInterface;
     private LicensesInterface licensesInterface;
+    private NotesInterface notesInterface;
     private PoolsInterface poolsInterface;
     private PeopleInterface peopleInterface;
     private PhotosInterface photosInterface;
@@ -83,44 +85,118 @@ public class Flickr {
      * @see com.aetrion.flickr.uploader.UploadMetaData#setContentType(String)
      */
     public static final String CONTENTTYPE_PHOTO = "1";
+
     /**
      * @see com.aetrion.flickr.prefs.PrefsInterface#getContentType()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setContentType(String)
      */
     public static final String CONTENTTYPE_SCREENSHOT = "2";
+
     /**
      * @see com.aetrion.flickr.prefs.PrefsInterface#getContentType()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setContentType(String)
      */
     public static final String CONTENTTYPE_OTHER = "3";
 
+	/**
+	 * The lowest accuracy for bounding-box searches.
+	 *
+	 * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
+	 */
+	public static int ACCURACY_WORLD = 1;
+
+	/**
+	 * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
+	 */
+	public static int ACCURACY_COUNTRY = 3;
+
+	/**
+	 * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
+	 */
+	public static int ACCURACY_REGION = 6;
+
+	/**
+	 * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
+	 */
+	public static int ACCURACY_CITY = 11;
+
+	/**
+	 * The highest accuracy for bounding-box searches.
+	 *
+	 * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
+	 */
+	public static int ACCURACY_STREET = 16;
+    
     /**
+     * @see com.aetrion.flickr.photos.PhotosInterface#setSafetyLevel(String, String, Boolean)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getSafetyLevel()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setSafetyLevel(String)
+	 * @see com.aetrion.flickr.photos.SearchParameters#setSafeSearch(int)
      */
     public static final String SAFETYLEVEL_SAFE = "1";
     /**
+     * @see com.aetrion.flickr.photos.PhotosInterface#setSafetyLevel(String, String, Boolean)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getSafetyLevel()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setSafetyLevel(String)
+	 * @see com.aetrion.flickr.photos.SearchParameters#setSafeSearch(int)
      */
     public static final String SAFETYLEVEL_MODERATE = "2";
     /**
+     * @see com.aetrion.flickr.photos.PhotosInterface#setSafetyLevel(String, String, Boolean)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getSafetyLevel()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setSafetyLevel(String)
+	 * @see com.aetrion.flickr.photos.SearchParameters#setSafeSearch(int)
      */
     public static final String SAFETYLEVEL_RESTRICTED = "3";
 
+    /**
+     * 
+     * All the extras-constants here by mistake.
+     * The intended location is com.aetrion.flickr.photos.Extras
+     * 
+     * @deprecated
+     */
     public static final String KEY_EXTRAS = "extras";
 
+    /**
+     * @deprecated
+     */
     public static final String EXTRAS_LICENSE = "license";
+    /**
+     * @deprecated
+     */
     public static final String EXTRAS_DATE_UPLOAD = "date_upload";
+    /**
+     * @deprecated
+     */
     public static final String EXTRAS_DATE_TAKEN = "date_taken";
+    /**
+     * @deprecated
+     */
     public static final String EXTRAS_OWNER_NAME = "owner_name";
+    /**
+     * @deprecated
+     */
     public static final String EXTRAS_ICON_SERVER = "icon_server";
+    /**
+     * @deprecated
+     */
     public static final String EXTRAS_ORIGINAL_FORMAT = "original_format";
+    /**
+     * @deprecated
+     */
     public static final String EXTRAS_LAST_UPDATE = "last_update";
+    /**
+     * @deprecated
+     */
     public static final String EXTRAS_GEO = "geo";
+    /**
+     * @deprecated
+     */
     public static final String EXTRAS_TAGS = "tags";
+    /**
+     * @deprecated
+     */
     public static final String EXTRAS_MACHINE_TAGS = "machine_tags";
 
     /**
@@ -130,8 +206,12 @@ public class Flickr {
      * PoolsInterface.getPhotos()<br>
      * PhotosetsInterface.getPhotos()<br>
      * 
+     * @deprecated
      */
     public static final Set ALL_EXTRAS = new HashSet();
+    /**
+     * @deprecated
+     */
     public static final Set MIN_EXTRAS = new HashSet();
 
     static {
@@ -151,7 +231,7 @@ public class Flickr {
         MIN_EXTRAS.add(EXTRAS_ORIGINAL_FORMAT);
         MIN_EXTRAS.add(EXTRAS_OWNER_NAME);
     }
-
+    
     /**
      * Construct a new Flickr gateway instance.  Defaults to a REST transport.
      *
@@ -276,6 +356,13 @@ public class Flickr {
             licensesInterface = new LicensesInterface(apiKey, transport);
         }
         return licensesInterface;
+    }
+
+    public NotesInterface getNotesInterface() {
+        if (notesInterface == null) {
+            notesInterface = new NotesInterface(apiKey, transport);
+        }
+        return notesInterface;
     }
 
     public PoolsInterface getPoolsInterface() {
