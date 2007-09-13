@@ -5,6 +5,7 @@ package com.aetrion.flickr.photos;
 
 /**
  * @author Anthony Eden
+ * @version $Id: Size.java,v 1.3 2007/09/13 22:12:40 x-mago Exp $
  */
 public class Size {
 
@@ -18,6 +19,12 @@ public class Size {
 
     }
 
+    /**
+     * Size-descriptor. Possible labels are:
+     * Square, Thumbnail, Small, Medium, Large, Original.
+     * 
+     * @return label
+     */
     public String getLabel() {
         return label;
     }
