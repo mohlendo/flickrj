@@ -13,10 +13,9 @@ import com.aetrion.flickr.contacts.OnlineStatus;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.11 2007/08/05 13:42:32 x-mago Exp $
+ * @version $Id: User.java,v 1.12 2007/09/14 19:16:20 x-mago Exp $
  */
 public class User implements Serializable {
-
 
 	private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -112,10 +111,12 @@ public class User implements Serializable {
     }
 
     /**
-     * Construct the BuddyIconUrl. Either the default, or assembled
-     * from farm, iconserver and nsid.
+     * Construct the BuddyIconUrl.<p>
+     * If none available, return the 
+     * <a href="http://www.flickr.com/images/buddyicon.jpg">default</a>,
+     * or an URL assembled from farm, iconserver and nsid.
      *
-     * @see http://flickr.com/services/api/misc.buddyicons.html
+     * @see <a href="http://flickr.com/services/api/misc.buddyicons.html">Flickr Documentation</a>
      * @return The BuddyIconUrl
      */
     public String getBuddyIconUrl() {
