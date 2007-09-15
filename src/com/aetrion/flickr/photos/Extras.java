@@ -9,7 +9,7 @@ import java.util.Set;
 
 /**
  * @author Anthony Eden
- * @version $Id: Extras.java,v 1.3 2007/09/12 22:19:30 x-mago Exp $
+ * @version $Id: Extras.java,v 1.4 2007/09/15 23:00:28 x-mago Exp $
  */
 public class Extras {
 
@@ -25,8 +25,6 @@ public class Extras {
     public static final String GEO = "geo";
     public static final String TAGS = "tags";
     public static final String MACHINE_TAGS = "machine_tags";
-
-    public static final String[] ALL = {LICENSE, DATE_UPLOAD, DATE_TAKEN, OWNER_NAME, ICON_SERVER};
 
     /**
      * Set of all extra-arguments. Used for requesting lists of photos.

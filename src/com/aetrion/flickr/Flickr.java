@@ -33,7 +33,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * This class is used to acquire Interface classes which wrap the Flickr API.
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.31 2007/09/12 22:18:37 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.32 2007/09/15 23:00:28 x-mago Exp $
  */
 public class Flickr {
 
@@ -131,21 +131,21 @@ public class Flickr {
      * @see com.aetrion.flickr.photos.PhotosInterface#setSafetyLevel(String, String, Boolean)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getSafetyLevel()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setSafetyLevel(String)
-	 * @see com.aetrion.flickr.photos.SearchParameters#setSafeSearch(int)
+	 * @see com.aetrion.flickr.photos.SearchParameters#setSafeSearch(String)
      */
     public static final String SAFETYLEVEL_SAFE = "1";
     /**
      * @see com.aetrion.flickr.photos.PhotosInterface#setSafetyLevel(String, String, Boolean)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getSafetyLevel()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setSafetyLevel(String)
-	 * @see com.aetrion.flickr.photos.SearchParameters#setSafeSearch(int)
+	 * @see com.aetrion.flickr.photos.SearchParameters#setSafeSearch(String)
      */
     public static final String SAFETYLEVEL_MODERATE = "2";
     /**
      * @see com.aetrion.flickr.photos.PhotosInterface#setSafetyLevel(String, String, Boolean)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getSafetyLevel()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setSafetyLevel(String)
-	 * @see com.aetrion.flickr.photos.SearchParameters#setSafeSearch(int)
+	 * @see com.aetrion.flickr.photos.SearchParameters#setSafeSearch(String)
      */
     public static final String SAFETYLEVEL_RESTRICTED = "3";
 
@@ -159,42 +159,53 @@ public class Flickr {
     public static final String KEY_EXTRAS = "extras";
 
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     * 
      * @deprecated
      */
     public static final String EXTRAS_LICENSE = "license";
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
      * @deprecated
      */
     public static final String EXTRAS_DATE_UPLOAD = "date_upload";
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
      * @deprecated
      */
     public static final String EXTRAS_DATE_TAKEN = "date_taken";
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
      * @deprecated
      */
     public static final String EXTRAS_OWNER_NAME = "owner_name";
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
      * @deprecated
      */
     public static final String EXTRAS_ICON_SERVER = "icon_server";
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
      * @deprecated
      */
     public static final String EXTRAS_ORIGINAL_FORMAT = "original_format";
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
      * @deprecated
      */
     public static final String EXTRAS_LAST_UPDATE = "last_update";
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
      * @deprecated
      */
     public static final String EXTRAS_GEO = "geo";
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
      * @deprecated
      */
     public static final String EXTRAS_TAGS = "tags";
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
      * @deprecated
      */
     public static final String EXTRAS_MACHINE_TAGS = "machine_tags";
@@ -204,12 +215,15 @@ public class Flickr {
      * following methods:<p>
      * PeopleInterface.getPublicPhotos()<br>
      * PoolsInterface.getPhotos()<br>
-     * PhotosetsInterface.getPhotos()<br>
+     * PhotosetsInterface.getPhotos()<p>
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
      * 
      * @deprecated
      */
     public static final Set ALL_EXTRAS = new HashSet();
     /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     *
      * @deprecated
      */
     public static final Set MIN_EXTRAS = new HashSet();

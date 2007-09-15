@@ -5,11 +5,41 @@ package com.aetrion.flickr.photos;
 
 /**
  * @author Anthony Eden
- * @version $Id: Size.java,v 1.3 2007/09/13 22:12:40 x-mago Exp $
+ * @version $Id: Size.java,v 1.4 2007/09/15 23:00:28 x-mago Exp $
  */
 public class Size {
-
-    private String label;
+	/**
+     * @see com.aetrion.flickr.photos.Size#getLabel()
+     * @see com.aetrion.flickr.photos.Size#setLabel(int)
+	 */
+    public static final int THUMB = 0;
+	/**
+     * @see com.aetrion.flickr.photos.Size#getLabel()
+     * @see com.aetrion.flickr.photos.Size#setLabel(int)
+	 */
+    public static final int SQUARE = 1;
+	/**
+     * @see com.aetrion.flickr.photos.Size#getLabel()
+     * @see com.aetrion.flickr.photos.Size#setLabel(int)
+	 */
+    public static final int SMALL = 2;
+	/**
+     * @see com.aetrion.flickr.photos.Size#getLabel()
+     * @see com.aetrion.flickr.photos.Size#setLabel(int)
+	 */
+    public static final int MEDIUM = 3;
+	/**
+     * @see com.aetrion.flickr.photos.Size#getLabel()
+     * @see com.aetrion.flickr.photos.Size#setLabel(int)
+	 */
+    public static final int LARGE = 4;
+	/**
+     * @see com.aetrion.flickr.photos.Size#getLabel()
+     * @see com.aetrion.flickr.photos.Size#setLabel(int)
+	 */
+    public static final int ORIGINAL = 5;
+    
+    private int label;
     private int width;
     private int height;
     private String source;
@@ -20,16 +50,49 @@ public class Size {
     }
 
     /**
-     * Size-descriptor. Possible labels are:
-     * Square, Thumbnail, Small, Medium, Large, Original.
+     * Size of the Photo.
+     *
      * 
      * @return label
+     * @see com.aetrion.flickr.photos.Size#THUMB
+     * @see com.aetrion.flickr.photos.Size#SQUARE
+     * @see com.aetrion.flickr.photos.Size#SMALL
+     * @see com.aetrion.flickr.photos.Size#MEDIUM
+     * @see com.aetrion.flickr.photos.Size#LARGE
+     * @see com.aetrion.flickr.photos.Size#ORIGINAL
      */
-    public String getLabel() {
+    public int getLabel() {
         return label;
     }
 
     public void setLabel(String label) {
+    	if (label.equals("Square")) {
+    		setLabel(SQUARE);
+    	} else if (label.equals("Thumbnail")) {
+    		setLabel(THUMB);
+    	} else if (label.equals("Small")) {
+    		setLabel(SMALL);
+    	} else if (label.equals("Medium")) {
+    		setLabel(MEDIUM);
+    	} else if (label.equals("Large")) {
+    		setLabel(LARGE);
+    	} else if (label.equals("Original")) {
+    		setLabel(ORIGINAL);
+    	}
+    }
+    
+    /**
+     * Size of the Photo.
+     *
+     * @param label
+     * @see com.aetrion.flickr.photos.Size#THUMB
+     * @see com.aetrion.flickr.photos.Size#SQUARE
+     * @see com.aetrion.flickr.photos.Size#SMALL
+     * @see com.aetrion.flickr.photos.Size#MEDIUM
+     * @see com.aetrion.flickr.photos.Size#LARGE
+     * @see com.aetrion.flickr.photos.Size#ORIGINAL
+     */
+    public void setLabel(int label) {
         this.label = label;
     }
 
@@ -57,6 +120,11 @@ public class Size {
         if (height != null) setHeight(Integer.parseInt(height));
     }
 
+    /**
+     * URL of the image.
+     *
+     * @return Image-URL
+     */
     public String getSource() {
         return source;
     }
@@ -65,6 +133,11 @@ public class Size {
         this.source = source;
     }
 
+    /**
+     * URL of the photopage.
+     *
+     * @return Page-URL
+     */
     public String getUrl() {
         return url;
     }
