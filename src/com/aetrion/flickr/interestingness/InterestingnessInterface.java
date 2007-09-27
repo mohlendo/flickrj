@@ -23,26 +23,59 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.photos.PhotoUtils;
 
 /**
  *
  * @author till
- * @version $Id: InterestingnessInterface.java,v 1.4 2007/02/25 17:35:35 x-mago Exp $
+ * @version $Id: InterestingnessInterface.java,v 1.5 2007/09/27 19:24:29 x-mago Exp $
  */
 public class InterestingnessInterface {
 
     public static final String METHOD_GET_LIST = "flickr.interestingness.getList";
 
+    /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     * @deprecated
+     */
     public static final String EXTRAS_LICENSE = "license";
+    /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     * @deprecated
+     */
     public static final String EXTRAS_DATE_UPLOAD = "date_upload";
+    /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     * @deprecated
+     */
     public static final String EXTRAS_DATE_TAKEN = "date_taken";
+    /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     * @deprecated
+     */
     public static final String EXTRAS_OWNER_NAME = "owner_name";
+    /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     * @deprecated
+     */
     public static final String EXTRAS_ICON_SERVER = "icon_server";
+    /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     * @deprecated
+     */
     public static final String EXTRAS_ORIGINAL_FORMAT = "original_format";
+    /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     * @deprecated
+     */
     public static final String EXTRAS_LAST_UPDATE = "last_update";
+    /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     * @deprecated
+     */
     public static final String EXTRAS_GEO = "geo";
 
     private static final String KEY_METHOD = "method";
@@ -52,6 +85,10 @@ public class InterestingnessInterface {
     private static final String KEY_PER_PAGE = "per_page";
     private static final String KEY_PAGE = "page";
 
+    /**
+     * Moved to {@link com.aetrion.flickr.photos.Extras}
+     * @deprecated
+     */
     public static final Set ALL_EXTRAS = new HashSet();
 
     static {
@@ -73,6 +110,18 @@ public class InterestingnessInterface {
         this.transportAPI = transportAPI;
     }
 
+    /**
+     * 
+     * @param date
+     * @param extras
+     * @param perPage
+     * @param page
+     * @return PhotoList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     * @see com.aetrion.flickr.photos.Extras
+     */
     public PhotoList getList(String date, Set extras, int perPage, int page) throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
         PhotoList photos = new PhotoList();
@@ -122,6 +171,18 @@ public class InterestingnessInterface {
         return photos;
     }
 
+    /**
+     * 
+     * @param date
+     * @param extras
+     * @param perPage
+     * @param page
+     * @return PhotoList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     * @see com.aetrion.flickr.photos.Extras
+     */
     public PhotoList getList(Date date, Set extras, int perPage, int page)
       throws FlickrException, IOException, SAXException {
         String dateString = null;
@@ -135,13 +196,14 @@ public class InterestingnessInterface {
     /**
      * convenience method to get the list of all 500 most recent photos
      * in flickr explore with all known extra attributes.
+     *
      * @return a List of Photos
      * @throws FlickrException
      * @throws IOException
      * @throws SAXException
      */
     public PhotoList getList() throws FlickrException, IOException, SAXException {
-        return getList((String) null, ALL_EXTRAS, 500, 1);
+        return getList((String) null, Extras.ALL_EXTRAS, 500, 1);
     }
 
 }
