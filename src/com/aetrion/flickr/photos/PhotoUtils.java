@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.9 2007/08/28 19:44:48 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.10 2007/09/27 19:19:26 x-mago Exp $
  */
 public final class PhotoUtils {
 
@@ -123,6 +123,7 @@ public final class PhotoUtils {
             Editability editability = new Editability();
             editability.setComment("1".equals(editabilityElement.getAttribute("cancomment")));
             editability.setAddmeta("1".equals(editabilityElement.getAttribute("canaddmeta")));
+            photo.setEditability(editability);
         } catch (NullPointerException e) {
             // nop
         }
@@ -151,25 +152,39 @@ public final class PhotoUtils {
             }
             photo.setNotes(notes);
         } catch (NullPointerException e) {
-            // nop
+            photo.setNotes(new ArrayList());
         }
 
+        // Tags coming as space-seperated attribute calling
+        // InterestingnessInterface#getList().
+        // Through PhotoInterface#getInfo() the Photo has a list of
+        // Elements.
         try {
-            Element tagsElement = (Element) photoElement.getElementsByTagName("tags").item(0);
             List tags = new ArrayList();
-            NodeList tagNodes = tagsElement.getElementsByTagName("tag");
-            for (int i = 0; i < tagNodes.getLength(); i++) {
-                Element tagElement = (Element) tagNodes.item(i);
-                Tag tag = new Tag();
-                tag.setId(tagElement.getAttribute("id"));
-                tag.setAuthor(tagElement.getAttribute("author"));
-                tag.setRaw(tagElement.getAttribute("raw"));
-                tag.setValue(((Text) tagElement.getFirstChild()).getData());
-                tags.add(tag);
+            String tagsAttr = photoElement.getAttribute("tags");
+            if (!tagsAttr.equals("")) {
+                String[] values = tagsAttr.split("\\s+");
+                for (int i = 0; i < values.length; i++) {
+                    Tag tag = new Tag();
+                    tag.setValue(values[i]);
+                    tags.add(tag);
+                }
+            } else {
+                Element tagsElement = (Element) photoElement.getElementsByTagName("tags").item(0);
+                NodeList tagNodes = tagsElement.getElementsByTagName("tag");
+                for (int i = 0; i < tagNodes.getLength(); i++) {
+                    Element tagElement = (Element) tagNodes.item(i);
+                    Tag tag = new Tag();
+                    tag.setId(tagElement.getAttribute("id"));
+                    tag.setAuthor(tagElement.getAttribute("author"));
+                    tag.setRaw(tagElement.getAttribute("raw"));
+                    tag.setValue(((Text) tagElement.getFirstChild()).getData());
+                    tags.add(tag);
+                }
             }
             photo.setTags(tags);
         } catch (NullPointerException e) {
-            // nop
+            photo.setTags(new ArrayList());
         }
 
         try {
@@ -187,7 +202,7 @@ public final class PhotoUtils {
             }
             photo.setUrls(urls);
         } catch (NullPointerException e) {
-            // nop
+            photo.setUrls(new ArrayList());
         }
 
         String longitude = null;
@@ -218,6 +233,12 @@ public final class PhotoUtils {
         return photo;
     }
 
+    /**
+     * Parse a list of Photos from given Element.
+     *
+     * @param photosElement
+     * @return PhotoList
+     */
     public static final PhotoList createPhotoList(Element photosElement) {
         PhotoList photos = new PhotoList();
         photos.setPage(photosElement.getAttribute("page"));
