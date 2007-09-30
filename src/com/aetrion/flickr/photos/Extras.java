@@ -10,7 +10,7 @@ import java.util.Set;
  * Extra-attributes for Photo-requests.
  * 
  * @author Anthony Eden
- * @version $Id: Extras.java,v 1.5 2007/09/27 19:21:54 x-mago Exp $
+ * @version $Id: Extras.java,v 1.6 2007/09/30 15:55:42 x-mago Exp $
  */
 public class Extras {
     public static final String KEY_EXTRAS = "extras";
@@ -37,6 +37,7 @@ public class Extras {
      * @see com.aetrion.flickr.photos.PhotosInterface#getWithoutGeoData(java.util.Date, java.util.Date, java.util.Date, java.util.Date, int, String, Set, int, int)
      * @see com.aetrion.flickr.photos.PhotosInterface#recentlyUpdated(java.util.Date, Set, int, int)
      * @see com.aetrion.flickr.interestingness.InterestingnessInterface#getList(java.util.Date, Set, int, int)
+     * @see com.aetrion.flickr.favorites.FavoritesInterface#getList(String, int, int, Set)
      */
     public static final Set ALL_EXTRAS = new HashSet();
 
@@ -52,6 +53,7 @@ public class Extras {
      * @see com.aetrion.flickr.photos.PhotosInterface#getWithoutGeoData(java.util.Date, java.util.Date, java.util.Date, java.util.Date, int, String, Set, int, int)
      * @see com.aetrion.flickr.photos.PhotosInterface#recentlyUpdated(java.util.Date, Set, int, int)
      * @see com.aetrion.flickr.interestingness.InterestingnessInterface#getList(java.util.Date, Set, int, int)
+     * @see com.aetrion.flickr.favorites.FavoritesInterface#getList(String, int, int, Set)
      */
     public static final Set MIN_EXTRAS = new HashSet();
 
