@@ -33,7 +33,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * This class is used to acquire Interface classes which wrap the Flickr API.
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.33 2007/09/30 14:07:35 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.34 2007/09/30 20:40:17 x-mago Exp $
  */
 public class Flickr {
 
@@ -151,39 +151,38 @@ public class Flickr {
 
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
-     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacyLevel()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
      */
     public static final int PRIVACY_LEVEL_NO_FILTER = 0;
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
-     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacyLevel()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
      */
     public static final int PRIVACY_LEVEL_PUBLIC = 1;
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
-     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacyLevel()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
      */
     public static final int PRIVACY_LEVEL_FRIENDS = 2;
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
-     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacyLevel()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
      */
     public static final int PRIVACY_LEVEL_FAMILY = 3;
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
-     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacyLevel()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
      */
     public static final int PRIVACY_LEVEL_FRIENDS_FAMILY = 4;
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
-     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacyLevel()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
      */
     public static final int PRIVACY_LEVEL_PRIVATE = 5;
 
 
     /**
-     * 
-     * All the extras-constants here by mistake.
+     * All the extras-constants are here by mistake.
      * The intended location is com.aetrion.flickr.photos.Extras
      * 
      * @deprecated
