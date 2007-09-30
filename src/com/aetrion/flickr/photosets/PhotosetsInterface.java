@@ -32,7 +32,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with photosets.
  *
  * @author Anthony Eden
- * @version $Id: PhotosetsInterface.java,v 1.19 2007/09/11 22:33:12 x-mago Exp $
+ * @version $Id: PhotosetsInterface.java,v 1.20 2007/09/30 14:07:35 x-mago Exp $
  */
 public class PhotosetsInterface {
 
@@ -47,13 +47,6 @@ public class PhotosetsInterface {
     public static final String METHOD_GET_PHOTOS = "flickr.photosets.getPhotos";
     public static final String METHOD_ORDER_SETS = "flickr.photosets.orderSets";
     public static final String METHOD_REMOVE_PHOTO = "flickr.photosets.removePhoto";
-
-    public static final int PRIVACY_FILTER_NO_FILTER = 0;
-    public static final int PRIVACY_FILTER_PUBLIC = 1;
-    public static final int PRIVACY_FILTER_FRIENDS = 2;
-    public static final int PRIVACY_FILTER_FAMILY = 3;
-    public static final int PRIVACY_FILTER_FRIENDS_FAMILY = 4;
-    public static final int PRIVACY_FILTER_PRIVATE = 5;
 
     private String apiKey;
     private Transport transportAPI;
@@ -346,6 +339,12 @@ public class PhotosetsInterface {
      * Get a collection of Photo objects for the specified Photoset.
      *
      * @see com.aetrion.flickr.photos.Extras
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_NO_FILTER
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_PUBLIC
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS_FAMILY
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FAMILY
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS
      * @param photosetId The photoset ID
      * @param extras Hash of extra-fields
      * @param privacy_filter filter value for authenticated calls
@@ -414,6 +413,12 @@ public class PhotosetsInterface {
      * Convenience method.
      *
      * @see com.aetrion.flickr.photos.Extras
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_NO_FILTER
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_PUBLIC
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS_FAMILY
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FAMILY
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS
      * @param photosetId The photoset ID
      * @param perPage The number of photos per page
      * @param page The page offset
@@ -424,7 +429,7 @@ public class PhotosetsInterface {
      */
     public PhotoList getPhotos(String photosetId, int perPage, int page) 
       throws IOException, SAXException, FlickrException {
-        return getPhotos(photosetId, Extras.MIN_EXTRAS, PRIVACY_FILTER_NO_FILTER, perPage, page);
+        return getPhotos(photosetId, Extras.MIN_EXTRAS, Flickr.PRIVACY_LEVEL_NO_FILTER, perPage, page);
     }
 
     /**
