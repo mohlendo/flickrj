@@ -56,9 +56,8 @@ public class FavoritesInterfaceSOAPTest extends TestCase {
     }
 
     public void testGetListWithExtras() throws FlickrException, IOException, SAXException {
-        String[] extras = Extras.ALL;
         FavoritesInterface iface = flickr.getFavoritesInterface();
-        Collection favorites = iface.getList(null, 0, 0, extras);
+        Collection favorites = iface.getList(null, 0, 0, Extras.ALL_EXTRAS);
         assertNotNull(favorites);
         assertEquals(1, favorites.size());
     }

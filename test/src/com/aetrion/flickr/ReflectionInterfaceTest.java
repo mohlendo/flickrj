@@ -61,7 +61,7 @@ public class ReflectionInterfaceTest extends TestCase {
         assertEquals(methodName, method.getName());
         assertFalse(method.needsSigning());
         assertEquals(0, method.getRequiredPerms());
-        assertFalse(method.isNeedsLogin());
+        assertFalse(method.needsLogin());
         
         assertNotNull(method.getArguments());
         assertEquals(5, method.getArguments().size());
@@ -109,7 +109,7 @@ public class ReflectionInterfaceTest extends TestCase {
         assertEquals(3, method.getArguments().size());
         
         assertTrue(method.needsSigning());
-        assertTrue(method.isNeedsLogin());
+        assertTrue(method.needsLogin());
         assertEquals(Method.WRITE_PERMISSION, method.getRequiredPerms());
         
         

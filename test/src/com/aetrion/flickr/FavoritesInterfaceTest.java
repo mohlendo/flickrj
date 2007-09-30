@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
- * @version $Id: FavoritesInterfaceTest.java,v 1.6 2007/07/21 19:18:09 x-mago Exp $
+ * @version $Id: FavoritesInterfaceTest.java,v 1.7 2007/09/30 17:30:03 x-mago Exp $
  */
 public class FavoritesInterfaceTest extends TestCase {
 
@@ -58,9 +58,8 @@ public class FavoritesInterfaceTest extends TestCase {
     }
 
     public void testGetListWithExtras() throws FlickrException, IOException, SAXException {
-        String[] extras = Extras.ALL;
         FavoritesInterface iface = flickr.getFavoritesInterface();
-        Collection favorites = iface.getList(null, 0, 0, extras);
+        Collection favorites = iface.getList(null, 0, 0, Extras.ALL_EXTRAS);
         assertNotNull(favorites);
         assertEquals(2, favorites.size());
     }
