@@ -5,8 +5,8 @@ package com.aetrion.flickr.favorites;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -16,8 +16,6 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
-import com.aetrion.flickr.people.User;
-import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.util.StringUtilities;
@@ -26,7 +24,7 @@ import com.aetrion.flickr.util.StringUtilities;
  * Interface for working with Flickr favorites.
  *
  * @author Anthony Eden
- * @version $Id: FavoritesInterface.java,v 1.14 2007/07/19 21:00:55 x-mago Exp $
+ * @version $Id: FavoritesInterface.java,v 1.15 2007/09/30 13:11:24 x-mago Exp $
  */
 public class FavoritesInterface {
 
@@ -70,12 +68,13 @@ public class FavoritesInterface {
      * @param userId The optional user ID.  Null value will be ignored.
      * @param perPage The optional per page value.  Values <= 0 will be ignored.
      * @param page The page to view.  Values <= 0 will be ignored.
-     * @param extras An array of Strings representing extra parameters to send
+     * @param extras a Set Strings representing extra parameters to send
      * @return The Collection of Photo objects
+     * @see com.aetrion.flickr.photos.Extras
      * @throws IOException
      * @throws SAXException
      */
-    public PhotoList getList(String userId, int perPage, int page, String[] extras) throws IOException,
+    public PhotoList getList(String userId, int perPage, int page, Set extras) throws IOException,
             SAXException, FlickrException {
         PhotoList photos = new PhotoList();
 
@@ -120,13 +119,14 @@ public class FavoritesInterface {
      * @param userId The user ID
      * @param perPage The optional per page value.  Values <= 0 will be ignored.
      * @param page The optional page to view.  Values <= 0 will be ignored
-     * @param extras A String array of extra parameters to send
+     * @param extras A Set of extra parameters to send
      * @return A Collection of Photo objects
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
+     * @see com.aetrion.flickr.photos.Extras
      */
-    public PhotoList getPublicList(String userId, int perPage, int page, String[] extras)
+    public PhotoList getPublicList(String userId, int perPage, int page, Set extras)
             throws IOException, SAXException, FlickrException {
         PhotoList photos = new PhotoList();
 
