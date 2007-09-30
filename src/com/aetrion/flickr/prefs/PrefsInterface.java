@@ -19,12 +19,13 @@ import com.aetrion.flickr.Transport;
  * Requesting preferences for the current authenticated user.
  *
  * @author Martin Goebel
- * @version $Id: PrefsInterface.java,v 1.3 2007/07/22 21:28:38 x-mago Exp $
+ * @version $Id: PrefsInterface.java,v 1.4 2007/09/30 15:54:31 x-mago Exp $
  */
 public class PrefsInterface {
     public static final String METHOD_GET_CONTENT_TYPE = "flickr.prefs.getContentType";
     public static final String METHOD_GET_HIDDEN = "flickr.prefs.getHidden";
     public static final String METHOD_GET_SAFETY_LEVEL = "flickr.prefs.getSafetyLevel";
+    public static final String METHOD_GET_PRIVACY = "flickr.prefs.getPrivacy";
 
     private String apiKey;
     private Transport transportAPI;
@@ -110,5 +111,33 @@ public class PrefsInterface {
 
         Element personElement = response.getPayload();
         return personElement.getAttribute("safety_level");
+    }
+
+    /**
+     * Returns the default privacy level preference for the user.
+     *
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_NO_FILTER
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_PUBLIC
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS_FAMILY
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FAMILY
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     * @return privacyLevel
+     */
+    public int getPrivacy() throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_PRIVACY));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+
+        Element personElement = response.getPayload();
+        return Integer.parseInt(personElement.getAttribute("privacy"));
     }
 }
