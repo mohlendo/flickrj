@@ -29,7 +29,7 @@ import java.util.List;
  * Transport implementation using the REST interface.
  *
  * @author Anthony Eden
- * @version $Id: REST.java,v 1.18 2007/09/09 22:33:18 x-mago Exp $
+ * @version $Id: REST.java,v 1.19 2007/10/27 22:54:33 x-mago Exp $
  */
 public class REST extends Transport {
 
@@ -156,11 +156,15 @@ public class REST extends Transport {
                     while (iter.hasNext()) {
                         Parameter p = (Parameter) iter.next();
                         writeParam(p.getName(), p.getValue(), out, boundary);
-
-                        Auth auth = requestContext.getAuth();
-                        if (auth != null) {
-                            writeParam("api_sig", AuthUtilities.getMultipartSignature(parameters), out, boundary);
-                        }
+                    }
+                    Auth auth = requestContext.getAuth();
+                    if (auth != null) {
+                        writeParam(
+                            "api_sig",
+                            AuthUtilities.getMultipartSignature(parameters),
+                            out,
+                            boundary
+                        );
                     }
                 } else {
                     Iterator iter = parameters.iterator();
@@ -168,8 +172,7 @@ public class REST extends Transport {
                         Parameter p = (Parameter) iter.next();
                         out.writeBytes(p.getName());
                         out.writeBytes("=");
-                        
-                		try {
+                        try {
                             out.writeBytes(
                                 URLEncoder.encode(
                                     String.valueOf(p.getValue()),
