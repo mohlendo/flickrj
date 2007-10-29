@@ -29,7 +29,7 @@ import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.39 2007/09/12 22:24:19 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.40 2007/10/29 20:11:15 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -53,7 +53,7 @@ public class PhotosInterface {
     public static final String METHOD_RECENTLY_UPDATED ="flickr.photos.recentlyUpdated";
     public static final String METHOD_REMOVE_TAG = "flickr.photos.removeTag";
     public static final String METHOD_SEARCH = "flickr.photos.search";
-    public static final String METHOD_SET_CONTENTTYPE = "flickr.photos.setCotentType";
+    public static final String METHOD_SET_CONTENTTYPE = "flickr.photos.setContentType";
     public static final String METHOD_SET_DATES = "flickr.photos.setDates";
     public static final String METHOD_SET_META = "flickr.photos.setMeta";
     public static final String METHOD_SET_PERMS = "flickr.photos.setPerms";
