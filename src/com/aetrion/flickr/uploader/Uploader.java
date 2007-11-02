@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -22,8 +23,20 @@ import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.util.StringUtilities;
 
 /**
+ * Upload a photo.<p>
+ *
+ * Setting {@link com.aetrion.flickr.uploader.UploadMetaData#setAsync(boolean)}
+ * you can switch between synchronous and asynchronous uploads.<p>
+ *
+ * Synchronous uploads return the photoId, whilst asynchronous uploads
+ * return a ticketId.<p>
+ *
+ * TicketId's can be tracked with
+ * {@link com.aetrion.flickr.photos.upload.UploadInterface#checkTickets(Set)}
+ * for completion.
+ *
  * @author Anthony Eden
- * @version $Id: Uploader.java,v 1.8 2007/07/21 23:13:42 x-mago Exp $
+ * @version $Id: Uploader.java,v 1.9 2007/11/02 21:46:52 x-mago Exp $
  */
 public class Uploader {
 
@@ -58,10 +71,11 @@ public class Uploader {
     }
 
     /**
-     * Upload a photo.
+     * Upload a photo from a byte-array.
      *
      * @param data The photo data as a byte array
      * @param metaData The meta data
+     * @return photoId or ticketId
      * @throws FlickrException
      * @throws IOException
      * @throws SAXException
@@ -97,6 +111,8 @@ public class Uploader {
             parameters.add(new Parameter("safety_level", metaData.getSafetyLevel()));
         }
 
+        parameters.add(new Parameter("async", metaData.isAsync() ? "1" : "0"));
+
         if (metaData.getContentType() != null) {
             parameters.add(new Parameter("content_type", metaData.getContentType()));
         }
@@ -105,9 +121,25 @@ public class Uploader {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        return response.getPhotoId();
+        String id = "";
+        if (metaData.isAsync()) {
+            id = response.getTicketId();
+        } else {
+            id = response.getPhotoId();
+        }
+        return id;
     }
 
+    /**
+     * Upload a photo from an InputStream.
+     *
+     * @param in
+     * @param metaData
+     * @return photoId or ticketId
+     * @throws IOException
+     * @throws FlickrException
+     * @throws SAXException
+     */
     public String upload(InputStream in, UploadMetaData metaData) throws IOException, FlickrException, SAXException {
         List parameters = new ArrayList();
 
@@ -122,12 +154,14 @@ public class Uploader {
             parameters.add(new Parameter("description", description));
 
         Collection tags = metaData.getTags();
-        if (tags != null)
+        if (tags != null) {
             parameters.add(new Parameter("tags", StringUtilities.join(tags, " ")));
+        }
 
         parameters.add(new Parameter("is_public", metaData.isPublicFlag() ? "1" : "0"));
         parameters.add(new Parameter("is_family", metaData.isFamilyFlag() ? "1" : "0"));
         parameters.add(new Parameter("is_friend", metaData.isFriendFlag() ? "1" : "0"));
+        parameters.add(new Parameter("async", metaData.isAsync() ? "1" : "0"));
 
         parameters.add(new Parameter("photo", in));
 
@@ -135,7 +169,13 @@ public class Uploader {
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-        return response.getPhotoId();
+        String id = "";
+        if (metaData.isAsync()) {
+            id = response.getTicketId();
+        } else {
+            id = response.getPhotoId();
+        }
+        return id;
     }
 
 }

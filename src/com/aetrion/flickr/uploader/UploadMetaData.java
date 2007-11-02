@@ -7,8 +7,10 @@ package com.aetrion.flickr.uploader;
 import java.util.Collection;
 
 /**
+ * Metadata that describe a photo.
+ *
  * @author Anthony Eden
- * @version $Id: UploadMetaData.java,v 1.6 2007/07/21 23:13:42 x-mago Exp $
+ * @version $Id: UploadMetaData.java,v 1.7 2007/11/02 21:46:52 x-mago Exp $
  */
 public class UploadMetaData {
 
@@ -18,6 +20,7 @@ public class UploadMetaData {
     private boolean publicFlag;
     private boolean friendFlag;
     private boolean familyFlag;
+    private boolean async = false;
     private Boolean hidden;
     private String safetyLevel;
     private String contentType;
@@ -124,6 +127,21 @@ public class UploadMetaData {
      */
     public void setSafetyLevel(String safetyLevel) {
         this.safetyLevel = safetyLevel;
+    }
+
+    public boolean isAsync() {
+        return async;
+    }
+
+    /**
+     * Switch the Uploader behaviour - sychronous or asyncrounous.<p>
+     *
+     * The default is sychronous.
+     *
+     * @param async boolean
+     */
+    public void setAsync(boolean async) {
+        this.async = async;
     }
 
 }
