@@ -95,3 +95,20 @@ Release 1.0b4 (July 23, 2007):
  - Two new methods in PhotosInterface setContentType() and setSafetyLevel()
  - Added PrefsInterface
  
+ Release 1.0b5 (November 04, 2007):
+ - PeopleInterface#getInfo now knows the iconFarm-attribute.
+ - User now has the convenience-method getBuddyIconUrl().
+ - The methods setViews() and setRotation() set the value -1, if not available
+ - Added BBox and safeSearch to SearchParameters
+ - Added missing URL-encoding at REST-Post request.
+ - com.aetrion.flickr.photos.Size got constants for the sizes.
+ - Fix of wrong tags-parsing in PhotoUtil for InterestingnessInterface#getList()
+ - Set extras-constants in InterestingnessInterface deprecated,
+   as they belong to photos.Extras
+ - The argument for extras changed from String-array to Set of Strings
+   in FavoritesInterface#getList() and FavoritesInterface#getPublicList()
+ - moved privacy-level constants to Flickr
+ - added PrefsInterface#getPrivacy()
+ - corrected flickr-method name setContentType in PhotosInterface
+ - completed asynchronous upload
+ 
