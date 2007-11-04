@@ -105,32 +105,28 @@ public class GroupsInterfaceTest extends TestCase {
         assertEquals("34427469792@N01", group.getId());
         assertEquals("FlickrCentral", group.getName());
         assertTrue(group.getMembers() > 0);
-        
-        System.out.println("group members: " + group.getMembers());
+
+        //System.out.println("group members: " + group.getMembers());
     }
 
     public void testSearch() throws FlickrException, IOException, SAXException {
         GroupsInterface iface = flickr.getGroupsInterface();
-        GroupList groups = (GroupList)iface.search("java", 0, 0);
-        System.out.println("Group count: " + groups.size());
+        GroupList groups = (GroupList) iface.search("java", 0, 0);
         assertTrue(groups.size() > 0);
         assertEquals(1, groups.getPage());
         assertTrue(groups.getPages() > 0);
         assertEquals(100, groups.getPerPage());
         assertTrue(groups.getTotal() > 0);
     }
-    
+
     public void testSearchPage() throws FlickrException, IOException, SAXException {
-    	GroupsInterface iface = flickr.getGroupsInterface();
-    	GroupList groups = (GroupList)iface.search("java", 10, 1);
-        System.out.println("Group count: " + groups.size());
+        GroupsInterface iface = flickr.getGroupsInterface();
+        GroupList groups = (GroupList) iface.search("java", 10, 1);
         assertTrue(groups.size() > 0);
         assertEquals(1, groups.getPage());
         assertTrue(groups.getPages() > 0);
         assertEquals(10, groups.getPerPage());
         assertTrue(groups.getTotal() > 0);
-
-        
     }
 
 }

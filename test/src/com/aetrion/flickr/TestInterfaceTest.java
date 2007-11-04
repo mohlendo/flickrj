@@ -21,6 +21,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
+ * @version $Id: TestInterfaceTest.java,v 1.5 2007/11/04 16:14:08 x-mago Exp $
  */
 public class TestInterfaceTest extends TestCase {
 
@@ -33,8 +34,6 @@ public class TestInterfaceTest extends TestCase {
             in = getClass().getResourceAsStream("/setup.properties");
             properties = new Properties();
             properties.load(in);
-
-            Flickr.debugStream = true;
 
             REST rest = new REST();
             rest.setHost(properties.getProperty("host"));
