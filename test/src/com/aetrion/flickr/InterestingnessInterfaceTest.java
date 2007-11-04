@@ -4,29 +4,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import junit.framework.TestCase;
+
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.Flickr;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.interestingness.InterestingnessInterface;
+import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.util.IOUtilities;
 
-import junit.framework.TestCase;
-
+/**
+ * 
+ * @version $Id: InterestingnessInterfaceTest.java,v 1.3 2007/11/04 15:59:29 x-mago Exp $
+ */
 public class InterestingnessInterfaceTest extends TestCase {
 
     Flickr flickr = null;
     Properties properties = null;
-    
-	public InterestingnessInterfaceTest(String arg0) {
-		super(arg0);
-	}
+
+    public InterestingnessInterfaceTest(String arg0) {
+        super(arg0);
+    }
 
 	protected void setUp() throws Exception {
         InputStream in = null;
@@ -49,7 +50,7 @@ public class InterestingnessInterfaceTest extends TestCase {
         } finally {
             IOUtilities.close(in);
         }
-	}
+    }
 
 	/*
 	 * Test method for 'com.aetrion.flickr.interestingness.InterestingnessInterface.getList(String, Set, int, int)'
@@ -75,14 +76,14 @@ public class InterestingnessInterfaceTest extends TestCase {
 		assertNotNull(list);
 		assertEquals(500, list.size());
 		
-		list = ii.getList((String)null, InterestingnessInterface.ALL_EXTRAS, 100, 1);
+		list = ii.getList((String)null, Extras.ALL_EXTRAS, 100, 1);
 		assertNotNull(list);
 		assertEquals(100, list.size());
 		photo = (Photo)list.get(0);
 		for (int i = list.size() - 1; i >= 0; --i) {
 			photo = (Photo)list.get(i);
 			if (photo.hasGeoData()) {
-				System.out.println(photo.getId() + " " + photo.getGeoData() + " " + photo.getUrl());
+				//System.out.println(photo.getId() + " " + photo.getGeoData() + " " + photo.getUrl());
 			}
 		}
 		
@@ -94,20 +95,20 @@ public class InterestingnessInterfaceTest extends TestCase {
 			// everything ok. we expect that
 		}
 
-	}
+    }
 
-	/*
-	 * Test method for 'com.aetrion.flickr.interestingness.InterestingnessInterface.getList(Date, Set, int, int)'
-	 */
-	public void testGetListDateSetIntInt() {
+    /*
+     * Test method for 'com.aetrion.flickr.interestingness.InterestingnessInterface.getList(Date, Set, int, int)'
+     */
+    public void testGetListDateSetIntInt() {
 
-	}
+    }
 
-	/*
-	 * Test method for 'com.aetrion.flickr.interestingness.InterestingnessInterface.getList()'
-	 */
-	public void testGetList() {
+    /*
+     * Test method for 'com.aetrion.flickr.interestingness.InterestingnessInterface.getList()'
+     */
+    public void testGetList() {
 
-	}
+    }
 
 }

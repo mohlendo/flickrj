@@ -23,7 +23,6 @@ public class BlogsInterfaceTest extends TestCase {
     Flickr flickr = null;
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
-        Flickr.debugRequest = true;
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
