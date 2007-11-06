@@ -21,7 +21,6 @@ public class RequestContext {
     private static RequestContextThreadLocal threadLocal =
             new RequestContextThreadLocal();
 
-    private Authentication authentication;
     private Auth auth;
     private String sharedSecret;
     private List extras;
@@ -33,26 +32,6 @@ public class RequestContext {
      */
     public static RequestContext getRequestContext() {
         return (RequestContext) threadLocal.get();
-    }
-
-    /**
-     * Get the authentication object.
-     *
-     * @return The Authentication object
-     * @deprecated Use new authentication API
-     */
-    public Authentication getAuthentication() {
-        return authentication;
-    }
-
-    /**
-     * Set the authentication object.
-     *
-     * @param authentication The Authentication object
-     * @deprecated Use new authentication API
-     */
-    public void setAuthentication(Authentication authentication) {
-        this.authentication = authentication;
     }
 
     public Auth getAuth() {
