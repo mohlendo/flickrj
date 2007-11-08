@@ -21,13 +21,11 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr Groups.
  *
  * @author Anthony Eden
+ * @version $Id: GroupsInterface.java,v 1.14 2007/11/08 21:23:50 x-mago Exp $
  */
 public class GroupsInterface {
 
     public static final String METHOD_BROWSE = "flickr.groups.browse";
-    /**
-     * @deprecated
-     */
     public static final String METHOD_GET_ACTIVE_LIST = "flickr.groups.getActiveList";
     public static final String METHOD_GET_INFO = "flickr.groups.getInfo";
     public static final String METHOD_SEARCH = "flickr.groups.search";
@@ -105,43 +103,6 @@ public class GroupsInterface {
     }
 
     /**
-     * Get the current active groups collection.
-     *
-     * @return A Collection of Group objects
-     * @throws IOException
-     * @throws SAXException
-     * @throws FlickrException
-     * @deprecated To be removed from the Flickr API
-     */
-    public Collection getActiveList() throws IOException, SAXException, FlickrException {
-        List groups = new ArrayList();
-
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_ACTIVE_LIST));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-        Element activeGroupsElement = response.getPayload();
-        NodeList groupNodes = activeGroupsElement.getElementsByTagName("group");
-        for (int i = 0; i < groupNodes.getLength(); i++) {
-            Element groupElement = (Element) groupNodes.item(i);
-            Group group = new Group();
-            group.setId(groupElement.getAttribute("nsid"));
-            group.setName(groupElement.getAttribute("name"));
-            group.setMembers(groupElement.getAttribute("members"));
-            group.setOnline(groupElement.getAttribute("online"));
-            group.setChatId(groupElement.getAttribute("chatnsid"));
-            group.setInChat(groupElement.getAttribute("inchat"));
-
-            groups.add(group);
-        }
-        return groups;
-    }
-
-    /**
      * Get the info for a specified group.
      *
      * @param groupId The group id
@@ -166,24 +127,24 @@ public class GroupsInterface {
         group.setDescription(XMLUtilities.getChildValue(groupElement, "description"));
         group.setMembers(XMLUtilities.getChildValue(groupElement, "members"));
         group.setPrivacy(XMLUtilities.getChildValue(groupElement, "privacy"));
-        
+
         NodeList throttleNodes = groupElement.getElementsByTagName("throttle");
         int n = throttleNodes.getLength();
         if (n == 1) {
-        	Element throttleElement = (Element) throttleNodes.item(0);
-        	Throttle throttle = new Throttle();
-        	group.setThrottle(throttle);
-        	throttle.setMode(throttleElement.getAttribute("mode"));
-        	String countStr = throttleElement.getAttribute("count");
-        	String remainingStr = throttleElement.getAttribute("remaining");
-        	if (countStr != null && countStr.length() > 0) {
-        		throttle.setCount(Integer.parseInt(countStr));
-        	}
-        	if (remainingStr != null && remainingStr.length() > 0) {
-        		throttle.setRemaining(Integer.parseInt(remainingStr));
-        	}
+            Element throttleElement = (Element) throttleNodes.item(0);
+            Throttle throttle = new Throttle();
+            group.setThrottle(throttle);
+            throttle.setMode(throttleElement.getAttribute("mode"));
+            String countStr = throttleElement.getAttribute("count");
+            String remainingStr = throttleElement.getAttribute("remaining");
+            if (countStr != null && countStr.length() > 0) {
+                throttle.setCount(Integer.parseInt(countStr));
+            }
+            if (remainingStr != null && remainingStr.length() > 0) {
+                throttle.setRemaining(Integer.parseInt(remainingStr));
+            }
         } else if (n > 1) {
-        	System.err.println("WARNING: more than one throttle element in group");
+            System.err.println("WARNING: more than one throttle element in group");
         }
         // the following are not delivered anymore (?) but stay here in case ....
         group.setOnline(XMLUtilities.getChildValue(groupElement, "online"));
@@ -192,10 +153,10 @@ public class GroupsInterface {
 
         return group;
     }
-    
+
     /**
      * Search for groups. 18+ groups will only be returned for authenticated calls where the authenticated user is over 18.
-     * This method does not require authentication. 
+     * This method does not require authentication.
      * @param text The text to search for.
      * @param perPage Number of groups to return per page. If this argument is 0, it defaults to 100. The maximum allowed value is 500.
      * @param page The page of results to return. If this argument is 0, it defaults to 1.
@@ -205,7 +166,7 @@ public class GroupsInterface {
      * @throws FlickrException
      */
     public Collection search(String text, int perPage, int page) throws FlickrException, IOException, SAXException {
-    	GroupList groupList = new GroupList();
+        GroupList groupList = new GroupList();
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SEARCH));
         parameters.add(new Parameter("api_key", apiKey));
@@ -236,7 +197,7 @@ public class GroupsInterface {
             group.setName(groupElement.getAttribute("name"));
             group.setEighteenPlus(XMLUtilities.getBooleanAttribute(groupElement, "eighteenplus"));
             groupList.add(group);
-        }    	
-		return groupList;
+        }
+        return groupList;
     }
 }

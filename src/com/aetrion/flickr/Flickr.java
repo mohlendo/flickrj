@@ -33,7 +33,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * This class is used to acquire Interface classes which wrap the Flickr API.
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.34 2007/09/30 20:40:17 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.35 2007/11/08 21:23:49 x-mago Exp $
  */
 public class Flickr {
 
@@ -180,103 +180,6 @@ public class Flickr {
      */
     public static final int PRIVACY_LEVEL_PRIVATE = 5;
 
-
-    /**
-     * All the extras-constants are here by mistake.
-     * The intended location is com.aetrion.flickr.photos.Extras
-     * 
-     * @deprecated
-     */
-    public static final String KEY_EXTRAS = "extras";
-
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * 
-     * @deprecated
-     */
-    public static final String EXTRAS_LICENSE = "license";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_DATE_UPLOAD = "date_upload";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_DATE_TAKEN = "date_taken";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_OWNER_NAME = "owner_name";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_ICON_SERVER = "icon_server";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_ORIGINAL_FORMAT = "original_format";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_LAST_UPDATE = "last_update";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_GEO = "geo";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_TAGS = "tags";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_MACHINE_TAGS = "machine_tags";
-
-    /**
-     * Set of extra-arguments. Used for requesting lists of photos in the
-     * following methods:<p>
-     * PeopleInterface.getPublicPhotos()<br>
-     * PoolsInterface.getPhotos()<br>
-     * PhotosetsInterface.getPhotos()<p>
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * 
-     * @deprecated
-     */
-    public static final Set ALL_EXTRAS = new HashSet();
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     *
-     * @deprecated
-     */
-    public static final Set MIN_EXTRAS = new HashSet();
-
-    static {
-        ALL_EXTRAS.add(EXTRAS_DATE_TAKEN);
-        ALL_EXTRAS.add(EXTRAS_DATE_UPLOAD);
-        ALL_EXTRAS.add(EXTRAS_ICON_SERVER);
-        ALL_EXTRAS.add(EXTRAS_LAST_UPDATE);
-        ALL_EXTRAS.add(EXTRAS_LICENSE);
-        ALL_EXTRAS.add(EXTRAS_ORIGINAL_FORMAT);
-        ALL_EXTRAS.add(EXTRAS_OWNER_NAME);
-        ALL_EXTRAS.add(EXTRAS_GEO);
-        ALL_EXTRAS.add(EXTRAS_TAGS);
-        ALL_EXTRAS.add(EXTRAS_MACHINE_TAGS);
-    }
-
-    static {
-        MIN_EXTRAS.add(EXTRAS_ORIGINAL_FORMAT);
-        MIN_EXTRAS.add(EXTRAS_OWNER_NAME);
-    }
-    
     /**
      * Construct a new Flickr gateway instance.  Defaults to a REST transport.
      *

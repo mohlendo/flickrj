@@ -10,8 +10,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -27,56 +25,16 @@ import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotoUtils;
+import com.aetrion.flickr.util.StringUtilities;
 
 /**
  *
  * @author till
- * @version $Id: InterestingnessInterface.java,v 1.5 2007/09/27 19:24:29 x-mago Exp $
+ * @version $Id: InterestingnessInterface.java,v 1.6 2007/11/08 21:23:49 x-mago Exp $
  */
 public class InterestingnessInterface {
 
     public static final String METHOD_GET_LIST = "flickr.interestingness.getList";
-
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_LICENSE = "license";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_DATE_UPLOAD = "date_upload";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_DATE_TAKEN = "date_taken";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_OWNER_NAME = "owner_name";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_ICON_SERVER = "icon_server";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_ORIGINAL_FORMAT = "original_format";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_LAST_UPDATE = "last_update";
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final String EXTRAS_GEO = "geo";
 
     private static final String KEY_METHOD = "method";
     private static final String KEY_API_KEY = "api_key";
@@ -84,23 +42,6 @@ public class InterestingnessInterface {
     private static final String KEY_EXTRAS = "extras";
     private static final String KEY_PER_PAGE = "per_page";
     private static final String KEY_PAGE = "page";
-
-    /**
-     * Moved to {@link com.aetrion.flickr.photos.Extras}
-     * @deprecated
-     */
-    public static final Set ALL_EXTRAS = new HashSet();
-
-    static {
-        ALL_EXTRAS.add(EXTRAS_DATE_TAKEN);
-        ALL_EXTRAS.add(EXTRAS_DATE_UPLOAD);
-        ALL_EXTRAS.add(EXTRAS_ICON_SERVER);
-        ALL_EXTRAS.add(EXTRAS_LAST_UPDATE);
-        ALL_EXTRAS.add(EXTRAS_LICENSE);
-        ALL_EXTRAS.add(EXTRAS_ORIGINAL_FORMAT);
-        ALL_EXTRAS.add(EXTRAS_OWNER_NAME);
-        ALL_EXTRAS.add(EXTRAS_GEO);
-    }
 
     private String apiKey;
     private Transport transportAPI;
@@ -134,15 +75,7 @@ public class InterestingnessInterface {
         }
 
         if (extras != null) {
-            StringBuffer sb = new StringBuffer();
-            Iterator it = extras.iterator();
-            for (int i = 0; it.hasNext(); i++) {
-                if (i > 0) {
-                    sb.append(",");
-                }
-                sb.append(it.next());
-            }
-            parameters.add(new Parameter(KEY_EXTRAS, sb.toString()));
+            parameters.add(new Parameter(KEY_EXTRAS, StringUtilities.join(extras, ",")));
         }
 
         if (perPage > 0) {

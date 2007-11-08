@@ -25,13 +25,14 @@ import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotoUtils;
+import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * Interface for finding Flickr users.
  *
  * @author Anthony Eden
- * @version $Id: PeopleInterface.java,v 1.22 2007/09/12 22:39:27 x-mago Exp $
+ * @version $Id: PeopleInterface.java,v 1.23 2007/11/08 21:23:49 x-mago Exp $
  */
 public class PeopleInterface {
 
@@ -136,51 +137,13 @@ public class PeopleInterface {
         user.setRealName(XMLUtilities.getChildValue(userElement, "realname"));
         user.setLocation(XMLUtilities.getChildValue(userElement, "location"));
         user.setMbox_sha1sum(XMLUtilities.getChildValue(userElement, "mbox_sha1sum"));
-        
+
         Element photosElement = XMLUtilities.getChild(userElement, "photos");
         user.setPhotosFirstDate(XMLUtilities.getChildValue(photosElement, "firstdate"));
         user.setPhotosFirstDateTaken(XMLUtilities.getChildValue(photosElement, "firstdatetaken"));
         user.setPhotosCount(XMLUtilities.getChildValue(photosElement, "count"));
 
         return user;
-    }
-
-    /**
-     * Get the list of current online users.
-     *
-     * @return The list of online users
-     * @throws IOException
-     * @throws SAXException
-     * @throws FlickrException
-     * @deprecated To be removed from the Flickr API
-     */
-    public Collection getOnlineList() throws IOException, SAXException, FlickrException {
-        List online = new ArrayList();
-
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_ONLINE_LIST));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-        Element onlineElement = response.getPayload();
-        NodeList userNodes = onlineElement.getElementsByTagName("user");
-        for (int i = 0; i < userNodes.getLength(); i++) {
-            Element userElement = (Element) userNodes.item(i);
-            User user = new User();
-            user.setId(userElement.getAttribute("nsid"));
-            user.setUsername(userElement.getAttribute("username"));
-            user.setOnline(OnlineStatus.fromType(userElement.getAttribute("online")));
-            if (user.getOnline() == OnlineStatus.AWAY) {
-                Text awayMessageElement = (Text) userElement.getFirstChild();
-                if (awayMessageElement != null)
-                    user.setAwayMessage(awayMessageElement.getData());
-            }
-            online.add(user);
-        }
-        return online;
     }
 
     /**
@@ -256,15 +219,7 @@ public class PeopleInterface {
         }
 
         if (extras != null) {
-            StringBuffer sb = new StringBuffer();
-            Iterator it = extras.iterator();
-            for (int i = 0; it.hasNext(); i++) {
-                if (i > 0) {
-                    sb.append(",");
-                }
-                sb.append(it.next());
-            }
-            parameters.add(new Parameter(Extras.KEY_EXTRAS, sb.toString()));
+            parameters.add(new Parameter(Extras.KEY_EXTRAS, StringUtilities.join(extras, ",")));
         }
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
