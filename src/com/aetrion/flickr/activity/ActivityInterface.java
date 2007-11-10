@@ -19,7 +19,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Gather activity information belonging to the calling user.
  *
  * @author Martin Goebel
- * @version $Id: ActivityInterface.java,v 1.2 2007/07/22 16:18:20 x-mago Exp $
+ * @version $Id: ActivityInterface.java,v 1.3 2007/11/10 00:38:14 x-mago Exp $
  */
 public class ActivityInterface {
 
@@ -188,8 +188,8 @@ public class ActivityInterface {
     }
 
     /**
-     * Checks the timeframe-argument.<br>
-     * Either days, or hours. Like: 2d or 4h.
+     * Checks for a valid timeframe-argument.<br>
+     * Expects either days, or hours. Like: 2d or 4h.
      *
      * @param timeframe
      * @return boolean
