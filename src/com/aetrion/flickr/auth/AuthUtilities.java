@@ -4,11 +4,7 @@
 
 package com.aetrion.flickr.auth;
 
-import com.aetrion.flickr.Parameter;
-import com.aetrion.flickr.ParameterAlphaComparator;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.util.ByteUtilities;
-
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -16,10 +12,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.ParameterAlphaComparator;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.util.ByteUtilities;
+
 /**
  * Utilities used by the authentication API.
  *
  * @author Anthony Eden
+ * @version $Id: AuthUtilities.java,v 1.6 2007/11/17 23:35:00 x-mago Exp $
  */
 public class AuthUtilities {
 
@@ -61,9 +63,11 @@ public class AuthUtilities {
 
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            return ByteUtilities.toHexString(md.digest(buffer.toString().getBytes()));
+            return ByteUtilities.toHexString(md.digest(buffer.toString().getBytes("UTF-8")));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException u) {
+            throw new RuntimeException(u);
         }
     }
 
@@ -87,9 +91,11 @@ public class AuthUtilities {
 
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            return ByteUtilities.toHexString(md.digest(buffer.toString().getBytes()));
+            return ByteUtilities.toHexString(md.digest(buffer.toString().getBytes("UTF-8")));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException u) {
+            throw new RuntimeException(u);
         }
     }
 
