@@ -5,7 +5,12 @@
 package com.aetrion.flickr.reflection;
 
 /**
+ * Describes an argument of a Flickr-method.
+ *
  * @author Anthony Eden
+ * @see Method#getArguments()
+ * @see Method#setArguments(java.util.Collection)
+ * @version $Id: Argument.java,v 1.3 2007/11/18 22:48:09 x-mago Exp $
  */
 public class Argument {
 

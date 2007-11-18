@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
+ * Describes a method requested with {@link ReflectionInterface#getMethodInfo(String)}.
+ *
  * @author Anthony Eden
- * @version $Id: Method.java,v 1.5 2007/11/08 21:23:50 x-mago Exp $
+ * @version $Id: Method.java,v 1.6 2007/11/18 22:48:09 x-mago Exp $
  */
 public class Method {
 

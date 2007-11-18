@@ -5,7 +5,12 @@
 package com.aetrion.flickr.reflection;
 
 /**
+ * Describes one possible error-code of a Flickr-method.
+ *
  * @author Anthony Eden
+ * @see Method#getErrors()
+ * @see Method#setErrors(java.util.Collection)
+ * @version $Id: Error.java,v 1.3 2007/11/18 22:48:09 x-mago Exp $
  */
 public class Error {
 

@@ -18,9 +18,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Interface for working with Flickr tags.
+ * Interface for testing the complete implementation of all Flickr-methods.<p>
  *
  * @author Anthony Eden
+ * @version $Id: ReflectionInterface.java,v 1.8 2007/11/18 22:48:09 x-mago Exp $
  */
 public class ReflectionInterface {
 
