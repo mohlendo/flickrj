@@ -3,33 +3,36 @@
  */
 package com.aetrion.flickr;
 
-import com.aetrion.flickr.auth.Auth;
-import com.aetrion.flickr.auth.AuthUtilities;
-import com.aetrion.flickr.util.DebugInputStream;
-import com.aetrion.flickr.util.DebugOutputStream;
-import com.aetrion.flickr.util.IOUtilities;
-import com.aetrion.flickr.util.UrlUtilities;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.auth.AuthUtilities;
+import com.aetrion.flickr.util.DebugInputStream;
+import com.aetrion.flickr.util.DebugOutputStream;
+import com.aetrion.flickr.util.IOUtilities;
+import com.aetrion.flickr.util.UrlUtilities;
+
 /**
  * Transport implementation using the REST interface.
  *
  * @author Anthony Eden
- * @version $Id: REST.java,v 1.19 2007/10/27 22:54:33 x-mago Exp $
+ * @version $Id: REST.java,v 1.20 2007/11/25 00:26:51 x-mago Exp $
  */
 public class REST extends Transport {
 
@@ -73,6 +76,36 @@ public class REST extends Transport {
         this();
         setHost(host);
         setPort(port);
+    }
+
+    /**
+     * Set a proxy for REST-requests.
+     *
+     * @param proxyHost
+     * @param proxyPort
+     */
+    public void setProxy(String proxyHost, int proxyPort) {
+        System.setProperty("http.proxySet", "true");
+        System.setProperty("http.proxyHost", proxyHost);
+        System.setProperty("http.proxyPort", "" + proxyPort);
+    }
+
+    /**
+     * Set a proxy with authentication for REST-requests.
+     *
+     * @param proxyHost
+     * @param proxyPort
+     * @param username
+     * @param password
+     */
+    public void setProxy(
+        String proxyHost, int proxyPort,
+        String username, String password
+    ) {
+    	setProxy (proxyHost, proxyPort);
+    	Authenticator.setDefault(
+            new ProxyAuthenticator (username, password)
+        );
     }
 
     /**
