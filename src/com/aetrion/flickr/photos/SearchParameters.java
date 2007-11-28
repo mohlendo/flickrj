@@ -16,7 +16,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.11 2007/09/12 22:20:49 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.12 2007/11/28 20:37:03 x-mago Exp $
  */
 public class SearchParameters {
 
@@ -47,6 +47,8 @@ public class SearchParameters {
     private String[] bbox;
     private int accuracy = 0;
     private String safeSearch;
+    private String[] machineTags;
+    private String machineTagMode;
 
 	/** order argument */
 	public static int DATE_POSTED_DESC = 0;
@@ -166,7 +168,32 @@ public class SearchParameters {
     public void setInterestingnessDate(Date intrestingnessDate) {
         this.interestingnessDate = intrestingnessDate;
     }
+    
+    /**
+     * Set the machine tags, for which Photos to request.
+     * 
+     * @param tags
+     */
+    public void setMachineTags(String[] tags) {
+    	this.machineTags = tags;
+    }
 
+    public String[] getMachineTags() {
+    	return machineTags;
+    }
+    /**
+     * Set the machine tags search mode to use when requesting photos
+     * 
+     * @param tagMode
+     */
+    public void setMachineTagMode(String tagMode) {
+    	this.machineTagMode = tagMode;
+    }
+
+    public String getMachineTagMode() {
+    	return machineTagMode;
+    }
+    
     /**
      * Setting all toogles to get extra-fields in Photos-search.<br>
      * The default is false.
@@ -345,6 +372,16 @@ public class SearchParameters {
             parameters.add(new Parameter("tag_mode", tagMode));
         }
 
+        String[] mtags = getMachineTags();
+        if (mtags != null) {
+        	parameters.add(new Parameter("machine_tags", StringUtilities.join(mtags, ",")));
+        }
+        
+        String mtagMode = getMachineTagMode();
+        if (mtagMode != null) {
+        	parameters.add(new Parameter("machine_tag_mode", mtagMode));
+        }
+        
         String text = getText();
         if (text != null) {
             parameters.add(new Parameter("text", text));
