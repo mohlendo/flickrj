@@ -13,7 +13,7 @@ import com.aetrion.flickr.contacts.OnlineStatus;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.12 2007/09/14 19:16:20 x-mago Exp $
+ * @version $Id: User.java,v 1.13 2007/11/28 20:29:42 x-mago Exp $
  */
 public class User implements Serializable {
 
@@ -33,9 +33,9 @@ public class User implements Serializable {
     private int photosCount;
     private OnlineStatus online;
     private String awayMessage;
-    private int bandwidthMax;
-    private int bandwidthUsed;
-    private int filesizeMax;
+    private long bandwidthMax;
+    private long bandwidthUsed;
+    private long filesizeMax;
     private String mbox_sha1sum;
 
     public User() {
@@ -226,11 +226,11 @@ public class User implements Serializable {
         this.awayMessage = awayMessage;
     }
 
-    public int getBandwidthMax() {
+    public long getBandwidthMax() {
         return bandwidthMax;
     }
 
-    public void setBandwidthMax(int bandwidthMax) {
+    public void setBandwidthMax(long bandwidthMax) {
         this.bandwidthMax = bandwidthMax;
     }
 
@@ -240,11 +240,11 @@ public class User implements Serializable {
         }
     }
 
-    public int getBandwidthUsed() {
+    public long getBandwidthUsed() {
         return bandwidthUsed;
     }
 
-    public void setBandwidthUsed(int bandwidthUsed) {
+    public void setBandwidthUsed(long bandwidthUsed) {
         this.bandwidthUsed = bandwidthUsed;
     }
 
@@ -254,11 +254,11 @@ public class User implements Serializable {
         }
     }
 
-    public int getFilesizeMax() {
+    public long getFilesizeMax() {
         return filesizeMax;
     }
 
-    public void setFilesizeMax(int filesizeMax) {
+    public void setFilesizeMax(long filesizeMax) {
         this.filesizeMax = filesizeMax;
     }
 
