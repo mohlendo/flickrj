@@ -7,7 +7,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -23,6 +22,7 @@ import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthUtilities;
+import com.aetrion.flickr.util.Base64;
 import com.aetrion.flickr.util.DebugInputStream;
 import com.aetrion.flickr.util.DebugOutputStream;
 import com.aetrion.flickr.util.IOUtilities;
@@ -32,13 +32,15 @@ import com.aetrion.flickr.util.UrlUtilities;
  * Transport implementation using the REST interface.
  *
  * @author Anthony Eden
- * @version $Id: REST.java,v 1.20 2007/11/25 00:26:51 x-mago Exp $
+ * @version $Id: REST.java,v 1.21 2007/12/01 00:12:52 x-mago Exp $
  */
 public class REST extends Transport {
 
     private static final String UTF8 = "UTF-8";
     public static final String PATH = "/services/rest/";
-
+    private boolean proxyAuth = false;
+    private String proxyUser = "";
+    private String proxyPassword = "";
     private DocumentBuilder builder;
 
     /**
@@ -48,6 +50,7 @@ public class REST extends Transport {
      */
     public REST() throws ParserConfigurationException {
         setTransportType(REST);
+        setHost(Flickr.DEFAULT_HOST);
         setPath(PATH);
         setResponseClass(RESTResponse.class);
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -103,9 +106,9 @@ public class REST extends Transport {
         String username, String password
     ) {
     	setProxy (proxyHost, proxyPort);
-    	Authenticator.setDefault(
-            new ProxyAuthenticator (username, password)
-        );
+    	proxyAuth = true;
+    	proxyUser = username;
+    	proxyPassword = password;
     }
 
     /**
@@ -122,6 +125,12 @@ public class REST extends Transport {
         if (Flickr.debugRequest) System.out.println("GET: " + url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
+        if (proxyAuth) {
+            conn.setRequestProperty(
+                "Proxy-Authorization",
+                "Basic " + getProxyCredentials()
+            );
+        }
         conn.connect();
 
         InputStream in = null;
@@ -167,6 +176,12 @@ public class REST extends Transport {
 
             conn = (HttpURLConnection) url.openConnection();
 
+            if (proxyAuth) {
+                conn.setRequestProperty(
+                    "Proxy-Authorization",
+                    "Basic " + getProxyCredentials()
+                );
+            }
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             if (multipart) {
@@ -280,4 +295,19 @@ public class REST extends Transport {
         }
     }
 
+	public boolean isProxyAuth() {
+		return proxyAuth;
+	}
+
+	/**
+	 * Generates Base64-encoded credentials from locally stored 
+	 * username and password.
+	 *
+	 * @return credentials
+	 */
+	public String getProxyCredentials() {
+		return new String(
+            Base64.encode((proxyUser + ":" + proxyPassword).getBytes())
+        );
+	}
 }
