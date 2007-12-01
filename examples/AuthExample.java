@@ -18,7 +18,6 @@ import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.auth.Permission;
 import com.aetrion.flickr.util.IOUtilities;
 
-
 /**
  * Demonstrates the authentication-process.<p>
  * 
@@ -26,66 +25,63 @@ import com.aetrion.flickr.util.IOUtilities;
  * <a href="http://www.flickr.com/services/api/registered_keys.gne">list of API keys</a>
  * 
  * @author mago
- * @version $Id: AuthExample.java,v 1.3 2005/12/19 23:03:04 x-mago Exp $
+ * @version $Id: AuthExample.java,v 1.4 2007/12/01 00:05:34 x-mago Exp $
  */
 public class AuthExample {
-	static String restHost = "www.flickr.com";
-	Flickr f;
-	REST rest;
-	RequestContext requestContext;
-	String frob = "";
-	String token = "";
-	Properties properties = null;
+    Flickr f;
+    RequestContext requestContext;
+    String frob = "";
+    String token = "";
+    Properties properties = null;
 
-	public AuthExample() throws ParserConfigurationException, IOException, SAXException {
-		InputStream in = null;
-		try {
-			in = getClass().getResourceAsStream("/setup.properties");
-			properties = new Properties();
-			properties.load(in);
-		} finally {
-			IOUtilities.close(in);
-		}
-		rest = new REST();
-		rest.setHost(restHost);
-		f = new Flickr(properties.getProperty("apiKey"),rest);
-		Flickr.debugStream = false;
-		// Set the shared secret which is used for any calls which require signing.
-		requestContext = RequestContext.getRequestContext();
-		requestContext.setSharedSecret(properties.getProperty("secret"));
-		AuthInterface authInterface = f.getAuthInterface();
-		try {
-			frob = authInterface.getFrob();
-		} catch(FlickrException e) {
-			e.printStackTrace();
-		}
-		System.out.println("frob: "+frob);
-		URL url = authInterface.buildAuthenticationUrl(Permission.WRITE, frob);
-		System.out.println("Press return after you granted access at this URL:");
-		System.out.println(url.toExternalForm());
-		BufferedReader infile =
-		new BufferedReader ( new InputStreamReader (System.in) );
-		String line = infile.readLine();
-		try {
-			Auth auth = authInterface.getToken(frob);
-			System.out.println("Authentication success");
-			System.out.println("Token: "+auth.getToken());
-			System.out.println("nsid: "+auth.getUser().getId());
-			System.out.println("Realname: "+auth.getUser().getRealName());
-			System.out.println("Username: "+auth.getUser().getUsername());
-			System.out.println("Permission: "+auth.getPermission().getType());
-		} catch(FlickrException e) {
-			System.out.println("Authentication failed");
-			e.printStackTrace();
-		}
-	}
+    public AuthExample() throws ParserConfigurationException, IOException, SAXException {
+        InputStream in = null;
+        try {
+            in = getClass().getResourceAsStream("/setup.properties");
+            properties = new Properties();
+            properties.load(in);
+        } finally {
+            IOUtilities.close(in);
+        }
+        f = new Flickr(properties.getProperty("apiKey"), new REST());
+        Flickr.debugStream = false;
+        // Set the shared secret which is used for any calls which require signing.
+        requestContext = RequestContext.getRequestContext();
+        requestContext.setSharedSecret(properties.getProperty("secret"));
+        AuthInterface authInterface = f.getAuthInterface();
+        try {
+            frob = authInterface.getFrob();
+        } catch (FlickrException e) {
+            e.printStackTrace();
+        }
+        System.out.println("frob: " + frob);
+        URL url = authInterface.buildAuthenticationUrl(Permission.WRITE, frob);
+        System.out.println("Press return after you granted access at this URL:");
+        System.out.println(url.toExternalForm());
+        BufferedReader infile =
+          new BufferedReader ( new InputStreamReader (System.in) );
+        String line = infile.readLine();
+        try {
+            Auth auth = authInterface.getToken(frob);
+            System.out.println("Authentication success");
+            // This token can be used until the user revokes it.
+            System.out.println("Token: " + auth.getToken());
+            System.out.println("nsid: " + auth.getUser().getId());
+            System.out.println("Realname: " + auth.getUser().getRealName());
+            System.out.println("Username: " + auth.getUser().getUsername());
+            System.out.println("Permission: " + auth.getPermission().getType());
+        } catch (FlickrException e) {
+            System.out.println("Authentication failed");
+            e.printStackTrace();
+        }
+    }
 
-	public static void main(String[] args) {
-		try {
-			AuthExample t = new AuthExample();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		System.exit(0);
-	}
+    public static void main(String[] args) {
+        try {
+            AuthExample t = new AuthExample();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
+    }
 }
