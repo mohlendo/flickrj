@@ -3,7 +3,6 @@
  */
 package com.aetrion.flickr;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,10 +29,13 @@ import com.aetrion.flickr.urls.UrlsInterface;
 
 /**
  * Main entry point for the Flickrj API.
- * This class is used to acquire Interface classes which wrap the Flickr API.
+ * This class is used to acquire Interface classes which wrap the Flickr API.<p>
+ *
+ * If you registered API keys, you find them with the shared secret at your
+ * <a href="http://www.flickr.com/services/api/registered_keys.gne">list of API keys</a>.
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.35 2007/11/08 21:23:49 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.36 2007/12/01 00:17:53 x-mago Exp $
  */
 public class Flickr {
 
