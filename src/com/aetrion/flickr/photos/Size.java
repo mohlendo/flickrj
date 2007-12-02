@@ -4,41 +4,73 @@
 package com.aetrion.flickr.photos;
 
 /**
+ * This class descibes a Size of a Photo.<p>
+ *
  * @author Anthony Eden
- * @version $Id: Size.java,v 1.4 2007/09/15 23:00:28 x-mago Exp $
+ * @version $Id: Size.java,v 1.5 2007/12/02 22:52:47 x-mago Exp $
  */
 public class Size {
-	/**
+    /**
+     * Thumbnail, 100 on longest side.
+     *
      * @see com.aetrion.flickr.photos.Size#getLabel()
      * @see com.aetrion.flickr.photos.Size#setLabel(int)
-	 */
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImage(Photo, int)
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImageAsStream(Photo, int)
+     */
     public static final int THUMB = 0;
-	/**
+
+    /**
+     * Small square 75x75.
+     *
      * @see com.aetrion.flickr.photos.Size#getLabel()
      * @see com.aetrion.flickr.photos.Size#setLabel(int)
-	 */
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImage(Photo, int)
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImageAsStream(Photo, int)
+     */
     public static final int SQUARE = 1;
-	/**
+
+    /**
+     * Small, 240 on longest side.
+     *
      * @see com.aetrion.flickr.photos.Size#getLabel()
      * @see com.aetrion.flickr.photos.Size#setLabel(int)
-	 */
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImage(Photo, int)
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImageAsStream(Photo, int)
+     */
     public static final int SMALL = 2;
-	/**
+
+    /**
+     * Medium, 500 on longest side.
+     *
      * @see com.aetrion.flickr.photos.Size#getLabel()
      * @see com.aetrion.flickr.photos.Size#setLabel(int)
-	 */
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImage(Photo, int)
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImageAsStream(Photo, int)
+     */
     public static final int MEDIUM = 3;
-	/**
+
+    /**
+     * Large, 1024 on longest side (only exists for very large original images).
+     *
      * @see com.aetrion.flickr.photos.Size#getLabel()
      * @see com.aetrion.flickr.photos.Size#setLabel(int)
-	 */
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImage(Photo, int)
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImageAsStream(Photo, int)
+     */
     public static final int LARGE = 4;
-	/**
+
+    /**
+     * Original image, either a jpg, gif or png, depending on source format.<br>
+     * Only from pro-users original images are available!
+     *
      * @see com.aetrion.flickr.photos.Size#getLabel()
      * @see com.aetrion.flickr.photos.Size#setLabel(int)
-	 */
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImage(Photo, int)
+     * @see com.aetrion.flickr.photos.PhotosInterface#getImageAsStream(Photo, int)
+     */
     public static final int ORIGINAL = 5;
-    
+
     private int label;
     private int width;
     private int height;
@@ -52,7 +84,6 @@ public class Size {
     /**
      * Size of the Photo.
      *
-     * 
      * @return label
      * @see com.aetrion.flickr.photos.Size#THUMB
      * @see com.aetrion.flickr.photos.Size#SQUARE
@@ -66,25 +97,25 @@ public class Size {
     }
 
     public void setLabel(String label) {
-    	if (label.equals("Square")) {
-    		setLabel(SQUARE);
-    	} else if (label.equals("Thumbnail")) {
-    		setLabel(THUMB);
-    	} else if (label.equals("Small")) {
-    		setLabel(SMALL);
-    	} else if (label.equals("Medium")) {
-    		setLabel(MEDIUM);
-    	} else if (label.equals("Large")) {
-    		setLabel(LARGE);
-    	} else if (label.equals("Original")) {
-    		setLabel(ORIGINAL);
-    	}
+        if (label.equals("Square")) {
+            setLabel(SQUARE);
+        } else if (label.equals("Thumbnail")) {
+            setLabel(THUMB);
+        } else if (label.equals("Small")) {
+            setLabel(SMALL);
+        } else if (label.equals("Medium")) {
+            setLabel(MEDIUM);
+        } else if (label.equals("Large")) {
+            setLabel(LARGE);
+        } else if (label.equals("Original")) {
+            setLabel(ORIGINAL);
+        }
     }
-    
+
     /**
      * Size of the Photo.
      *
-     * @param label
+     * @param label The integer-representation of a size
      * @see com.aetrion.flickr.photos.Size#THUMB
      * @see com.aetrion.flickr.photos.Size#SQUARE
      * @see com.aetrion.flickr.photos.Size#SMALL
@@ -105,7 +136,9 @@ public class Size {
     }
 
     public void setWidth(String width) {
-        if (width != null) setWidth(Integer.parseInt(width));
+        if (width != null) {
+            setWidth(Integer.parseInt(width));
+        }
     }
 
     public int getHeight() {
@@ -117,7 +150,9 @@ public class Size {
     }
 
     public void setHeight(String height) {
-        if (height != null) setHeight(Integer.parseInt(height));
+        if (height != null) {
+            setHeight(Integer.parseInt(height));
+        }
     }
 
     /**
