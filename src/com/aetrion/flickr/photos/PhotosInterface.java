@@ -3,7 +3,11 @@
  */
 package com.aetrion.flickr.photos;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,23 +17,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.geo.GeoInterface;
+import com.aetrion.flickr.util.IOUtilities;
 import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
+ * Interface for working with Flickr Photos.
+ *
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.40 2007/10/29 20:11:15 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.41 2007/12/02 20:07:24 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -296,7 +306,8 @@ public class PhotosInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public PhotoContext getContext(String photoId) throws IOException, SAXException, FlickrException {
+    public PhotoContext getContext(String photoId)
+      throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_CONTEXT));
         parameters.add(new Parameter("api_key", apiKey));
@@ -337,13 +348,12 @@ public class PhotosInterface {
     /**
      * Gets a collection of photo counts for the given date ranges for the calling user.
      *
-     * @param dates An array of dates, denoting the periods to return counts for. They should be specified smallest
-     * first.
-     * @param takenDates An array of dates, denoting the periods to return counts for. They should be specified smallest
-     * first.
+     * @param dates An array of dates, denoting the periods to return counts for.
+     * They should be specified smallest first.
+     * @param takenDates An array of dates, denoting the periods to return 
+     * counts for. They should be specified smallest first.
      * @return A Collection of Photocount objects
      */
-
     public Collection getCounts(Date[] dates, Date[] takenDates)
         throws IOException, SAXException, FlickrException {
         List photocounts = new ArrayList();
@@ -630,10 +640,10 @@ public class PhotosInterface {
     }
 
     /**
-     * Get the available sizes for sizes.
+     * Get the available sizes of a Photo.
      *
      * @param photoId The photo ID
-     * @return The size collection
+     * @return A collection of {@link Size}
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
@@ -1208,12 +1218,16 @@ public class PhotosInterface {
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+            throw new FlickrException(
+                response.getErrorCode(),
+                response.getErrorMessage()
+            );
         }
     }
 
     /**
-     * Get the photo for the specified ID. Currently maps to the getInfo() method.
+     * Get the photo for the specified ID.
+     * Currently maps to the getInfo() method.
      *
      * @param id The ID
      * @return The Photo
@@ -1226,7 +1240,8 @@ public class PhotosInterface {
     }
 
     /**
-     * Get the photo for the specified ID with the given secret. Currently maps to the getInfo() method.
+     * Get the photo for the specified ID with the given secret.
+     * Currently maps to the getInfo() method.
      *
      * @param id The ID
      * @param secret The secret
@@ -1239,4 +1254,91 @@ public class PhotosInterface {
         return getInfo(id, secret);
     }
 
+    /**
+     * Request an image from the Flickr-servers.<p>
+     *
+     * At {@link Size} you can find constants for the available sizes.
+     *
+     * @param photo
+     * @param size
+     * @return InputStream
+     * @throws IOException
+     * @throws FlickrException
+     */
+    public InputStream getImageAsStream(Photo photo, int size)
+      throws IOException, FlickrException {
+        String urlStr = "";
+        if (size == Size.SQUARE) {
+            urlStr = photo.getSmallSquareUrl();
+        } else if (size == Size.THUMB) {
+            urlStr = photo.getThumbnailUrl();
+        } else if (size == Size.SMALL) {
+            urlStr = photo.getSmallUrl();
+        } else if (size == Size.MEDIUM) {
+            urlStr = photo.getMediumUrl();
+        } else if (size == Size.LARGE) {
+            urlStr = photo.getLargeUrl();
+        } else if (size == Size.ORIGINAL) {
+            urlStr = photo.getOriginalUrl();
+        } else {
+            throw new FlickrException("0", "Unknown Photo-size");
+        }
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        if (transport instanceof REST) {
+            if (((REST) transport).isProxyAuth()) {
+                conn.setRequestProperty(
+                    "Proxy-Authorization",
+                    "Basic " + ((REST) transport).getProxyCredentials()
+                );
+            }
+        }
+        conn.connect();
+        return conn.getInputStream();
+    }
+
+    /**
+     * Request an image from the Flickr-servers.<p>
+     *
+     * At {@link Size} you can find constants for the available sizes.
+     *
+     * @param photo
+     * @param size
+     * @return The image
+     * @throws IOException
+     * @throws FlickrException
+     */
+    public BufferedImage getImage(Photo photo, int size)
+      throws IOException, FlickrException {
+        return ImageIO.read(getImageAsStream(photo, size));
+    }
+
+    /**
+     * Simple download of a photo.
+     *
+     * @param urlStr The URL of a Photo
+     * @return BufferedImage The Photo
+     * @throws IOException
+     */
+    public BufferedImage getImage(String urlStr)
+      throws IOException {
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        if (transport instanceof REST) {
+            if (((REST) transport).isProxyAuth()) {
+                conn.setRequestProperty(
+                    "Proxy-Authorization",
+                    "Basic " + ((REST) transport).getProxyCredentials()
+                );
+            }
+        }
+        conn.connect();
+        InputStream in = null;
+        try {
+            in = conn.getInputStream();
+            return ImageIO.read(in);
+        } finally {
+            IOUtilities.close(in);
+        }
+    }
 }
