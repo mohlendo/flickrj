@@ -31,12 +31,13 @@ import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.Photocount;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.SearchParameters;
+import com.aetrion.flickr.photos.Size;
 import com.aetrion.flickr.tags.Tag;
 import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterfaceTest.java,v 1.12 2007/07/23 20:28:02 x-mago Exp $
+ * @version $Id: PhotosInterfaceTest.java,v 1.13 2007/12/06 23:40:09 x-mago Exp $
  */
 public class PhotosInterfaceTest extends TestCase {
 
@@ -44,7 +45,6 @@ public class PhotosInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
-        //Flickr.debugStream = true;
 
         InputStream in = null;
         try {
@@ -64,6 +64,8 @@ public class PhotosInterfaceTest extends TestCase {
             Auth auth = authInterface.checkToken(properties.getProperty("token"));
             auth.setPermission(Permission.WRITE);
             requestContext.setAuth(auth);
+            Flickr.debugStream = false;
+            Flickr.debugRequest = false;
         } finally {
             IOUtilities.close(in);
         }
@@ -122,9 +124,8 @@ public class PhotosInterfaceTest extends TestCase {
         assertEquals("", owner.getRealName());
 
         ArrayList tags = (ArrayList) photo.getTags();
-        assertEquals("motorrad", ((Tag) tags.get(0)).getValue());
-        // life is hard, if you can't afford a ducati
-        assertEquals("ducati", ((Tag) tags.get(1)).getValue());
+        assertEquals("green", ((Tag) tags.get(0)).getValue());
+        assertEquals("grn", ((Tag) tags.get(1)).getValue());
 
 		ArrayList notes = (ArrayList) photo.getNotes();
         assertEquals("This region is important", ((Note) notes.get(0)).getText());
@@ -224,8 +225,8 @@ public class PhotosInterfaceTest extends TestCase {
         searchParameters.setTags(tags);
         Collection photos = iface.search(searchParameters, -1, -1);
         assertNotNull(photos);
-
     }
+
 
     public void testSetContentType() throws FlickrException, IOException, SAXException {
         Auth auth = flickr.getAuthInterface().checkToken(properties.getProperty("token"));
@@ -254,7 +255,7 @@ public class PhotosInterfaceTest extends TestCase {
         iface.setMeta(photo.getId(), photo.getTitle(), null);
         Photo updatedPhoto = iface.getInfo(properties.getProperty("photoid"), null);
         assertEquals(newTitle, updatedPhoto.getTitle());
-        iface.setMeta(photo.getId(), oldTitle, null);
+        iface.setMeta(photo.getId(), oldTitle, "Description");
     }
 
     public void testSetPerms() {
@@ -285,7 +286,7 @@ public class PhotosInterfaceTest extends TestCase {
         assertNotNull(tags);
         assertEquals(0, tags.size());
 
-        String[] tagsToAdd = {"motorrad","ducati","multistrada"};
+        String[] tagsToAdd = {"green","grn","grngrn"};
         iface.setTags(photoId, tagsToAdd);
 
         photo = iface.getInfo(photoId, null);
@@ -309,7 +310,7 @@ public class PhotosInterfaceTest extends TestCase {
         PhotosInterface iface = flickr.getPhotosInterface();
         String photoId = properties.getProperty("photoid");
         Photo photo = iface.getInfo(photoId, null);
-        BufferedImage image = photo.getSmallImage();
+        BufferedImage image = iface.getImage(photo, Size.SMALL);
         assertNotNull(image);
         assertEquals(240, image.getWidth());
         assertEquals(180, image.getHeight());
@@ -322,7 +323,7 @@ public class PhotosInterfaceTest extends TestCase {
         PhotosInterface iface = flickr.getPhotosInterface();
         String photoId = properties.getProperty("photoid");
         Photo photo = iface.getInfo(photoId, null);
-        BufferedImage image = photo.getThumbnailImage();
+        BufferedImage image = iface.getImage(photo, Size.THUMB);
         assertNotNull(image);
         assertEquals(100, image.getWidth());
         assertEquals(75, image.getHeight());
@@ -333,7 +334,7 @@ public class PhotosInterfaceTest extends TestCase {
         PhotosInterface iface = flickr.getPhotosInterface();
         String photoId = properties.getProperty("photoid");
         Photo photo = iface.getInfo(photoId, null);
-        BufferedImage image = photo.getSmallSquareImage();
+        BufferedImage image = iface.getImage(photo, Size.SQUARE);
         assertNotNull(image);
         assertEquals(75, image.getWidth());
         assertEquals(75, image.getHeight());
@@ -344,7 +345,7 @@ public class PhotosInterfaceTest extends TestCase {
         PhotosInterface iface = flickr.getPhotosInterface();
         String photoId = properties.getProperty("photoid");
         Photo photo = iface.getInfo(photoId, null);
-        BufferedImage image = photo.getOriginalImage();
+        BufferedImage image = iface.getImage(photo, Size.ORIGINAL);
         assertNotNull(image);
         assertEquals(1600, image.getWidth());
         assertEquals(1200, image.getHeight());
@@ -355,7 +356,7 @@ public class PhotosInterfaceTest extends TestCase {
         PhotosInterface iface = flickr.getPhotosInterface();
         String photoId = properties.getProperty("photoid");
         Photo photo = iface.getInfo(photoId, null);
-        BufferedImage image = photo.getMediumImage();
+        BufferedImage image = iface.getImage(photo, Size.MEDIUM);
         assertNotNull(image);
         assertEquals(500, image.getWidth());
         assertEquals(375, image.getHeight());
@@ -366,7 +367,7 @@ public class PhotosInterfaceTest extends TestCase {
         PhotosInterface iface = flickr.getPhotosInterface();
         String photoId = properties.getProperty("photoid");
         Photo photo = iface.getInfo(photoId, null);
-        BufferedImage image = photo.getLargeImage();
+        BufferedImage image = iface.getImage(photo, Size.LARGE);
         assertNotNull(image);
         assertEquals(1024, image.getWidth());
         assertEquals(768, image.getHeight());

@@ -16,18 +16,18 @@ import com.aetrion.flickr.photos.comments.Comment;
 import com.aetrion.flickr.photos.comments.CommentsInterface;
 import com.aetrion.flickr.util.IOUtilities;
 /**
- * 
- * @author till (Till Krech) flickr:extranoise
  *
+ * @author till (Till Krech) flickr:extranoise
+ * @version $Id: CommentsInterfaceTest.java,v 1.4 2007/12/06 23:40:09 x-mago Exp $
  */
 public class CommentsInterfaceTest extends TestCase {
 
     Flickr flickr = null;
     Properties properties = null;
-    
-	public CommentsInterfaceTest(String arg0) {
-		super(arg0);
-	}
+
+    public CommentsInterfaceTest(String arg0) {
+        super(arg0);
+    }
 
 	protected void setUp() throws Exception {
         InputStream in = null;
@@ -50,8 +50,8 @@ public class CommentsInterfaceTest extends TestCase {
         } finally {
             IOUtilities.close(in);
         }
-	}
-	
+    }
+
 	public void testGetList() throws IOException, SAXException, FlickrException {
 		String photoId = "245253195"; // http://www.flickr.com/photos/extranoise/245253195/
 		CommentsInterface ci = new CommentsInterface(flickr.getApiKey(), flickr.getTransport());
@@ -68,10 +68,9 @@ public class CommentsInterfaceTest extends TestCase {
 			assertNotNull(comment.getDateCreate());
 			assertNotNull(comment.getPermaLink());
 			assertNotNull(comment.getText());
-			
 		}
 	}
-	
+
 	public void testComment() throws IOException, SAXException, FlickrException {
 		String photoId = "4867789"; // http://flickr.com/photos/javatest/4867789/
 		String txt1 = "This is a test for the flickr java api";
@@ -79,7 +78,7 @@ public class CommentsInterfaceTest extends TestCase {
 		CommentsInterface ci = new CommentsInterface(flickr.getApiKey(), flickr.getTransport());
 		// add a comment
 		String commentId = ci.addComment(photoId, txt1);
-		System.out.println("Comment Id:" + commentId);
+		//System.out.println("Comment Id:" + commentId);
 		assertNotNull(commentId);
 		assertTrue(commentId.length() > 0);
 		// verify if comment arrived on the photo page
@@ -97,9 +96,8 @@ public class CommentsInterfaceTest extends TestCase {
 		ci.deleteComment(commentId);
 		comment = findCommment(photoId, commentId);
 		assertNull(comment);
-		
 	}
-	
+
 	// helper function to find a comment by it's id for a specified photo
 	private Comment findCommment(String photoId, String commentId) throws FlickrException, IOException, SAXException {
 		CommentsInterface ci = new CommentsInterface(flickr.getApiKey(), flickr.getTransport());
@@ -113,6 +111,5 @@ public class CommentsInterfaceTest extends TestCase {
 			}
 		}
 		return null;
-		
 	}
 }

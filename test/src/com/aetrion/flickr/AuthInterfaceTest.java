@@ -9,7 +9,7 @@ import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.auth.Permission;
 import com.aetrion.flickr.util.IOUtilities;
 import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.BrowserLauncherRunner;
+import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import junit.framework.TestCase;
@@ -59,31 +59,29 @@ public class AuthInterfaceTest extends TestCase {
     }
 
     public void testReadAuthentication() throws FlickrException, IOException, SAXException,
-            BrowserLaunchingInitializingException, UnsupportedOperatingSystemException {
+            BrowserLaunchingInitializingException, BrowserLaunchingExecutionException, UnsupportedOperatingSystemException {
         testAuthentication(Permission.READ);
     }
 
     public void testWriteAuthentication() throws FlickrException, IOException, BrowserLaunchingInitializingException,
-            SAXException, UnsupportedOperatingSystemException {
+            SAXException, BrowserLaunchingExecutionException, UnsupportedOperatingSystemException {
         testAuthentication(Permission.WRITE);
     }
 
     public void testDeleteAuthentication() throws FlickrException, IOException, BrowserLaunchingInitializingException,
-            SAXException, UnsupportedOperatingSystemException {
+            SAXException, BrowserLaunchingExecutionException, UnsupportedOperatingSystemException {
         testAuthentication(Permission.DELETE);
     }
 
     private void testAuthentication(Permission permission) throws FlickrException, IOException, SAXException,
-            BrowserLaunchingInitializingException, UnsupportedOperatingSystemException {
+            BrowserLaunchingInitializingException, BrowserLaunchingExecutionException, UnsupportedOperatingSystemException {
         AuthInterface authInterface = flickr.getAuthInterface();
         String frob = authInterface.getFrob();
         URL url = authInterface.buildAuthenticationUrl(permission, frob);
 
         BrowserLauncher launcher = new BrowserLauncher(null);
-        BrowserLauncherRunner runner = new BrowserLauncherRunner(launcher, url.toExternalForm(), null);
-        Thread launcherThread = new Thread(runner);
-        launcherThread.start();
-
+        launcher.openURLinBrowser(url.toString());
+        
         // display a dialog
         final JDialog d = new JDialog();
         JButton continueButton = new JButton("Continue");

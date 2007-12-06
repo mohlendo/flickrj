@@ -18,7 +18,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * 
- * @version $Id: InterestingnessInterfaceTest.java,v 1.3 2007/11/04 15:59:29 x-mago Exp $
+ * @version $Id: InterestingnessInterfaceTest.java,v 1.4 2007/12/06 23:40:09 x-mago Exp $
  */
 public class InterestingnessInterfaceTest extends TestCase {
 
@@ -59,7 +59,7 @@ public class InterestingnessInterfaceTest extends TestCase {
 		assertNotNull(flickr);
 		InterestingnessInterface ii = flickr.getInterestingnessInterface();
 		assertNotNull(ii);
-		PhotoList list = ii.getList("2006-09-11", InterestingnessInterface.ALL_EXTRAS, 10, 9);
+		PhotoList list = ii.getList("2006-09-11", Extras.ALL_EXTRAS, 10, 9);
 		assertNotNull(list);
 		assertEquals(10, list.size());
 		assertEquals(9, list.getPage());

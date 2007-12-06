@@ -20,7 +20,6 @@ import org.xml.sax.SAXException;
 public class BlogsInterfaceSOAPTest extends TestCase {
 
     Flickr flickr = null;
-    Authentication auth = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
         InputStream in = null;
@@ -35,10 +34,6 @@ public class BlogsInterfaceSOAPTest extends TestCase {
 
             flickr = new Flickr(properties.getProperty("apiKey"), soap);
             
-
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
         } finally {
             IOUtilities.close(in);
         }
@@ -46,7 +41,6 @@ public class BlogsInterfaceSOAPTest extends TestCase {
 
     public void testGetList() throws FlickrException, IOException, SAXException {
         RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         BlogsInterface blogsInterface = flickr.getBlogsInterface();
         Collection blogs = blogsInterface.getList();
         assertNotNull(blogs);
@@ -55,7 +49,6 @@ public class BlogsInterfaceSOAPTest extends TestCase {
 
     public void testPostImage() {
         RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
     }
 
 }

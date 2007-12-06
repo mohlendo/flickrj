@@ -25,7 +25,6 @@ import com.aetrion.flickr.util.IOUtilities;
 public class PhotosetsInterfaceSOAPTest extends TestCase {
 
     Flickr flickr = null;
-    Authentication auth = null;
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
@@ -39,9 +38,6 @@ public class PhotosetsInterfaceSOAPTest extends TestCase {
             SOAP soap = new SOAP(properties.getProperty("host"));
             flickr = new Flickr(properties.getProperty("apiKey"), soap);
 
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
         } finally {
             IOUtilities.close(in);
         }
@@ -49,7 +45,6 @@ public class PhotosetsInterfaceSOAPTest extends TestCase {
 
     public void testCreateAndDelete() throws FlickrException, IOException, SAXException {
         RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
         Photoset photoset = iface.create("test", "A test photoset", properties.getProperty("photoid"));
         assertNotNull(photoset);
@@ -68,7 +63,6 @@ public class PhotosetsInterfaceSOAPTest extends TestCase {
 
     public void testGetContext() throws FlickrException, IOException, SAXException {
         RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
         PhotoContext photoContext = iface.getContext(properties.getProperty("photoid"), properties.getProperty("photosetid"));
         Photo previousPhoto = photoContext.getPreviousPhoto();
@@ -111,7 +105,6 @@ public class PhotosetsInterfaceSOAPTest extends TestCase {
 
     public void testOrderSets() throws FlickrException, IOException, SAXException {
         RequestContext requestContext = RequestContext.getRequestContext();
-        requestContext.setAuthentication(auth);
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
         String[] photosetIds = {properties.getProperty("photosetid")};
         iface.orderSets(photosetIds);

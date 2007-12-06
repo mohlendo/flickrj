@@ -22,7 +22,6 @@ import com.aetrion.flickr.util.IOUtilities;
 public class UrlsInterfaceSOAPTest extends TestCase {
 
     Flickr flickr = null;
-    Authentication auth = null;
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException {
@@ -36,9 +35,6 @@ public class UrlsInterfaceSOAPTest extends TestCase {
             SOAP soap = new SOAP(properties.getProperty("host"));
             flickr = new Flickr(properties.getProperty("apiKey"), soap);
             
-            auth = new Authentication();
-            auth.setEmail(properties.getProperty("email"));
-            auth.setPassword(properties.getProperty("password"));
         } finally {
             IOUtilities.close(in);
         }
