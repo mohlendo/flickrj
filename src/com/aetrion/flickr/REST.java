@@ -32,7 +32,7 @@ import com.aetrion.flickr.util.UrlUtilities;
  * Transport implementation using the REST interface.
  *
  * @author Anthony Eden
- * @version $Id: REST.java,v 1.21 2007/12/01 00:12:52 x-mago Exp $
+ * @version $Id: REST.java,v 1.22 2007/12/06 23:43:18 x-mago Exp $
  */
 public class REST extends Transport {
 
@@ -105,10 +105,10 @@ public class REST extends Transport {
         String proxyHost, int proxyPort,
         String username, String password
     ) {
-    	setProxy (proxyHost, proxyPort);
-    	proxyAuth = true;
-    	proxyUser = username;
-    	proxyPassword = password;
+        setProxy (proxyHost, proxyPort);
+        proxyAuth = true;
+        proxyUser = username;
+        proxyPassword = password;
     }
 
     /**
@@ -192,7 +192,12 @@ public class REST extends Transport {
             DataOutputStream out = null;
             try {
                 if (Flickr.debugRequest) {
-                    out = new DataOutputStream(new DebugOutputStream(conn.getOutputStream(), System.out));
+                    out = new DataOutputStream(
+                        new DebugOutputStream(
+                            conn.getOutputStream(),
+                            System.out
+                        )
+                    );
                 } else {
                     out = new DataOutputStream(conn.getOutputStream());
                 }
@@ -227,16 +232,19 @@ public class REST extends Transport {
                                     UTF8
                                 )
                             );
-                		} catch(UnsupportedEncodingException e) {
-                		    // Should never happen, but just in case
-                		}
-                        if (iter.hasNext()) out.writeBytes("&");
+                        } catch (UnsupportedEncodingException e) {
+                            // Should never happen, but just in case
+                        }
+                        if (iter.hasNext()) {
+                            out.writeBytes("&");
+                        }
                     }
 
                     Auth auth = requestContext.getAuth();
                     if (auth != null) {
-                        out.writeBytes("&auth_token=");
-                        out.writeBytes(auth.getToken());
+                        // will be added at AuthUtilities.addAuthToken()
+                        //out.writeBytes("&auth_token=");
+                        //out.writeBytes(auth.getToken());
                         out.writeBytes("&api_sig=");
                         out.writeBytes(AuthUtilities.getSignature(parameters));
                     }
@@ -295,19 +303,19 @@ public class REST extends Transport {
         }
     }
 
-	public boolean isProxyAuth() {
-		return proxyAuth;
-	}
+    public boolean isProxyAuth() {
+        return proxyAuth;
+    }
 
-	/**
-	 * Generates Base64-encoded credentials from locally stored 
-	 * username and password.
-	 *
-	 * @return credentials
-	 */
-	public String getProxyCredentials() {
-		return new String(
+    /**
+     * Generates Base64-encoded credentials from locally stored
+     * username and password.
+     *
+     * @return credentials
+     */
+    public String getProxyCredentials() {
+        return new String(
             Base64.encode((proxyUser + ":" + proxyPassword).getBytes())
         );
-	}
+    }
 }
