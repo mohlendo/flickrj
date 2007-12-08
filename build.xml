@@ -74,7 +74,8 @@
 			version="${javadoc.version}"
 			windowtitle="${vName} API"
 			doctitle="${vName}"
-			bottom="${copyright}"/>
+			bottom="${copyright}"
+			stylesheetfile="docs/stylesheet.css"/>
 	</target>
 	
 	<!-- ==================================================== -->
