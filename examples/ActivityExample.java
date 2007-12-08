@@ -23,10 +23,9 @@ import com.aetrion.flickr.util.IOUtilities;
  * Demonstration of howto use the ActivityInterface.
  *
  * @author mago
- * @version $Id: ActivityExample.java,v 1.1 2007/07/22 20:34:23 x-mago Exp $
+ * @version $Id: ActivityExample.java,v 1.2 2007/12/08 15:11:58 x-mago Exp $
  */
 public class ActivityExample {
-    String restHost = "www.flickr.com";
     static String apiKey;
     static String sharedSecret;
     Flickr f;
@@ -34,7 +33,8 @@ public class ActivityExample {
     RequestContext requestContext;
     Properties properties = null;
 
-    public ActivityExample() throws ParserConfigurationException, IOException {
+    public ActivityExample()
+      throws ParserConfigurationException, IOException {
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -43,11 +43,7 @@ public class ActivityExample {
         } finally {
             IOUtilities.close(in);
         }
-        rest = new REST();
-        rest.setHost(restHost);
-        f = new Flickr(properties.getProperty("apiKey"),rest);
-        Flickr.debugStream = false;
-        // Set the shared secret which is used for any calls which require signing.
+        f = new Flickr(properties.getProperty("apiKey"), new REST());
         requestContext = RequestContext.getRequestContext();
         requestContext.setSharedSecret(properties.getProperty("secret"));
         Auth auth = new Auth();
@@ -55,7 +51,7 @@ public class ActivityExample {
         auth.setToken(properties.getProperty("token"));
         requestContext.setAuth(auth);
         Flickr.debugRequest = false;
-	    Flickr.debugStream = true;
+        Flickr.debugStream = false;
     }
 
     public void showActivity() throws FlickrException, IOException, SAXException {
@@ -97,9 +93,6 @@ public class ActivityExample {
         }
     }
 
-	/**
-	 * @param args
-	 */
     public static void main(String[] args) {
         try {
             ActivityExample t = new ActivityExample();
