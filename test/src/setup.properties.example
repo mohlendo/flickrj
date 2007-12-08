@@ -15,4 +15,4 @@ token = your token (with delete privileges)
 # id of a photo in your stream
 # which the tests can use to set, get and remove geo data
 # existing geo data will be destroyed!
-geo.write.photoid = 232991052
+geo.write.photoid = 430641361
