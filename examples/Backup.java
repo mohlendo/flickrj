@@ -19,6 +19,7 @@ import com.aetrion.flickr.auth.Permission;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotosInterface;
+import com.aetrion.flickr.photos.Size;
 import com.aetrion.flickr.photosets.Photoset;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
 import com.aetrion.flickr.util.AuthStore;
@@ -31,7 +32,7 @@ import com.aetrion.flickr.util.FileAuthStore;
  * This sample also uses the AuthStore interface, so users will only be asked to authorize on the first run.
  * 
  * @author Matthew MacKenzie
- * @version $Id: Backup.java,v 1.1 2007/11/10 23:33:11 x-mago Exp $
+ * @version $Id: Backup.java,v 1.2 2007/12/09 12:56:20 x-mago Exp $
  */
 
 public class Backup {
@@ -41,16 +42,16 @@ public class Backup {
     private AuthStore authStore = null;
     private String sharedSecret = null;
 
-	public Backup(String apiKey, String nsid, String sharedSecret, File authsDir) throws IOException {
-		this.flickr = new Flickr(apiKey);
-		this.sharedSecret = sharedSecret;
-		this.nsid = nsid;
-		
-		if (authsDir != null) {
-			this.authStore = new FileAuthStore(authsDir);
-		}
-	}
-	
+    public Backup(String apiKey, String nsid, String sharedSecret, File authsDir) throws IOException {
+        this.flickr = new Flickr(apiKey);
+        this.sharedSecret = sharedSecret;
+        this.nsid = nsid;
+
+        if (authsDir != null) {
+            this.authStore = new FileAuthStore(authsDir);
+        }
+    }
+
 	private void authorize() throws IOException, SAXException, FlickrException {
 		String frob = this.flickr.getAuthInterface().getFrob();
 		
@@ -120,7 +121,7 @@ public class Backup {
 				String filename = u.getFile();
 				filename = filename.substring(1);
 				System.out.println("Now writing " + filename + " to " + setDirectory.getCanonicalPath());
-				BufferedInputStream inStream = new BufferedInputStream(p.getOriginalAsStream());
+				BufferedInputStream inStream = new BufferedInputStream(photoInt.getImageAsStream(p, Size.ORIGINAL));
 				File newFile = new File(setDirectory, filename);
 				
 				FileOutputStream fos = new FileOutputStream(newFile);
