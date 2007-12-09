@@ -3,8 +3,6 @@
  */
 package com.aetrion.flickr;
 
-import java.util.Set;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.activity.ActivityInterface;
@@ -35,7 +33,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * <a href="http://www.flickr.com/services/api/registered_keys.gne">list of API keys</a>.
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.36 2007/12/01 00:17:53 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.37 2007/12/09 12:50:41 x-mago Exp $
  */
 public class Flickr {
 
@@ -83,52 +81,55 @@ public class Flickr {
     private InterestingnessInterface interestingnessInterface;
 
     /**
+     * @see com.aetrion.flickr.photos.PhotosInterface#setContentType(String, String)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getContentType()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setContentType(String)
      */
     public static final String CONTENTTYPE_PHOTO = "1";
 
     /**
+     * @see com.aetrion.flickr.photos.PhotosInterface#setContentType(String, String)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getContentType()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setContentType(String)
      */
     public static final String CONTENTTYPE_SCREENSHOT = "2";
 
     /**
+     * @see com.aetrion.flickr.photos.PhotosInterface#setContentType(String, String)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getContentType()
      * @see com.aetrion.flickr.uploader.UploadMetaData#setContentType(String)
      */
     public static final String CONTENTTYPE_OTHER = "3";
 
-	/**
-	 * The lowest accuracy for bounding-box searches.
-	 *
-	 * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
-	 */
-	public static int ACCURACY_WORLD = 1;
+    /**
+     * The lowest accuracy for bounding-box searches.
+     *
+     * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
+     */
+    public static final int ACCURACY_WORLD = 1;
 
-	/**
-	 * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
-	 */
-	public static int ACCURACY_COUNTRY = 3;
+    /**
+     * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
+     */
+    public static final int ACCURACY_COUNTRY = 3;
 
-	/**
-	 * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
-	 */
-	public static int ACCURACY_REGION = 6;
+    /**
+     * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
+     */
+    public static final int ACCURACY_REGION = 6;
 
-	/**
-	 * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
-	 */
-	public static int ACCURACY_CITY = 11;
+    /**
+     * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
+     */
+    public static final int ACCURACY_CITY = 11;
 
-	/**
-	 * The highest accuracy for bounding-box searches.
-	 *
-	 * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
-	 */
-	public static int ACCURACY_STREET = 16;
-    
+    /**
+     * The highest accuracy for bounding-box searches.
+     *
+     * @see com.aetrion.flickr.photos.SearchParameters#setAccuracy(int)
+     */
+    public static final int ACCURACY_STREET = 16;
+
     /**
      * @see com.aetrion.flickr.photos.PhotosInterface#setSafetyLevel(String, String, Boolean)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getSafetyLevel()
