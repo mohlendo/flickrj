@@ -112,6 +112,7 @@
 
 	<target name="dist" depends="clean, build, javadocs">
 		<copy file="README.txt" todir="${build.dir}"/>
+		<copy file="LICENSE-apache.txt" todir="${build.dir}"/>
 		<copy file="LICENSE.txt" todir="${build.dir}"/>
 		<copy file="CHANGELOG.txt" todir="${build.dir}"/>
 		<copy file="BUILDING.txt" todir="${build.dir}"/>
