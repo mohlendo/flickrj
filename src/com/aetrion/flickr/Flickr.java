@@ -30,10 +30,14 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * This class is used to acquire Interface classes which wrap the Flickr API.<p>
  *
  * If you registered API keys, you find them with the shared secret at your
- * <a href="http://www.flickr.com/services/api/registered_keys.gne">list of API keys</a>.
+ * <a href="http://www.flickr.com/services/api/registered_keys.gne">list of API keys</a><p>
+ *
+ * The user who authenticates himself, can manage this permissions at
+ * <a href="http://www.flickr.com/services/auth/list.gne">his list of Third-party applications</a>
+ * (You -> Your account -> Extending Flickr -> Account Links -> edit).
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.37 2007/12/09 12:50:41 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.38 2007/12/09 15:08:15 x-mago Exp $
  */
 public class Flickr {
 
