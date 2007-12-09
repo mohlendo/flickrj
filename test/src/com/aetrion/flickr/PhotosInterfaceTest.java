@@ -37,7 +37,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterfaceTest.java,v 1.13 2007/12/06 23:40:09 x-mago Exp $
+ * @version $Id: PhotosInterfaceTest.java,v 1.14 2007/12/09 12:59:30 x-mago Exp $
  */
 public class PhotosInterfaceTest extends TestCase {
 
@@ -343,12 +343,12 @@ public class PhotosInterfaceTest extends TestCase {
 
     public void testGetOriginalImage() throws FlickrException, IOException, SAXException {
         PhotosInterface iface = flickr.getPhotosInterface();
-        String photoId = properties.getProperty("photoid");
+        String photoId = properties.getProperty("photoidOriginal");
         Photo photo = iface.getInfo(photoId, null);
         BufferedImage image = iface.getImage(photo, Size.ORIGINAL);
         assertNotNull(image);
-        assertEquals(1600, image.getWidth());
-        assertEquals(1200, image.getHeight());
+        assertEquals(600, image.getWidth());
+        assertEquals(450, image.getHeight());
         ImageIO.write(image, "jpg", new File("out.original.jpg"));
     }
 

@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PeopleInterfaceTest.java,v 1.10 2007/07/23 20:28:01 x-mago Exp $
+ * @version $Id: PeopleInterfaceTest.java,v 1.11 2007/12/09 12:59:30 x-mago Exp $
  */
 public class PeopleInterfaceTest extends TestCase {
 
@@ -91,12 +91,6 @@ public class PeopleInterfaceTest extends TestCase {
         PhotoList photos = iface.getPublicPhotos(properties.getProperty("nsid"), 0, 0);
         assertNotNull(photos);
         assertTrue(photos.size() > 3);
-	    Photo photo = (Photo) photos.get(0);
-        assertTrue(photo.getOriginalUrl().endsWith("jpg"));
-        assertEquals("jpg", photo.getOriginalFormat());
-	    photo = (Photo) photos.get(3);
-        assertTrue(photo.getOriginalUrl().endsWith("jpg"));
-        assertEquals("jpg", photo.getOriginalFormat());
     }
 
     public void testGetUploadStatus() {

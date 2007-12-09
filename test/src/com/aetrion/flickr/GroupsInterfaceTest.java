@@ -79,6 +79,9 @@ public class GroupsInterfaceTest extends TestCase {
 //        }
     }
 
+    /*
+     * It is not longer possible to browse the groups hierarchy
+     *
     public void testBrowseWithId() throws FlickrException, IOException, SAXException {
         GroupsInterface iface = flickr.getGroupsInterface();
         Category cat = iface.browse("68"); // browse the Flickr category
@@ -95,7 +98,7 @@ public class GroupsInterfaceTest extends TestCase {
         assertNotNull(subcats);
         assertTrue(subcats.size() > 0);
 //        System.out.println("category name: " + cat.getName());
-    }
+    } */
 
     public void testGetInfo() throws FlickrException, IOException, SAXException {
         GroupsInterface iface = flickr.getGroupsInterface();
