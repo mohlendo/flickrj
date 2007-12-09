@@ -112,3 +112,14 @@ Release 1.0b4 (July 23, 2007):
  - corrected flickr-method name setContentType in PhotosInterface
  - completed asynchronous upload
  
+ Release 1.0 (December 09, 2007)
+ - added proxy-setting for REST-requests
+ - set the image-getters in Photo deprecated
+ - PhotosInterface now has getImage() and getImagesAsStream to replace the deprecated getters
+ - removed deprecated stuff
+ - requesting UTF-8 encoding generating signatures in AuthUtilties
+ - added Base64 taken from Xerces
+ - added machine-tags to SearchParameters (patch by Matt Pettey)
+ - User - Changed bandwidthMax, bandwidthUsed, filesizeMax to long (patch by Matt Pettey)
+ 
+  
