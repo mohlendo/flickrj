@@ -32,7 +32,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with photosets.
  *
  * @author Anthony Eden
- * @version $Id: PhotosetsInterface.java,v 1.21 2007/09/30 15:55:21 x-mago Exp $
+ * @version $Id: PhotosetsInterface.java,v 1.22 2007/12/09 00:54:45 x-mago Exp $
  */
 public class PhotosetsInterface {
 
@@ -282,7 +282,7 @@ public class PhotosetsInterface {
      * Get a list of all photosets for the specified user.
      *
      * @param userId The User id
-     * @return The Photosets object
+     * @return The Photosets collection
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
@@ -346,7 +346,7 @@ public class PhotosetsInterface {
      * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FAMILY
      * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS
      * @param photosetId The photoset ID
-     * @param extras Hash of extra-fields
+     * @param extras Set of extra-fields
      * @param privacy_filter filter value for authenticated calls
      * @param perPage The number of photos per page
      * @param page The page offset
@@ -403,6 +403,7 @@ public class PhotosetsInterface {
 
     /**
      * Convenience method.
+     * Calls getPhotos() with Extras.MIN_EXTRAS and Flickr.PRIVACY_LEVEL_NO_FILTER.
      *
      * @see com.aetrion.flickr.photos.Extras
      * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_NO_FILTER
@@ -427,7 +428,7 @@ public class PhotosetsInterface {
     /**
      * Set the order in which sets are returned for the user.
      *
-     * @param photosetIds
+     * @param photosetIds An array of Ids
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
