@@ -39,7 +39,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr Photos.
  *
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.41 2007/12/02 20:07:24 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.42 2007/12/09 12:47:58 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -1045,12 +1045,9 @@ public class PhotosInterface {
     /**
      * Set the content type of a photo.
      *
-     * The allowed types provided as constants:<br>
-     *
-     * Flickr.CONTENTTYPE_PHOTO<br>
-     * Flickr.CONTENTTYPE_SCREENSHOT<br>
-     * Flickr.CONTENTTYPE_OTHER<br>
-     *
+     * @see com.aetrion.flickr.Flickr#CONTENTTYPE_PHOTO
+     * @see com.aetrion.flickr.Flickr#CONTENTTYPE_SCREENSHOT
+     * @see com.aetrion.flickr.Flickr#CONTENTTYPE_OTHER
      * @param photoId The photo ID
      * @param contentType The contentType to set
      * @throws IOException
@@ -1060,7 +1057,7 @@ public class PhotosInterface {
     public void setContentType(String photoId, String contentType) throws IOException,
             SAXException, FlickrException {
         List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_SET_META));
+        parameters.add(new Parameter("method", METHOD_SET_CONTENTTYPE));
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
@@ -1255,13 +1252,14 @@ public class PhotosInterface {
     }
 
     /**
-     * Request an image from the Flickr-servers.<p>
+     * Request an image from the Flickr-servers.<br>
+     * Callers must close the stream upon completion.<p>
      *
      * At {@link Size} you can find constants for the available sizes.
      *
-     * @param photo
-     * @param size
-     * @return InputStream
+     * @param photo A photo-object
+     * @param size The Size
+     * @return InputStream The InputStream
      * @throws IOException
      * @throws FlickrException
      */
@@ -1302,9 +1300,9 @@ public class PhotosInterface {
      *
      * At {@link Size} you can find constants for the available sizes.
      *
-     * @param photo
-     * @param size
-     * @return The image
+     * @param photo A photo-object
+     * @param size The size
+     * @return An Image
      * @throws IOException
      * @throws FlickrException
      */
@@ -1314,10 +1312,10 @@ public class PhotosInterface {
     }
 
     /**
-     * Simple download of a photo.
+     * Download of an image by URL.
      *
      * @param urlStr The URL of a Photo
-     * @return BufferedImage The Photo
+     * @return BufferedImage The The Image
      * @throws IOException
      */
     public BufferedImage getImage(String urlStr)

@@ -21,11 +21,13 @@ import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.util.IOUtilities;
 
 /**
- * Class representing metadata about a Flickr photo.  Instances do not actually contain the photo data, however you can
- * obtain the photo data by calling one of the getXXXImage() or getXXXAsStream() methods in this class.
+ * Class representing metadata about a Flickr photo. Instances do not actually
+ * contain the photo data, however you can obtain the photo data by calling
+ * {@link PhotosInterface#getImage(Photo, int)} or
+ * {@link PhotosInterface#getImageAsStream(Photo, int)}.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.19 2007/09/12 22:34:27 x-mago Exp $
+ * @version $Id: Photo.java,v 1.20 2007/12/09 12:47:58 x-mago Exp $
  */
 public class Photo {
 
@@ -414,6 +416,13 @@ public class Photo {
         this.originalSecret = originalSecret;
     }
 
+    /**
+     * @deprecated
+     * @see PhotosInterface#getImage(Photo, int)
+     * @return An Image
+     * @throws IOException
+     * @throws FlickrException
+     */
     public BufferedImage getOriginalImage() throws IOException, FlickrException {
         if (originalFormat != null) {
             return getOriginalImage("_o." + originalFormat);
@@ -424,6 +433,8 @@ public class Photo {
     /**
      * Get an InputStream for the original image. Callers must close the stream upon completion.
      *
+     * @deprecated
+     * @see PhotosInterface#getImageAsStream(Photo, int)
      * @return The InputStream
      * @throws IOException
      */
@@ -449,6 +460,8 @@ public class Photo {
     /**
      * Get an Image object which is a 75x75 pixel square.
      *
+     * @deprecated
+     * @see PhotosInterface#getImage(Photo, int)
      * @return An Image
      * @throws IOException
      */
@@ -457,6 +470,12 @@ public class Photo {
         return getImage(SMALL_SQUARE_IMAGE_SUFFIX);
     }
 
+    /**
+     * @deprecated
+     * @see PhotosInterface#getImageAsStream(Photo, int)
+     * @return The InputStream
+     * @throws IOException
+     */
     public InputStream getSmallSquareAsInputStream() throws IOException {
         return getImageAsStream(SMALL_SQUARE_IMAGE_SUFFIX);
     }
@@ -465,10 +484,22 @@ public class Photo {
         return getBaseImageUrl() + SMALL_SQUARE_IMAGE_SUFFIX;
     }
 
+    /**
+     * @deprecated
+     * @see PhotosInterface#getImage(Photo, int)
+     * @return An Image
+     * @throws IOException
+     */
     public BufferedImage getThumbnailImage() throws IOException {
         return getImage(THUMBNAIL_IMAGE_SUFFIX);
     }
 
+    /**
+     * @deprecated
+     * @see PhotosInterface#getImageAsStream(Photo, int)
+     * @return The InputStream
+     * @throws IOException
+     */
     public InputStream getThumbnailAsInputStream() throws IOException {
         return getImageAsStream(THUMBNAIL_IMAGE_SUFFIX);
     }
@@ -477,10 +508,22 @@ public class Photo {
         return getBaseImageUrl() + THUMBNAIL_IMAGE_SUFFIX;
     }
 
+    /**
+     * @deprecated
+     * @see PhotosInterface#getImage(Photo, int)
+     * @return An Image
+     * @throws IOException
+     */
     public BufferedImage getSmallImage() throws IOException {
         return getImage(SMALL_IMAGE_SUFFIX);
     }
 
+    /**
+     * @deprecated
+     * @see PhotosInterface#getImageAsStream(Photo, int)
+     * @return The InputStream
+     * @throws IOException
+     */
     public InputStream getSmallAsInputStream() throws IOException {
         return getImageAsStream(SMALL_IMAGE_SUFFIX);
     }
@@ -489,10 +532,22 @@ public class Photo {
         return getBaseImageUrl() + SMALL_IMAGE_SUFFIX;
     }
 
+    /**
+     * @deprecated
+     * @see PhotosInterface#getImage(Photo, int)
+     * @return An Image
+     * @throws IOException
+     */
     public BufferedImage getMediumImage() throws IOException {
         return getImage(MEDIUM_IMAGE_SUFFIX);
     }
 
+    /**
+     * @deprecated
+     * @see PhotosInterface#getImageAsStream(Photo, int)
+     * @return The InputStream
+     * @throws IOException
+     */
     public InputStream getMediumAsStream() throws IOException {
         return getImageAsStream(MEDIUM_IMAGE_SUFFIX);
     }
@@ -501,10 +556,22 @@ public class Photo {
         return getBaseImageUrl() + MEDIUM_IMAGE_SUFFIX;
     }
 
+    /**
+     * @deprecated
+     * @see PhotosInterface#getImage(Photo, int)
+     * @return An Image
+     * @throws IOException
+     */
     public BufferedImage getLargeImage() throws IOException {
         return getImage(LARGE_IMAGE_SUFFIX);
     }
 
+    /**
+     * @deprecated
+     * @see PhotosInterface#getImageAsStream(Photo, int)
+     * @return The InputStream
+     * @throws IOException
+     */
     public InputStream getLargeAsStream() throws IOException {
         return getImageAsStream(LARGE_IMAGE_SUFFIX);
     }
