@@ -39,7 +39,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr Photos.
  *
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.42 2007/12/09 12:47:58 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.43 2007/12/16 21:02:56 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -405,7 +405,7 @@ public class PhotosInterface {
      * @param photoId
      * @param perPage
      * @param page
-     * @return List of User
+     * @return List of {@link com.aetrion.flickr.people.User}
      */
     public Collection getFavorites(String photoId, int perPage, int page)
         throws IOException, SAXException, FlickrException {
@@ -432,9 +432,9 @@ public class PhotosInterface {
 
         Element userRoot = response.getPayload();
         NodeList userNodes = userRoot.getElementsByTagName("person");
-        User user = new User();
         for (int i = 0; i < userNodes.getLength(); i++) {
             Element userElement = (Element) userNodes.item(i);
+            User user = new User();
             user.setId(userElement.getAttribute("nsid"));
             user.setUsername(userElement.getAttribute("username"));
             user.setFaveDate(userElement.getAttribute("favedate"));

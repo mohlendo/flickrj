@@ -13,7 +13,7 @@ import com.aetrion.flickr.contacts.OnlineStatus;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.13 2007/11/28 20:29:42 x-mago Exp $
+ * @version $Id: User.java,v 1.14 2007/12/16 21:02:56 x-mago Exp $
  */
 public class User implements Serializable {
 
@@ -192,6 +192,13 @@ public class User implements Serializable {
         this.faveDate = faveDate;
     }
 
+    /**
+     * The Date, when a User has favourited a Photo.<br>
+     * This value is set, when a User is created by
+     * {@link com.aetrion.flickr.photos.PhotosInterface#getFavorites(String, int, int)}.
+     *
+     * @return faveDate
+     */
     public Date getFaveDate() {
         return faveDate;
     }
