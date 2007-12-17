@@ -30,9 +30,9 @@ import com.aetrion.flickr.util.FileAuthStore;
  * are classified in multiple photosets, they will be copied.  Its a sample, its not perfect :-)
  *
  * This sample also uses the AuthStore interface, so users will only be asked to authorize on the first run.
- * 
+ *
  * @author Matthew MacKenzie
- * @version $Id: Backup.java,v 1.2 2007/12/09 12:56:20 x-mago Exp $
+ * @version $Id: Backup.java,v 1.3 2007/12/17 18:43:35 x-mago Exp $
  */
 
 public class Backup {
@@ -42,7 +42,8 @@ public class Backup {
     private AuthStore authStore = null;
     private String sharedSecret = null;
 
-    public Backup(String apiKey, String nsid, String sharedSecret, File authsDir) throws IOException {
+    public Backup(String apiKey, String nsid, String sharedSecret, File authsDir)
+      throws IOException {
         this.flickr = new Flickr(apiKey);
         this.sharedSecret = sharedSecret;
         this.nsid = nsid;
@@ -54,10 +55,10 @@ public class Backup {
 
 	private void authorize() throws IOException, SAXException, FlickrException {
 		String frob = this.flickr.getAuthInterface().getFrob();
-		
+
 		URL authUrl = this.flickr.getAuthInterface().buildAuthenticationUrl(Permission.READ, frob);
 		System.out.println("Please visit: " + authUrl.toExternalForm() + " then, hit enter.");
-				
+
 		System.in.read();
 
 		Auth token = this.flickr.getAuthInterface().getToken(frob);
@@ -109,19 +110,19 @@ public class Backup {
 		while (allIter.hasNext()) {
 			String setTitle = makeSafeFilename((String)allIter.next());
 			
-			Collection currentSet = (Collection)allPhotos.get(setTitle);
+			Collection currentSet = (Collection) allPhotos.get(setTitle);
 			Iterator setIterator = currentSet.iterator();
 			File setDirectory = new File(directory, setTitle);
 			setDirectory.mkdir();
 			while (setIterator.hasNext()) {
 			
 				Photo p = (Photo)setIterator.next();
-				String url = p.getOriginalUrl();
+				String url = p.getLargeUrl();
 				URL u = new URL(url);
 				String filename = u.getFile();
-				filename = filename.substring(1);
+				filename = filename.substring(filename.lastIndexOf("/") + 1 , filename.length());				
 				System.out.println("Now writing " + filename + " to " + setDirectory.getCanonicalPath());
-				BufferedInputStream inStream = new BufferedInputStream(photoInt.getImageAsStream(p, Size.ORIGINAL));
+				BufferedInputStream inStream = new BufferedInputStream(photoInt.getImageAsStream(p, Size.LARGE));
 				File newFile = new File(setDirectory, filename);
 				
 				FileOutputStream fos = new FileOutputStream(newFile);
