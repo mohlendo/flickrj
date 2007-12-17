@@ -18,7 +18,9 @@ public class Group {
     private String iconServer;
     private String description;
     private Throttle throttle;
-    
+    private String lang;
+    private boolean poolModerated;
+
     // the following seem not to exist anymore
     private int online;
     private String chatId;
@@ -56,28 +58,36 @@ public class Group {
     }
 
     public void setMembers(String members) {
-    	try {
-    		if (members != null) setMembers(Integer.parseInt(members));
-    	} catch (NumberFormatException nfe) {
-    		setMembers(0);
-    		if (Flickr.tracing) 
-    			System.out.println("trace: Group.setMembers(String) encountered a number format " + 
-    			"exception.  members set to 0");
-    	}
+        try {
+            if (members != null) setMembers(Integer.parseInt(members));
+        } catch (NumberFormatException nfe) {
+            setMembers(0);
+            if (Flickr.tracing) 
+                System.out.println("trace: Group.setMembers(String) encountered a number format " + 
+                "exception.  members set to 0");
+        }
     }
 
     /**
-     * 
-     * @return the 
+     * @deprecated
+     * @return the online-state
      */
     public int getOnline() {
         return online;
     }
 
+    /**
+     * @deprecated
+     * @param online
+     */
     public void setOnline(int online) {
         this.online = online;
     }
 
+    /**
+     * @deprecated
+     * @param online
+     */
     public void setOnline(String online) {
     	try {
     		if (online != null) setOnline(Integer.parseInt(online));
@@ -89,34 +99,52 @@ public class Group {
     	}
     }
 
+    /**
+     * @deprecated
+     * @return chatId
+     */
     public String getChatId() {
         return chatId;
     }
 
+    /**
+     * @deprecated
+     * @param chatId
+     */
     public void setChatId(String chatId) {
         this.chatId = chatId;
     }
 
     /**
+     * @deprecated
      * @return the number of users in chat
      */
     public int getInChat() {
         return inChat;
     }
 
+    /**
+     * @deprecated
+     * @param inChat
+     */
     public void setInChat(int inChat) {
         this.inChat = inChat;
     }
 
+    /**
+     * @deprecated
+     * @param inChat
+     */
     public void setInChat(String inChat) {
-    	try {
-    		if (inChat != null) setInChat(Integer.parseInt(inChat));
-    	} catch (NumberFormatException nfe) {
-    		setInChat(0);
-    		if (Flickr.tracing) 
-    			System.out.println("trace: Group.setInChat(String) encountered a number format " + 
-    			"exception.  InChat set to 0");
-    	}
+        try {
+            if (inChat != null) setInChat(Integer.parseInt(inChat));
+        } catch (NumberFormatException nfe) {
+            setInChat(0);
+            if (Flickr.tracing) {
+                System.out.println("trace: Group.setInChat(String) encountered a number format " + 
+                "exception.  InChat set to 0");
+            }
+        }
     }
 
     public String getPrivacy() {
@@ -139,55 +167,86 @@ public class Group {
         return photoCount;
     }
 
+    /**
+     * @deprecated
+     * @param photoCount
+     */
     public void setPhotoCount(int photoCount) {
         this.photoCount = photoCount;
     }
 
+    /**
+     * @deprecated
+     * @param photoCount
+     */
     public void setPhotoCount(String photoCount) {
         if (photoCount != null) {
-        	try {
-        		setPhotoCount(Integer.parseInt(photoCount));
-        	} catch (NumberFormatException nfe) {
-        		setPhotoCount(0);
-        		if (Flickr.tracing) 
-        			System.out.println("trace: Group.setPhotoCount(String) encountered a number format " + 
-        								"exception.  PhotoCount set to 0");
-        	}
+            try {
+                setPhotoCount(Integer.parseInt(photoCount));
+            } catch (NumberFormatException nfe) {
+                setPhotoCount(0);
+                if (Flickr.tracing) {
+                    System.out.println("trace: Group.setPhotoCount(String) encountered a number format " + 
+                    "exception.  PhotoCount set to 0");
+                }
+            }
         }
     }
 
+    /**
+     * @deprecated
+     * @return boolean
+     */
     public boolean isEighteenPlus() {
         return eighteenPlus;
     }
 
+    /**
+     * @deprecated
+     * @param eighteenPlus
+     */
     public void setEighteenPlus(boolean eighteenPlus) {
         this.eighteenPlus = eighteenPlus;
     }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getIconServer() {
-		return iconServer;
-	}
+    public String getLang() {
+        return lang;
+    }
 
-	public void setIconServer(String iconServer) {
-		this.iconServer = iconServer;
-	}
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
-	public Throttle getThrottle() {
-		return throttle;
-	}
+    public boolean isPoolModerated() {
+        return poolModerated;
+    }
 
-	public void setThrottle(Throttle throttle) {
-		this.throttle = throttle;
-	}
-	
-	
+    public void setPoolModerated(boolean poolModerated) {
+        this.poolModerated = poolModerated;
+    }
+
+    public String getIconServer() {
+        return iconServer;
+    }
+
+    public void setIconServer(String iconServer) {
+        this.iconServer = iconServer;
+    }
+
+    public Throttle getThrottle() {
+        return throttle;
+    }
+
+    public void setThrottle(Throttle throttle) {
+        this.throttle = throttle;
+    }
 
 }
