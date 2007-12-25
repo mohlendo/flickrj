@@ -13,7 +13,7 @@ import com.aetrion.flickr.contacts.OnlineStatus;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.14 2007/12/16 21:02:56 x-mago Exp $
+ * @version $Id: User.java,v 1.15 2007/12/25 20:38:39 x-mago Exp $
  */
 public class User implements Serializable {
 
@@ -243,7 +243,7 @@ public class User implements Serializable {
 
     public void setBandwidthMax(String bandwidthMax) {
         if (bandwidthMax != null) {
-            setBandwidthMax(Integer.parseInt(bandwidthMax));
+            setBandwidthMax(Long.parseLong(bandwidthMax));
         }
     }
 
@@ -257,7 +257,7 @@ public class User implements Serializable {
 
     public void setBandwidthUsed(String bandwidthUsed) {
         if (bandwidthUsed != null) {
-            setBandwidthUsed(Integer.parseInt(bandwidthUsed));
+            setBandwidthUsed(Long.parseLong(bandwidthUsed));
         }
     }
 
@@ -271,7 +271,7 @@ public class User implements Serializable {
 
     public void setFilesizeMax(String filesizeMax) {
         if (filesizeMax != null) {
-            setFilesizeMax(Integer.parseInt(filesizeMax));
+            setFilesizeMax(Long.parseLong(filesizeMax));
         }
     }
 
