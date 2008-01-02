@@ -32,7 +32,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with photosets.
  *
  * @author Anthony Eden
- * @version $Id: PhotosetsInterface.java,v 1.22 2007/12/09 00:54:45 x-mago Exp $
+ * @version $Id: PhotosetsInterface.java,v 1.23 2008/01/02 21:22:48 x-mago Exp $
  */
 public class PhotosetsInterface {
 
@@ -132,9 +132,11 @@ public class PhotosetsInterface {
     }
 
     /**
-     * Delete the specified photoset.
+     * Modify the meta-data for a photoset.
      *
      * @param photosetId The photoset ID
+     * @param title A new title
+     * @param description A new description (can be null)
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
