@@ -3,17 +3,18 @@
  */
 package com.aetrion.flickr.people;
 
-import java.util.Date;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.aetrion.flickr.contacts.OnlineStatus;
+import com.aetrion.flickr.util.UrlUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.15 2007/12/25 20:38:39 x-mago Exp $
+ * @version $Id: User.java,v 1.16 2008/01/09 22:56:58 x-mago Exp $
  */
 public class User implements Serializable {
 
@@ -120,17 +121,7 @@ public class User implements Serializable {
      * @return The BuddyIconUrl
      */
     public String getBuddyIconUrl() {
-        /**
-         * The default-URL, if the iconServer equals 0.
-         */
-        String iconUrl = "http://www.flickr.com/images/buddyicon.jpg";
-        if (iconServer > 0) {
-            iconUrl = "http://farm"
-            + iconFarm + ".static.flickr.com/"
-            + iconServer + "/buddyicons/"
-            + id + ".jpg";
-        }
-        return iconUrl;
+        return UrlUtilities.createBuddyIconUrl(iconFarm, iconServer, id);
     }
 
     public void setLocation(String location) {
