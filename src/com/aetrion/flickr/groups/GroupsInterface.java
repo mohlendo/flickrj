@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr Groups.
  *
  * @author Anthony Eden
- * @version $Id: GroupsInterface.java,v 1.15 2007/12/17 19:00:16 x-mago Exp $
+ * @version $Id: GroupsInterface.java,v 1.16 2008/01/09 20:35:54 x-mago Exp $
  */
 public class GroupsInterface {
 
@@ -122,6 +122,7 @@ public class GroupsInterface {
         Element groupElement = response.getPayload();
         Group group = new Group();
         group.setId(groupElement.getAttribute("id"));
+        group.setIconFarm(groupElement.getAttribute("iconfarm"));
         group.setIconServer(groupElement.getAttribute("iconserver"));
         group.setLang(groupElement.getAttribute("lang"));
         group.setPoolModerated(groupElement.getAttribute("ispoolmoderated").equals("0") ? false : true);

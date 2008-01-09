@@ -111,4 +111,34 @@ public class UrlUtilities {
         return false;
     }
 
+    /**
+     * Construct the BuddyIconUrl.<p>
+     * If none available, return the 
+     * <a href="http://www.flickr.com/images/buddyicon.jpg">default</a>,
+     * or an URL assembled from farm, iconserver and nsid.
+     *
+     * @see <a href="http://flickr.com/services/api/misc.buddyicons.html">Flickr Documentation</a>
+     * @param iconFarm
+     * @param iconServer
+     * @param id
+     * @return The BuddyIconUrl
+     */
+    public static String createBuddyIconUrl(
+        int iconFarm,
+        int iconServer,
+        String id
+    ) {
+        /**
+         * The default-URL, if the iconServer equals 0.
+         */
+        String iconUrl = "http://www.flickr.com/images/buddyicon.jpg";
+        if (iconServer > 0) {
+            iconUrl = "http://farm"
+            + iconFarm + ".static.flickr.com/"
+            + iconServer + "/buddyicons/"
+            + id + ".jpg";
+        }
+        return iconUrl;
+    }
+    
 }

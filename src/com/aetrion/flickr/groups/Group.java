@@ -3,6 +3,7 @@
  */
 package com.aetrion.flickr.groups;
 import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.util.UrlUtilities;
 
 /**
  * Class representing a Flickr Group.
@@ -10,12 +11,12 @@ import com.aetrion.flickr.Flickr;
  * @author Anthony Eden
  */
 public class Group {
-
     private String id;
     private String name;
     private int members;
     private String privacy;
-    private String iconServer;
+    private int iconFarm;
+    private int iconServer;
     private String description;
     private Throttle throttle;
     private String lang;
@@ -233,12 +234,45 @@ public class Group {
         this.poolModerated = poolModerated;
     }
 
-    public String getIconServer() {
+    public int getIconFarm() {
+        return iconFarm;
+    }
+
+    public void setIconFarm(int iconFarm) {
+        this.iconFarm = iconFarm;
+    }
+
+    public void setIconFarm(String iconFarm) {
+        if (iconFarm != null) {
+            setIconFarm(Integer.parseInt(iconFarm));
+        }
+    }
+
+    public int getIconServer() {
         return iconServer;
     }
 
-    public void setIconServer(String iconServer) {
+    public void setIconServer(int iconServer) {
         this.iconServer = iconServer;
+    }
+
+    public void setIconServer(String iconServer) {
+        if (iconServer != null) {
+            setIconServer(Integer.parseInt(iconServer));
+        }
+    }
+
+    /**
+     * Construct the BuddyIconUrl.<p>
+     * If none available, return the 
+     * <a href="http://www.flickr.com/images/buddyicon.jpg">default</a>,
+     * or an URL assembled from farm, iconserver and nsid.
+     *
+     * @see <a href="http://flickr.com/services/api/misc.buddyicons.html">Flickr Documentation</a>
+     * @return The BuddyIconUrl
+     */
+    public String getBuddyIconUrl() {
+        return UrlUtilities.createBuddyIconUrl(iconFarm, iconServer, id);
     }
 
     public Throttle getThrottle() {
