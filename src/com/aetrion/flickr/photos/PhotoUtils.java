@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.10 2007/09/27 19:19:26 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.11 2008/01/09 22:59:51 x-mago Exp $
  */
 public final class PhotoUtils {
 
@@ -48,44 +48,63 @@ public final class PhotoUtils {
 
         // Searches, or other list may contain orginal_format.
         // If not choosen via extras, set jpg as default.
-        if (photo.getOriginalFormat().equals("")) {
+        try {
+            if (photo.getOriginalFormat().equals("")) {
+                photo.setOriginalFormat("jpg");
+            }
+        } catch (NullPointerException e) {
             photo.setOriginalFormat("jpg");
         }
 
-        Element ownerElement = (Element) photoElement.getElementsByTagName("owner").item(0);
-        if (ownerElement == null) {
+        try {
+            Element ownerElement = (Element) photoElement.getElementsByTagName("owner").item(0);
+            if (ownerElement == null) {
+                User owner = new User();
+                owner.setId(photoElement.getAttribute("owner"));
+                owner.setUsername(photoElement.getAttribute("ownername"));
+                photo.setOwner(owner);
+                photo.setUrl("http://flickr.com/photos/" + owner.getId() + "/" + photo.getId());
+            } else {
+                User owner = new User();
+                owner.setId(ownerElement.getAttribute("nsid"));
+
+                String username = ownerElement.getAttribute("username");
+                String ownername = ownerElement.getAttribute("ownername");
+                // try to get the username either from the "username" attribute or
+                // from the "ownername" attribute
+                if (username != null && !"".equals(username)) {
+                    owner.setUsername(username);
+                } else if (ownername != null && !"".equals(ownername)) {
+                    owner.setUsername(ownername);
+                }
+
+                owner.setUsername(ownerElement.getAttribute("username"));
+                owner.setRealName(ownerElement.getAttribute("realname"));
+                owner.setLocation(ownerElement.getAttribute("location"));
+                photo.setOwner(owner);
+                photo.setUrl("http://flickr.com/photos/" + owner.getId() + "/" + photo.getId());
+            }
+        } catch (IndexOutOfBoundsException e) {
             User owner = new User();
             owner.setId(photoElement.getAttribute("owner"));
             owner.setUsername(photoElement.getAttribute("ownername"));
             photo.setOwner(owner);
             photo.setUrl("http://flickr.com/photos/" + owner.getId() + "/" + photo.getId());
-        } else {
-            User owner = new User();
-            owner.setId(ownerElement.getAttribute("nsid"));
-
-            String username = ownerElement.getAttribute("username");
-            String ownername = ownerElement.getAttribute("ownername");
-            // try to get the username either from the "username" attribute or
-            // from the "ownername" attribute
-            if (username != null && !"".equals(username)) {
-                owner.setUsername(username);
-            } else if (ownername != null && !"".equals(ownername)) {
-                owner.setUsername(ownername);
-            }
-
-            owner.setUsername(ownerElement.getAttribute("username"));
-            owner.setRealName(ownerElement.getAttribute("realname"));
-            owner.setLocation(ownerElement.getAttribute("location"));
-            photo.setOwner(owner);
-            photo.setUrl("http://flickr.com/photos/" + owner.getId() + "/" + photo.getId());
         }
 
-        photo.setTitle(XMLUtilities.getChildValue(photoElement, "title"));
-        if (photo.getTitle() == null) {
+        try {
+            photo.setTitle(XMLUtilities.getChildValue(photoElement, "title"));
+            if (photo.getTitle() == null) {
+                photo.setTitle(photoElement.getAttribute("title"));
+            }
+        } catch (IndexOutOfBoundsException e) {
             photo.setTitle(photoElement.getAttribute("title"));
         }
 
-        photo.setDescription(XMLUtilities.getChildValue(photoElement, "description"));
+        try {
+            photo.setDescription(XMLUtilities.getChildValue(photoElement, "description"));
+        } catch (IndexOutOfBoundsException e) {
+        }
 
         try {
             // here the flags are set, if the photo is read by getInfo().
@@ -93,6 +112,7 @@ public final class PhotoUtils {
             photo.setPublicFlag("1".equals(visibilityElement.getAttribute("ispublic")));
             photo.setFriendFlag("1".equals(visibilityElement.getAttribute("isfriend")));
             photo.setFamilyFlag("1".equals(visibilityElement.getAttribute("isfamily")));
+        } catch (IndexOutOfBoundsException e) {
         } catch (NullPointerException e) {
             // these flags are set here, if photos read from a list.
             photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
@@ -106,6 +126,8 @@ public final class PhotoUtils {
             photo.setDatePosted(datesElement.getAttribute("posted"));
             photo.setDateTaken(datesElement.getAttribute("taken"));
             photo.setTakenGranularity(datesElement.getAttribute("takengranularity"));
+        } catch (IndexOutOfBoundsException e) {
+            photo.setDateTaken(photoElement.getAttribute("datetaken"));
         } catch (NullPointerException e) {
             photo.setDateTaken(photoElement.getAttribute("datetaken"));
         }
@@ -124,6 +146,7 @@ public final class PhotoUtils {
             editability.setComment("1".equals(editabilityElement.getAttribute("cancomment")));
             editability.setAddmeta("1".equals(editabilityElement.getAttribute("canaddmeta")));
             photo.setEditability(editability);
+        } catch (IndexOutOfBoundsException e) {
         } catch (NullPointerException e) {
             // nop
         }
@@ -131,6 +154,7 @@ public final class PhotoUtils {
         try {
             Element commentsElement = (Element) photoElement.getElementsByTagName("comments").item(0);
             photo.setComments(((Text) commentsElement.getFirstChild()).getData());
+        } catch (IndexOutOfBoundsException e) {
         } catch (NullPointerException e) {
             // nop
         }
@@ -151,6 +175,8 @@ public final class PhotoUtils {
                 notes.add(note);
             }
             photo.setNotes(notes);
+        } catch (IndexOutOfBoundsException e) {
+            photo.setNotes(new ArrayList());
         } catch (NullPointerException e) {
             photo.setNotes(new ArrayList());
         }
@@ -170,16 +196,19 @@ public final class PhotoUtils {
                     tags.add(tag);
                 }
             } else {
-                Element tagsElement = (Element) photoElement.getElementsByTagName("tags").item(0);
-                NodeList tagNodes = tagsElement.getElementsByTagName("tag");
-                for (int i = 0; i < tagNodes.getLength(); i++) {
-                    Element tagElement = (Element) tagNodes.item(i);
-                    Tag tag = new Tag();
-                    tag.setId(tagElement.getAttribute("id"));
-                    tag.setAuthor(tagElement.getAttribute("author"));
-                    tag.setRaw(tagElement.getAttribute("raw"));
-                    tag.setValue(((Text) tagElement.getFirstChild()).getData());
-                    tags.add(tag);
+                 try {
+                    Element tagsElement = (Element) photoElement.getElementsByTagName("tags").item(0);
+                    NodeList tagNodes = tagsElement.getElementsByTagName("tag");
+                    for (int i = 0; i < tagNodes.getLength(); i++) {
+                        Element tagElement = (Element) tagNodes.item(i);
+                        Tag tag = new Tag();
+                        tag.setId(tagElement.getAttribute("id"));
+                        tag.setAuthor(tagElement.getAttribute("author"));
+                        tag.setRaw(tagElement.getAttribute("raw"));
+                        tag.setValue(((Text) tagElement.getFirstChild()).getData());
+                        tags.add(tag);
+                    }
+                } catch (IndexOutOfBoundsException e) {
                 }
             }
             photo.setTags(tags);
@@ -201,6 +230,7 @@ public final class PhotoUtils {
                 }
             }
             photo.setUrls(urls);
+        } catch (IndexOutOfBoundsException e) {
         } catch (NullPointerException e) {
             photo.setUrls(new ArrayList());
         }
@@ -213,6 +243,7 @@ public final class PhotoUtils {
             longitude = geoElement.getAttribute("longitude");
             latitude = geoElement.getAttribute("latitude");
             accuracy = geoElement.getAttribute("accuracy");
+        } catch (IndexOutOfBoundsException e) {
         } catch (NullPointerException e) {
         	// Geodata may be available as attributes in the photo-tag itself!
             try {
