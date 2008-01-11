@@ -2,7 +2,9 @@
  * Copyright (c) 2005 Aetrion LLC.
  */
 package com.aetrion.flickr.groups;
+
 import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.util.BuddyIconable;
 import com.aetrion.flickr.util.UrlUtilities;
 
 /**
@@ -10,7 +12,7 @@ import com.aetrion.flickr.util.UrlUtilities;
  *
  * @author Anthony Eden
  */
-public class Group {
+public class Group implements BuddyIconable {
     private String id;
     private String name;
     private int members;

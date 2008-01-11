@@ -10,13 +10,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.aetrion.flickr.contacts.OnlineStatus;
+import com.aetrion.flickr.util.BuddyIconable;
 import com.aetrion.flickr.util.UrlUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.16 2008/01/09 22:56:58 x-mago Exp $
+ * @version $Id: User.java,v 1.17 2008/01/11 21:02:56 x-mago Exp $
  */
-public class User implements Serializable {
+public class User implements Serializable, BuddyIconable {
 
 	private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
