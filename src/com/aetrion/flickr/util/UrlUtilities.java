@@ -30,7 +30,12 @@ public class UrlUtilities {
      * @return The URL
      * @throws MalformedURLException
      */
-    public static URL buildUrl(String host, int port, String path, List parameters) throws MalformedURLException {
+    public static URL buildUrl(
+        String host,
+        int port,
+        String path,
+        List parameters
+    ) throws MalformedURLException {
         AuthUtilities.addAuthToken(parameters);
 
         StringBuffer buffer = new StringBuffer();
@@ -66,12 +71,12 @@ public class UrlUtilities {
             if (iter.hasNext()) buffer.append("&");
         }
 
-        RequestContext requestContext = RequestContext.getRequestContext();
+/*        RequestContext requestContext = RequestContext.getRequestContext();
         Auth auth = requestContext.getAuth();
         if (auth != null && !ignoreMethod(getMethod(parameters))) {
             buffer.append("&api_sig=");
-            buffer.append(AuthUtilities.getSignature(parameters));
-        }
+            buffer.append(AuthUtilities.getSignature(sharedSecret, parameters));
+        } */
 
         return new URL(buffer.toString());
     }
