@@ -27,7 +27,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * {@link PhotosInterface#getImageAsStream(Photo, int)}.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.20 2007/12/09 12:47:58 x-mago Exp $
+ * @version $Id: Photo.java,v 1.21 2008/01/13 21:04:09 x-mago Exp $
  */
 public class Photo {
 
@@ -72,6 +72,7 @@ public class Photo {
     private GeoData geoData;
     private String originalFormat;
     private String originalSecret;
+    private String placeId;
 
     public Photo() {
     }
@@ -678,6 +679,18 @@ public class Photo {
         buffer.append(getId());
         buffer.append("_");
         return buffer;
+    }
+
+    /**
+     * @return A placeId
+     * @see com.aetrion.flickr.places.PlacesInterface#resolvePlaceId(String)
+     */
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
 }

@@ -16,7 +16,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.12 2007/11/28 20:37:03 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.13 2008/01/13 21:04:09 x-mago Exp $
  */
 public class SearchParameters {
 
@@ -45,6 +45,7 @@ public class SearchParameters {
     private boolean extrasTags = false;
     private boolean extrasMachineTags = false;
     private String[] bbox;
+    private String placeId;
     private int accuracy = 0;
     private String safeSearch;
     private String[] machineTags;
@@ -461,6 +462,24 @@ public class SearchParameters {
         }
 
         return parameters;
+    }
+
+    /**
+     * @return A placeId
+     * @see com.aetrion.flickr.places.PlacesInterface#resolvePlaceId(String)
+     */
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    /**
+     * PlaceId only used when bbox not set.
+     *
+     * @param placeId
+     * @see com.aetrion.flickr.places.PlacesInterface#resolvePlaceId(String)
+     */
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
 }
