@@ -12,6 +12,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -21,7 +22,7 @@ import org.xml.sax.SAXException;
  * Interface for testing the complete implementation of all Flickr-methods.<p>
  *
  * @author Anthony Eden
- * @version $Id: ReflectionInterface.java,v 1.8 2007/11/18 22:48:09 x-mago Exp $
+ * @version $Id: ReflectionInterface.java,v 1.9 2008/01/13 21:14:44 x-mago Exp $
  */
 public class ReflectionInterface {
 
@@ -29,16 +30,23 @@ public class ReflectionInterface {
     public static final String METHOD_GET_METHODS     = "flickr.reflection.getMethods";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transport;
 
     /**
      * Construct a ReflectionInterface.
      *
      * @param apiKey The API key
+     * @param sharedSecret The Shared Secret
      * @param transport The Transport interface
      */
-    public ReflectionInterface(String apiKey, Transport transport) {
+    public ReflectionInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transport
+    ) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transport = transport;
     }
 
@@ -70,13 +78,13 @@ public class ReflectionInterface {
         method.setNeedsSigning("1".equals(methodElement.getAttribute("needssigning")));
         String requiredPermsStr = methodElement.getAttribute("requiredperms");
         if (requiredPermsStr != null && requiredPermsStr.length() > 0) {
-        	try {
-        		int perms = Integer.parseInt(requiredPermsStr);
+            try {
+                int perms = Integer.parseInt(requiredPermsStr);
                 method.setRequiredPerms(perms);
-        	} catch (NumberFormatException e) {
-        		// what shall we do?
-        		e.printStackTrace();
-        	}
+            } catch (NumberFormatException e) {
+                // what shall we do?
+                e.printStackTrace();
+            }
         }
         method.setDescription(XMLUtilities.getChildValue(methodElement, "description"));
         method.setResponse(XMLUtilities.getChildValue(methodElement, "response"));
@@ -176,6 +184,13 @@ public class ReflectionInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_METHODS));
         parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
