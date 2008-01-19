@@ -10,20 +10,20 @@ import junit.framework.TestCase;
 
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.activity.ActivityInterface;
-import com.aetrion.flickr.activity.ItemList;
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.auth.Permission;
 import com.aetrion.flickr.places.Location;
+import com.aetrion.flickr.places.Place;
 import com.aetrion.flickr.places.PlacesInterface;
+import com.aetrion.flickr.places.PlacesList;
 import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * Tests for the PlacesInterface.
  *
  * @author mago
- * @version $Id: PlacesInterfaceTest.java,v 1.1 2008/01/13 19:59:20 x-mago Exp $
+ * @version $Id: PlacesInterfaceTest.java,v 1.2 2008/01/19 22:53:56 x-mago Exp $
  */
 public class PlacesInterfaceTest extends TestCase {
 
@@ -55,6 +55,27 @@ public class PlacesInterfaceTest extends TestCase {
         } finally {
             IOUtilities.close(in);
         }
+    }
+
+    public void testFind()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        PlacesList list = placesInterface.find("Alabama");
+        assertTrue(list.getTotal() == 3);
+        Place place = (Place) list.get(0);
+        assertEquals("VrrjuESbApjeFS4.", place.getPlaceId());
+        assertEquals("/United+States/Alabama", place.getPlaceUrl());
+        assertEquals(Place.TYPE_REGION, place.getPlaceType());
+
+        place = (Place) list.get(1);
+        assertEquals("cGHuc0mbApmzEHoP", place.getPlaceId());
+        assertEquals("/United+States/New+York/Alabama", place.getPlaceUrl());
+        assertEquals(Place.TYPE_LOCALITY, place.getPlaceType());
+
+        place = (Place) list.get(2);
+        assertEquals("o4yVPEqYBJvFMP8Q", place.getPlaceId());
+        assertEquals("/South+Africa/North+West/Alabama", place.getPlaceUrl());
+        assertEquals(Place.TYPE_LOCALITY, place.getPlaceType());
     }
 
     public void testResolvePlaceId()

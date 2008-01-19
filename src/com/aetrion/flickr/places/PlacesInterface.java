@@ -2,9 +2,11 @@ package com.aetrion.flickr.places;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.FlickrException;
@@ -12,6 +14,7 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.auth.AuthUtilities;
+import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
@@ -88,9 +91,10 @@ Thanks,
 </PRE>
 
  * @author mago
- * @version $Id: PlacesInterface.java,v 1.1 2008/01/13 20:46:07 x-mago Exp $
+ * @version $Id: PlacesInterface.java,v 1.2 2008/01/19 22:53:56 x-mago Exp $
  */
 public class PlacesInterface {
+    public static final String METHOD_FIND = "flickr.places.find";
     public static final String METHOD_RESOLVE_PLACE_ID = "flickr.places.resolvePlaceId";
     public static final String METHOD_RESOLVE_PLACE_URL = "flickr.places.resolvePlaceURL";
 
@@ -102,6 +106,39 @@ public class PlacesInterface {
         this.apiKey = apiKey;
         this.sharedSecret = sharedSecret;
         this.transportAPI = transportAPI;
+    }
+
+    public PlacesList find(String query)
+      throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        PlacesList placesList = new PlacesList();
+        parameters.add(new Parameter("method", METHOD_FIND));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("query", query));
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element placesElement = response.getPayload();
+        NodeList placesNodes = placesElement.getElementsByTagName("place");
+        placesList.setPage("1");
+        placesList.setPages("1");
+        placesList.setPerPage("" + placesNodes.getLength());
+        placesList.setTotal("" + placesNodes.getLength());
+        for (int i = 0; i < placesNodes.getLength(); i++) {
+            Element placeElement = (Element) placesNodes.item(i);
+            placesList.add(parsePlace(placeElement));
+        }
+        return placesList;
     }
 
     public Location resolvePlaceId(String placeId)
@@ -164,27 +201,48 @@ public class PlacesInterface {
         location.setLocality(
             new Place(
                 localityElement.getAttribute("place_id"),
-                XMLUtilities.getChildValue(locationElement, "locality")
+                XMLUtilities.getChildValue(locationElement, "locality"),
+                Place.TYPE_LOCALITY
             )
          );
         location.setCounty(
             new Place(
                 countyElement.getAttribute("place_id"),
-                XMLUtilities.getChildValue(locationElement, "county")
+                XMLUtilities.getChildValue(locationElement, "county"),
+                Place.TYPE_COUNTY
             )
         );
         location.setRegion(
             new Place(
                 regionElement.getAttribute("place_id"),
-                XMLUtilities.getChildValue(locationElement, "region")
+                XMLUtilities.getChildValue(locationElement, "region"),
+                Place.TYPE_REGION
             )
         );
         location.setCountry(
             new Place(
                 countryElement.getAttribute("place_id"),
-                XMLUtilities.getChildValue(locationElement, "country")
+                XMLUtilities.getChildValue(locationElement, "country"),
+                Place.TYPE_COUNTRY
             )
         );
         return location;
+    }
+
+    private Place parsePlace(Element placeElement) {
+        Place place = new Place();
+        place.setPlaceId(placeElement.getAttribute("place_id"));
+        place.setPlaceUrl(placeElement.getAttribute("place_url"));
+        String typeString = placeElement.getAttribute("place_type");
+        if (typeString.equals("locality")) {
+            place.setPlaceType(Place.TYPE_LOCALITY);
+        } else if (typeString.equals("county")) {
+            place.setPlaceType(Place.TYPE_COUNTY);
+        } else if (typeString.equals("region")) {
+            place.setPlaceType(Place.TYPE_REGION);
+        } else if (typeString.equals("country")) {
+            place.setPlaceType(Place.TYPE_COUNTRY);
+        }
+        return place;
     }
 }
