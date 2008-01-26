@@ -2,7 +2,6 @@ package com.aetrion.flickr.places;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -14,7 +13,6 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.auth.AuthUtilities;
-import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
@@ -91,10 +89,11 @@ Thanks,
 </PRE>
 
  * @author mago
- * @version $Id: PlacesInterface.java,v 1.2 2008/01/19 22:53:56 x-mago Exp $
+ * @version $Id: PlacesInterface.java,v 1.3 2008/01/26 00:34:05 x-mago Exp $
  */
 public class PlacesInterface {
     public static final String METHOD_FIND = "flickr.places.find";
+    public static final String METHOD_FIND_BY_LATLON = "flickr.places.findByLatLon";
     public static final String METHOD_RESOLVE_PLACE_ID = "flickr.places.resolvePlaceId";
     public static final String METHOD_RESOLVE_PLACE_URL = "flickr.places.resolvePlaceURL";
 
@@ -116,6 +115,95 @@ public class PlacesInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("query", query));
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element placesElement = response.getPayload();
+        NodeList placesNodes = placesElement.getElementsByTagName("place");
+        placesList.setPage("1");
+        placesList.setPages("1");
+        placesList.setPerPage("" + placesNodes.getLength());
+        placesList.setTotal("" + placesNodes.getLength());
+        for (int i = 0; i < placesNodes.getLength(); i++) {
+            Element placeElement = (Element) placesNodes.item(i);
+            placesList.add(parsePlace(placeElement));
+        }
+        return placesList;
+    }
+
+    /**
+     * Return a place ID for a latitude, longitude and accuracy triple.<p>
+     *
+     * The flickr.places.findByLatLon method is not meant to be a (reverse)
+     * geocoder in the traditional sense. It is designed to allow users to find
+     * photos for "places" and will round up to the nearest place type to which
+     * corresponding place IDs apply.<p>
+     *
+     * For example, if you pass it a street level coordinate it will return the
+     * city that contains the point rather than the street, or building, itself.<p>
+     *
+     * It will also truncate latitudes and longitudes to three decimal points.<p>
+     *
+     * The gory details :
+     *
+     * This is (most of) the same magic that is performed when you geotag one
+     * of your photos on the site itself. We know that at the neighbourhood
+     * level this can get messy and not always return the correct location.<p>
+     *
+     * At the city level things are much better but there may still be some
+     * gotchas floating around. Sometimes it's as simple as a bug and other
+     * times it is an issue of two competing ideas of where a place "is".<p>
+     *
+     * This comes with the territory and we are eager to identify and wherever
+     * possible fix the problems so when you see something that looks wrong
+     * please be gentle :-)<p>
+     *
+     * (Reports of incorrect places sent to mailing list will not be
+     * ignored but it would be better if you could use the forums for that sort
+     * of thing.)<p>
+     *
+     * Also, as we do on the site if we can not identify a location for a point 
+     * as a specific accuracy we pop up the stack and try again. For example, 
+     * if we can't find a city for a given set of coordinates we try instead to 
+     * locate the state.<p>
+     *
+     * As mentioned above, this method is not designed to serve as a general
+     * purpose (reverse) geocoder which is partly reflected by the truncated
+     * lat/long coordinates.<p>
+     *
+     * If you think that three decimal points are the cause of wonky results
+     * locating photos for places, we are happy to investigate but until then
+     * it should be All Good (tm).
+     *
+     * @param latitude The latitude whose valid range is -90 to 90.
+     *        Anything more than 4 decimal places will be truncated.
+     * @param longitude The longitude whose valid range is -180 to 180.
+     *        Anything more than 4 decimal places will be truncated.
+     * @param accuracy
+     * @return A PlacesList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public PlacesList findByLatLon(double latitude, double longitude, int accuracy)
+      throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        PlacesList placesList = new PlacesList();
+        parameters.add(new Parameter("method", METHOD_FIND_BY_LATLON));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("lat", "" + latitude));
+        parameters.add(new Parameter("lon", "" + longitude));
+        parameters.add(new Parameter("accuracy", accuracy));
 
         parameters.add(
             new Parameter(
