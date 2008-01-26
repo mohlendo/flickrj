@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * Tests for the PlacesInterface.
  *
  * @author mago
- * @version $Id: PlacesInterfaceTest.java,v 1.2 2008/01/19 22:53:56 x-mago Exp $
+ * @version $Id: PlacesInterfaceTest.java,v 1.3 2008/01/26 00:05:17 x-mago Exp $
  */
 public class PlacesInterfaceTest extends TestCase {
 
@@ -55,6 +55,21 @@ public class PlacesInterfaceTest extends TestCase {
         } finally {
             IOUtilities.close(in);
         }
+    }
+
+    public void testFindByLonLat()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        PlacesList list = placesInterface.findByLatLon(
+            52.524577D,
+            13.412247D,
+            Flickr.ACCURACY_CITY
+        );
+        assertTrue(list.getTotal() == 1);
+        Place place = (Place) list.get(0);
+        assertEquals("sRdiycKfApRGrrU", place.getPlaceId());
+        assertEquals("/Germany/Berlin/Berlin", place.getPlaceUrl());
+        assertEquals(Place.TYPE_LOCALITY, place.getPlaceType());
     }
 
     public void testFind()

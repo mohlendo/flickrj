@@ -27,7 +27,7 @@ public class GroupsInterfaceTest extends TestCase {
     Flickr flickr = null;
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
-        Flickr.debugStream = false;
+        Flickr.debugRequest = true;
 
         InputStream in = null;
         try {
@@ -38,10 +38,13 @@ public class GroupsInterfaceTest extends TestCase {
             REST rest = new REST();
             rest.setHost(properties.getProperty("host"));
 
-            flickr = new Flickr(properties.getProperty("apiKey"), rest);
+            flickr = new Flickr(
+                properties.getProperty("apiKey"),
+                properties.getProperty("secret"),
+                rest
+            );
 
             RequestContext requestContext = RequestContext.getRequestContext();
-            requestContext.setSharedSecret(properties.getProperty("secret"));
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));
@@ -108,6 +111,7 @@ public class GroupsInterfaceTest extends TestCase {
         assertEquals("34427469792@N01", group.getId());
         assertEquals("FlickrCentral", group.getName());
         assertTrue(group.getMembers() > 0);
+        assertTrue(group.getBuddyIconUrl().startsWith("http://farm"));
 
         //System.out.println("group members: " + group.getMembers());
     }

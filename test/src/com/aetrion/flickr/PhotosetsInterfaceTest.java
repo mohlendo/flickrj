@@ -37,13 +37,15 @@ public class PhotosetsInterfaceTest extends TestCase {
             properties = new Properties();
             properties.load(in);
 
-//            REST rest = new REST();
-//            rest.setHost(properties.getProperty("host"));
+            REST rest = new REST();
 
-            flickr = new Flickr(properties.getProperty("apiKey"));
+            flickr = new Flickr(
+                properties.getProperty("apiKey"),
+                properties.getProperty("secret"),
+                rest
+            );
 
             RequestContext requestContext = RequestContext.getRequestContext();
-            requestContext.setSharedSecret(properties.getProperty("secret"));
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));
@@ -92,7 +94,7 @@ public class PhotosetsInterfaceTest extends TestCase {
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
         Photosets photosets = iface.getList(properties.getProperty("nsid"));
         assertNotNull(photosets);
-        assertEquals(1, photosets.getPhotosets().size());
+        assertEquals(2, photosets.getPhotosets().size());
     }
 
     public void testGetList2() throws FlickrException, IOException, SAXException {
