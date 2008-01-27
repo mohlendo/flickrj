@@ -12,6 +12,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
@@ -23,7 +24,7 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr tags.
  *
  * @author Anthony Eden
- * @version $Id: TagsInterface.java,v 1.11 2007/07/22 17:34:47 x-mago Exp $
+ * @version $Id: TagsInterface.java,v 1.12 2008/01/27 16:09:47 x-mago Exp $
  */
 public class TagsInterface {
 
@@ -38,17 +39,23 @@ public class TagsInterface {
     public static final String PERIOD_DAY = "day";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
     /**
      * Construct a TagsInterface.
      *
      * @param apiKey The API key
-     * @param transport The Transport interface
+     * @param transportAPI The Transport interface
      */
-    public TagsInterface(String apiKey, Transport transport) {
+    public TagsInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transportAPI
+    ) {
         this.apiKey = apiKey;
-        this.transportAPI = transport;
+        this.sharedSecret = sharedSecret;
+        this.transportAPI = transportAPI;
     }
 
     /**
@@ -65,6 +72,12 @@ public class TagsInterface {
 
         parameters.add(new Parameter("period", period));
         parameters.add(new Parameter("count", new Integer(count)));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -98,6 +111,12 @@ public class TagsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -117,6 +136,7 @@ public class TagsInterface {
             tag.setId(tagElement.getAttribute("id"));
             tag.setAuthor(tagElement.getAttribute("author"));
             tag.setAuthorName(tagElement.getAttribute("authorname"));
+            tag.setRaw(tagElement.getAttribute("raw"));
             tag.setValue(((Text) tagElement.getFirstChild()).getData());
             tags.add(tag);
         }
@@ -139,6 +159,12 @@ public class TagsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -174,6 +200,12 @@ public class TagsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -213,6 +245,12 @@ public class TagsInterface {
         if(tagVal != null) {
             parameters.add(new Parameter("tag", tagVal));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -253,6 +291,12 @@ public class TagsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("tag", tag));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
