@@ -27,7 +27,7 @@ public class GroupsInterfaceTest extends TestCase {
     Flickr flickr = null;
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
-        Flickr.debugRequest = true;
+        Flickr.debugRequest = false;
 
         InputStream in = null;
         try {

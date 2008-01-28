@@ -13,6 +13,8 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -28,11 +30,17 @@ public class LicensesInterface {
     public static final String METHOD_SET_LICENSE = "flickr.photos.licenses.setLicense";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public LicensesInterface(String apiKey, Transport transport) {
+    public LicensesInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transportAPI
+    ) {
         this.apiKey = apiKey;
-        this.transportAPI = transport;
+        this.sharedSecret = sharedSecret;
+        this.transportAPI = transportAPI;
     }
 
     /**
@@ -42,6 +50,12 @@ public class LicensesInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_INFO));
         parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -60,7 +74,7 @@ public class LicensesInterface {
         }
         return licenses;
     }
-    
+
     /**
      * Sets the license for a photo.
      * This method requires authentication with 'write' permission.
@@ -76,6 +90,12 @@ public class LicensesInterface {
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("license_id", licenseId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         // Note: This method requires an HTTP POST request.
         Response response = transportAPI.post(transportAPI.getPath(), parameters);

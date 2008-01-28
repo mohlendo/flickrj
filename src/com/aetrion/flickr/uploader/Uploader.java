@@ -9,17 +9,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.util.StringUtilities;
 
 /**
@@ -36,11 +35,11 @@ import com.aetrion.flickr.util.StringUtilities;
  * for completion.
  *
  * @author Anthony Eden
- * @version $Id: Uploader.java,v 1.9 2007/11/02 21:46:52 x-mago Exp $
+ * @version $Id: Uploader.java,v 1.10 2008/01/28 23:01:45 x-mago Exp $
  */
 public class Uploader {
-
     private String apiKey;
+    private String sharedSecret;
     private Transport transport;
 
     /**
@@ -48,10 +47,10 @@ public class Uploader {
      *
      * @param apiKey The API key
      */
-    public Uploader(String apiKey) {
+    public Uploader(String apiKey, String sharedSecret) {
         try {
             this.apiKey = apiKey;
-            this.transport = new REST(Flickr.DEFAULT_HOST);
+            this.transport = new REST();
             this.transport.setResponseClass(UploaderResponse.class);
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e.getMessage(), e);
@@ -116,6 +115,12 @@ public class Uploader {
         if (metaData.getContentType() != null) {
             parameters.add(new Parameter("content_type", metaData.getContentType()));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true);
         if (response.isError()) {
@@ -164,6 +169,12 @@ public class Uploader {
         parameters.add(new Parameter("async", metaData.isAsync() ? "1" : "0"));
 
         parameters.add(new Parameter("photo", in));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true);
         if (response.isError()) {

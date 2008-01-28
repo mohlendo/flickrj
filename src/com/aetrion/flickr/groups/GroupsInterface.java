@@ -12,6 +12,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -21,7 +22,7 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr Groups.
  *
  * @author Anthony Eden
- * @version $Id: GroupsInterface.java,v 1.16 2008/01/09 20:35:54 x-mago Exp $
+ * @version $Id: GroupsInterface.java,v 1.17 2008/01/28 23:01:45 x-mago Exp $
  */
 public class GroupsInterface {
 
@@ -31,10 +32,12 @@ public class GroupsInterface {
     public static final String METHOD_SEARCH = "flickr.groups.search";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public GroupsInterface(String apiKey, Transport transportAPI) {
+    public GroupsInterface(String apiKey, String sharedSecret, Transport transportAPI) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transportAPI = transportAPI;
     }
 
@@ -59,6 +62,12 @@ public class GroupsInterface {
         if (catId != null) {
             parameters.add(new Parameter("cat_id", catId));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -89,9 +98,6 @@ public class GroupsInterface {
             group.setId(node.getAttribute("nsid"));
             group.setName(node.getAttribute("name"));
             group.setMembers(node.getAttribute("members"));
-            group.setOnline(node.getAttribute("online"));
-            group.setChatId(node.getAttribute("chatnsid"));
-            group.setInChat(node.getAttribute("inchat"));
 
             groups.add(group);
         }
@@ -114,6 +120,12 @@ public class GroupsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("group_id", groupId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -150,10 +162,6 @@ public class GroupsInterface {
         } else if (n > 1) {
             System.err.println("WARNING: more than one throttle element in group");
         }
-        // the following are not delivered anymore (?) but stay here in case ....
-        group.setOnline(XMLUtilities.getChildValue(groupElement, "online"));
-        group.setChatId(XMLUtilities.getChildValue(groupElement, "chatid"));
-        group.setInChat(XMLUtilities.getChildValue(groupElement, "chatcount"));
 
         return group;
     }
@@ -183,6 +191,12 @@ public class GroupsInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -199,7 +213,6 @@ public class GroupsInterface {
             Group group = new Group();
             group.setId(groupElement.getAttribute("nsid"));
             group.setName(groupElement.getAttribute("name"));
-            group.setEighteenPlus(XMLUtilities.getBooleanAttribute(groupElement, "eighteenplus"));
             groupList.add(group);
         }
         return groupList;

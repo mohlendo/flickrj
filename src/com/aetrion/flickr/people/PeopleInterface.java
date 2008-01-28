@@ -4,23 +4,20 @@
 package com.aetrion.flickr.people;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
-import com.aetrion.flickr.contacts.OnlineStatus;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.PhotoList;
@@ -32,7 +29,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for finding Flickr users.
  *
  * @author Anthony Eden
- * @version $Id: PeopleInterface.java,v 1.23 2007/11/08 21:23:49 x-mago Exp $
+ * @version $Id: PeopleInterface.java,v 1.24 2008/01/28 23:01:44 x-mago Exp $
  */
 public class PeopleInterface {
 
@@ -45,10 +42,16 @@ public class PeopleInterface {
     public static final String METHOD_GET_UPLOAD_STATUS = "flickr.people.getUploadStatus";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public PeopleInterface(String apiKey, Transport transportAPI) {
+    public PeopleInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transportAPI
+    ) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transportAPI = transportAPI;
     }
 
@@ -67,6 +70,12 @@ public class PeopleInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("find_email", email));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -93,7 +102,13 @@ public class PeopleInterface {
         parameters.add(new Parameter("method", METHOD_FIND_BY_USERNAME));
         parameters.add(new Parameter("api_key", apiKey));
 
-        parameters.add(new Parameter("username", URLEncoder.encode(username, "UTF-8")));
+        parameters.add(new Parameter("username", username));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -121,6 +136,12 @@ public class PeopleInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -164,6 +185,12 @@ public class PeopleInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -177,7 +204,6 @@ public class PeopleInterface {
             group.setId(groupElement.getAttribute("nsid"));
             group.setName(groupElement.getAttribute("name"));
             group.setAdmin("1".equals(groupElement.getAttribute("admin")));
-            group.setEighteenPlus("1".equals(groupElement.getAttribute("eighteenplus")));
             groups.add(group);
         }
         return groups;
@@ -221,6 +247,12 @@ public class PeopleInterface {
         if (extras != null) {
             parameters.add(new Parameter(Extras.KEY_EXTRAS, StringUtilities.join(extras, ",")));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {

@@ -13,13 +13,14 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * Gather activity information belonging to the calling user.
  *
  * @author Martin Goebel
- * @version $Id: ActivityInterface.java,v 1.3 2007/11/10 00:38:14 x-mago Exp $
+ * @version $Id: ActivityInterface.java,v 1.4 2008/01/28 23:01:45 x-mago Exp $
  */
 public class ActivityInterface {
 
@@ -27,10 +28,16 @@ public class ActivityInterface {
     public static final String METHOD_USER_PHOTOS = "flickr.activity.userPhotos";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public ActivityInterface(String apiKey, Transport transport) {
+    public ActivityInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transport
+    ) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transportAPI = transport;
     }
 
@@ -53,12 +60,18 @@ public class ActivityInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
+            parameters.add(new Parameter("per_page", "" + perPage));
         }
 
         if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
+            parameters.add(new Parameter("page", "" + page));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -100,11 +113,11 @@ public class ActivityInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
+            parameters.add(new Parameter("per_page", "" + perPage));
         }
 
         if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
+            parameters.add(new Parameter("page", "" + page));
         }
 
         if (timeframe != null) {
@@ -114,6 +127,12 @@ public class ActivityInterface {
             	throw new FlickrException("0","Timeframe-argument to getUserPhotos() not valid");
             }
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -172,7 +191,7 @@ public class ActivityInterface {
                 } else if (event.getType().equals("note")) {
                     event.setId(eventElement.getAttribute("noteid"));
                 } else if (event.getType().equals("fave")) {
-                	// has no id
+                    // has no id
                 }
                 event.setUser(eventElement.getAttribute("user"));
                 event.setUsername(eventElement.getAttribute("username"));

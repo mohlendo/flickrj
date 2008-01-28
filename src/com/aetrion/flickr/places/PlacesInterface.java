@@ -89,7 +89,7 @@ Thanks,
 </PRE>
 
  * @author mago
- * @version $Id: PlacesInterface.java,v 1.3 2008/01/26 00:34:05 x-mago Exp $
+ * @version $Id: PlacesInterface.java,v 1.4 2008/01/28 23:01:45 x-mago Exp $
  */
 public class PlacesInterface {
     public static final String METHOD_FIND = "flickr.places.find";
@@ -203,7 +203,7 @@ public class PlacesInterface {
 
         parameters.add(new Parameter("lat", "" + latitude));
         parameters.add(new Parameter("lon", "" + longitude));
-        parameters.add(new Parameter("accuracy", accuracy));
+        parameters.add(new Parameter("accuracy", "" + accuracy));
 
         parameters.add(
             new Parameter(

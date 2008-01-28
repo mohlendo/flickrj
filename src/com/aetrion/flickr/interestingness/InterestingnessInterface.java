@@ -21,6 +21,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
@@ -30,7 +31,7 @@ import com.aetrion.flickr.util.StringUtilities;
 /**
  *
  * @author till
- * @version $Id: InterestingnessInterface.java,v 1.6 2007/11/08 21:23:49 x-mago Exp $
+ * @version $Id: InterestingnessInterface.java,v 1.7 2008/01/28 23:01:44 x-mago Exp $
  */
 public class InterestingnessInterface {
 
@@ -44,10 +45,16 @@ public class InterestingnessInterface {
     private static final String KEY_PAGE = "page";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public InterestingnessInterface(String apiKey, Transport transportAPI) {
+    public InterestingnessInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transportAPI
+    ) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transportAPI = transportAPI;
     }
 
@@ -84,6 +91,12 @@ public class InterestingnessInterface {
         if (page > 0) {
             parameters.add(new Parameter(KEY_PAGE, String.valueOf(page)));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {

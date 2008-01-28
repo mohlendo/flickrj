@@ -29,6 +29,7 @@ import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.geo.GeoInterface;
 import com.aetrion.flickr.util.IOUtilities;
@@ -39,7 +40,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr Photos.
  *
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.43 2007/12/16 21:02:56 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.44 2008/01/28 23:01:44 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -75,10 +76,12 @@ public class PhotosInterface {
     private GeoInterface geoInterface = null;
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transport;
 
-    public PhotosInterface(String apiKey, Transport transport) {
+    public PhotosInterface(String apiKey, String sharedSecret, Transport transport) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transport = transport;
     }
 
@@ -88,7 +91,7 @@ public class PhotosInterface {
      */
     public synchronized GeoInterface getGeoInterface() {
         if (geoInterface == null) {
-            geoInterface = new GeoInterface(apiKey, transport);
+            geoInterface = new GeoInterface(apiKey, sharedSecret, transport);
         }
         return geoInterface;
     }
@@ -108,6 +111,12 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         // Note: This method requires an HTTP POST request.
         Response response = transport.post(transport.getPath(), parameters);
@@ -134,6 +143,12 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -169,6 +184,12 @@ public class PhotosInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("tags", StringUtilities.join(tags, " ", true)));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -208,6 +229,12 @@ public class PhotosInterface {
         if (includeSelf) {
             parameters.add(new Parameter("include_self", "1"));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -279,6 +306,12 @@ public class PhotosInterface {
             }
             parameters.add(new Parameter(Extras.KEY_EXTRAS, sb.toString()));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -313,6 +346,12 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -381,6 +420,12 @@ public class PhotosInterface {
             }
             parameters.add(new Parameter("taken_dates", StringUtilities.join(takenDateList, ",")));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -423,6 +468,12 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -464,6 +515,12 @@ public class PhotosInterface {
         if (secret != null) {
             parameters.add(new Parameter("secret", secret));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -505,6 +562,12 @@ public class PhotosInterface {
         if (secret != null) {
             parameters.add(new Parameter("secret", secret));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -545,6 +608,12 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -593,6 +662,12 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -629,6 +704,12 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -656,6 +737,12 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -698,6 +785,12 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -779,6 +872,13 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", page));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -855,6 +955,13 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", page));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -902,6 +1009,13 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", page));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+            
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -925,6 +1039,12 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("tag_id", tagId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -959,6 +1079,12 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -1005,6 +1131,12 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -1062,6 +1194,12 @@ public class PhotosInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("content_type", contentType));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -1099,6 +1237,12 @@ public class PhotosInterface {
         if (dateTakenGranularity != null) {
             parameters.add(new Parameter("date_taken_granularity", dateTakenGranularity));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -1125,6 +1269,12 @@ public class PhotosInterface {
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("title", title));
         parameters.add(new Parameter("description", description));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -1153,6 +1303,12 @@ public class PhotosInterface {
         parameters.add(new Parameter("is_family", permissions.isFamilyFlag() ? "1" : "0"));
         parameters.add(new Parameter("perm_comment", new Integer(permissions.getComment())));
         parameters.add(new Parameter("perm_addmeta", new Integer(permissions.getAddmeta())));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -1188,6 +1344,12 @@ public class PhotosInterface {
         if (hidden != null) {
             parameters.add(new Parameter("hidden", hidden.booleanValue() ? "1" : "0"));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -1212,6 +1374,12 @@ public class PhotosInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("tags", StringUtilities.join(tags, " ", true)));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {

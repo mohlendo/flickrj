@@ -34,12 +34,14 @@ public class ContactsInterfaceTest extends TestCase {
             properties.load(in);
 
             REST rest = new REST();
-            rest.setHost(properties.getProperty("host"));
 
-            flickr = new Flickr(properties.getProperty("apiKey"), rest);
+            flickr = new Flickr(
+                properties.getProperty("apiKey"),
+                properties.getProperty("secret"),
+                rest
+            );
 
             RequestContext requestContext = RequestContext.getRequestContext();
-            requestContext.setSharedSecret(properties.getProperty("secret"));
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));

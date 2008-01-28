@@ -12,22 +12,30 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
+
 import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
- * @version $Id: TransformInterface.java,v 1.5 2007/02/24 22:55:05 x-mago Exp $
+ * @version $Id: TransformInterface.java,v 1.6 2008/01/28 23:01:44 x-mago Exp $
  */
 public class TransformInterface {
 
     public static final String METHOD_ROTATE = "flickr.photos.transform.rotate";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public TransformInterface(String apiKey, Transport transport) {
+    public TransformInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transportAPI
+    ) {
         this.apiKey = apiKey;
-        this.transportAPI = transport;
+        this.sharedSecret = sharedSecret;
+        this.transportAPI = transportAPI;
     }
 
     /**
@@ -44,6 +52,12 @@ public class TransformInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("degrees", String.valueOf(degrees)));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {

@@ -32,7 +32,6 @@ public class ReflectionInterfaceSOAPTest extends TestCase {
             properties = new Properties();
             properties.load(in);
 
-            Flickr.debugStream = true;
             SOAP soap = new SOAP(properties.getProperty("host"));
             flickr = new Flickr(properties.getProperty("apiKey"), soap);
             

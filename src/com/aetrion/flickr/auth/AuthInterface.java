@@ -33,6 +33,7 @@ public class AuthInterface {
     public static final String METHOD_GET_FULL_TOKEN = "flickr.auth.getFullToken";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
     /**
@@ -41,8 +42,13 @@ public class AuthInterface {
      * @param apiKey The API key
      * @param transport The Transport interface
      */
-    public AuthInterface(String apiKey, Transport transport) {
+    public AuthInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transport
+    ) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transportAPI = transport;
     }
 
@@ -63,7 +69,12 @@ public class AuthInterface {
         parameters.add(new Parameter("auth_token", authToken));
 
         // This method call must be signed.
-        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -102,7 +113,7 @@ public class AuthInterface {
         parameters.add(new Parameter("mini_token", miniToken));
 
         // This method call must be signed.
-        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
+        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -138,7 +149,7 @@ public class AuthInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         // This method call must be signed.
-        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
+        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -164,7 +175,7 @@ public class AuthInterface {
         parameters.add(new Parameter("frob", frob));
 
         // This method call must be signed.
-        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
+        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -202,7 +213,7 @@ public class AuthInterface {
         parameters.add(new Parameter("frob", frob));
 
         // The parameters in the url must be signed
-        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(parameters)));
+        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
 
         String host = transportAPI.getHost();
         int port = transportAPI.getPort();

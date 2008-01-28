@@ -19,6 +19,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.Photo;
@@ -32,7 +33,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with photosets.
  *
  * @author Anthony Eden
- * @version $Id: PhotosetsInterface.java,v 1.23 2008/01/02 21:22:48 x-mago Exp $
+ * @version $Id: PhotosetsInterface.java,v 1.24 2008/01/28 23:01:45 x-mago Exp $
  */
 public class PhotosetsInterface {
 
@@ -49,11 +50,17 @@ public class PhotosetsInterface {
     public static final String METHOD_REMOVE_PHOTO = "flickr.photosets.removePhoto";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public PhotosetsInterface(String apiKey, Transport transport) {
+    public PhotosetsInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transportAPI
+    ) {
         this.apiKey = apiKey;
-        this.transportAPI = transport;
+        this.sharedSecret = sharedSecret;
+        this.transportAPI = transportAPI;
     }
 
     /**
@@ -71,6 +78,12 @@ public class PhotosetsInterface {
 
         parameters.add(new Parameter("photoset_id", photosetId));
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -98,6 +111,12 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("title", title));
         parameters.add(new Parameter("description", description));
         parameters.add(new Parameter("primary_photo_id", primaryPhotoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -124,6 +143,12 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photoset_id", photosetId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -152,6 +177,12 @@ public class PhotosetsInterface {
         if (description != null) {
             parameters.add(new Parameter("description", description));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -178,6 +209,12 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("photoset_id", photosetId));
         parameters.add(new Parameter("primary_photo_id", primaryPhotoId));
         parameters.add(new Parameter("photo_ids", StringUtilities.join(photoIds, ",")));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -203,6 +240,12 @@ public class PhotosetsInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("photoset_id", photosetId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -246,6 +289,12 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photoset_id", photosetId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -297,6 +346,12 @@ public class PhotosetsInterface {
         if (userId != null) {
             parameters.add(new Parameter("user_id", userId));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -382,6 +437,12 @@ public class PhotosetsInterface {
         if (extras != null && !extras.isEmpty()) {
             parameters.add(new Parameter(Extras.KEY_EXTRAS, StringUtilities.join(extras, ",")));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -441,6 +502,12 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photoset_ids", StringUtilities.join(photosetIds, ",")));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -464,6 +531,12 @@ public class PhotosetsInterface {
 
         parameters.add(new Parameter("photoset_id", photosetId));
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {

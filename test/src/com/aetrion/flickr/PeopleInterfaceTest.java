@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PeopleInterfaceTest.java,v 1.12 2008/01/26 00:05:17 x-mago Exp $
+ * @version $Id: PeopleInterfaceTest.java,v 1.13 2008/01/28 23:01:45 x-mago Exp $
  */
 public class PeopleInterfaceTest extends TestCase {
 
@@ -72,6 +72,11 @@ public class PeopleInterfaceTest extends TestCase {
         assertNotNull(person);
         assertEquals(properties.getProperty("nsid"), person.getId());
         assertEquals(properties.getProperty("username"), person.getUsername());
+        // Do the UrlEcoding is correct?
+        person = iface.findByUsername("| K H A L E D |");
+        assertNotNull(person);
+        assertEquals("14036163@N05", person.getId());
+        assertEquals("| K H A L E D |", person.getUsername());
     }
 
     public void testGetInfo() throws FlickrException, IOException, SAXException {

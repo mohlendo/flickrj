@@ -18,7 +18,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * 
- * @version $Id: InterestingnessInterfaceTest.java,v 1.4 2007/12/06 23:40:09 x-mago Exp $
+ * @version $Id: InterestingnessInterfaceTest.java,v 1.5 2008/01/28 23:01:45 x-mago Exp $
  */
 public class InterestingnessInterfaceTest extends TestCase {
 
@@ -37,12 +37,14 @@ public class InterestingnessInterfaceTest extends TestCase {
             properties.load(in);
 
             REST rest = new REST();
-            rest.setHost(properties.getProperty("host"));
 
-            flickr = new Flickr(properties.getProperty("apiKey"), rest);
+            flickr = new Flickr(
+                properties.getProperty("apiKey"),
+                properties.getProperty("secret"),
+                rest
+            );
 
             RequestContext requestContext = RequestContext.getRequestContext();
-            requestContext.setSharedSecret(properties.getProperty("secret"));
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));

@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
- * @version $Id: TestInterfaceTest.java,v 1.5 2007/11/04 16:14:08 x-mago Exp $
+ * @version $Id: TestInterfaceTest.java,v 1.6 2008/01/28 23:01:45 x-mago Exp $
  */
 public class TestInterfaceTest extends TestCase {
 
@@ -36,12 +36,14 @@ public class TestInterfaceTest extends TestCase {
             properties.load(in);
 
             REST rest = new REST();
-            rest.setHost(properties.getProperty("host"));
 
-            flickr = new Flickr(properties.getProperty("apiKey"), rest);
+            flickr = new Flickr(
+                properties.getProperty("apiKey"),
+                properties.getProperty("secret"),
+                rest
+            );
 
             RequestContext requestContext = RequestContext.getRequestContext();
-            requestContext.setSharedSecret(properties.getProperty("secret"));
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));

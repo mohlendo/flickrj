@@ -14,12 +14,13 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 
 /**
  * Requesting preferences for the current authenticated user.
  *
  * @author Martin Goebel
- * @version $Id: PrefsInterface.java,v 1.4 2007/09/30 15:54:31 x-mago Exp $
+ * @version $Id: PrefsInterface.java,v 1.5 2008/01/28 23:01:48 x-mago Exp $
  */
 public class PrefsInterface {
     public static final String METHOD_GET_CONTENT_TYPE = "flickr.prefs.getContentType";
@@ -28,17 +29,23 @@ public class PrefsInterface {
     public static final String METHOD_GET_PRIVACY = "flickr.prefs.getPrivacy";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
     /**
      * Construct a PrefsInterface.
      *
      * @param apiKey The API key
-     * @param transport The Transport interface
+     * @param transportAPI The Transport interface
      */
-    public PrefsInterface(String apiKey, Transport transport) {
+    public PrefsInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transportAPI
+    ) {
         this.apiKey = apiKey;
-        this.transportAPI = transport;
+        this.sharedSecret = sharedSecret;
+        this.transportAPI = transportAPI;
     }
 
     /**
@@ -56,6 +63,12 @@ public class PrefsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_CONTENT_TYPE));
         parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -78,6 +91,12 @@ public class PrefsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_HIDDEN));
         parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -103,6 +122,12 @@ public class PrefsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_SAFETY_LEVEL));
         parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -131,6 +156,12 @@ public class PrefsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_PRIVACY));
         parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {

@@ -13,6 +13,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.photos.Note;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -27,11 +28,17 @@ public class NotesInterface {
     public static final String METHOD_EDIT = "flickr.photos.notes.edit";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public NotesInterface(String apiKey, Transport transport) {
+    public NotesInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transportAPI
+    ) {
         this.apiKey = apiKey;
-        this.transportAPI = transport;
+        this.sharedSecret = sharedSecret;
+        this.transportAPI = transportAPI;
     }
 
     /**
@@ -58,6 +65,12 @@ public class NotesInterface {
         if (text != null) {
             parameters.add(new Parameter("note_text", text));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -83,6 +96,12 @@ public class NotesInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("note_id", noteId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -115,6 +134,12 @@ public class NotesInterface {
         if (text != null) {
             parameters.add(new Parameter("note_text", text));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {

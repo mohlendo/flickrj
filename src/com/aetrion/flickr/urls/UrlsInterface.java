@@ -15,6 +15,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.groups.Group;
 
 /**
@@ -31,17 +32,23 @@ public class UrlsInterface {
     public static final String METHOD_LOOKUP_USER = "flickr.urls.lookupUser";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transport;
 
     /**
      * Construct a UrlsInterface.
      *
      * @param apiKey The API key
-     * @param transport The Transport interface
+     * @param transportAPI The Transport interface
      */
-    public UrlsInterface(String apiKey, Transport transport) {
+    public UrlsInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transportAPI
+    ) {
         this.apiKey = apiKey;
-        this.transport = transport;
+        this.sharedSecret = sharedSecret;
+        this.transport = transportAPI;
     }
 
     /**
@@ -59,6 +66,12 @@ public class UrlsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("group_id", groupId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -84,6 +97,12 @@ public class UrlsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -109,6 +128,12 @@ public class UrlsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -134,6 +159,12 @@ public class UrlsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("url", url));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -164,6 +195,12 @@ public class UrlsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("url", url));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {

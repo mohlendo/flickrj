@@ -3,9 +3,12 @@
  */
 package com.aetrion.flickr;
 
+import java.util.Set;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.activity.ActivityInterface;
+import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.blogs.BlogsInterface;
 import com.aetrion.flickr.contacts.ContactsInterface;
@@ -15,10 +18,15 @@ import com.aetrion.flickr.groups.pools.PoolsInterface;
 import com.aetrion.flickr.interestingness.InterestingnessInterface;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotosInterface;
+import com.aetrion.flickr.photos.comments.CommentsInterface;
+import com.aetrion.flickr.photos.geo.GeoInterface;
 import com.aetrion.flickr.photos.licenses.LicensesInterface;
 import com.aetrion.flickr.photos.notes.NotesInterface;
 import com.aetrion.flickr.photos.transform.TransformInterface;
+import com.aetrion.flickr.photos.upload.UploadInterface;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
+import com.aetrion.flickr.photosets.comments.PhotosetsCommentsInterface;
+import com.aetrion.flickr.places.PlacesInterface;
 import com.aetrion.flickr.prefs.PrefsInterface;
 import com.aetrion.flickr.reflection.ReflectionInterface;
 import com.aetrion.flickr.tags.TagsInterface;
@@ -37,7 +45,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * (You -> Your account -> Extending Flickr -> Account Links -> edit).
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.38 2007/12/09 15:08:15 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.39 2008/01/28 23:01:44 x-mago Exp $
  */
 public class Flickr {
 
@@ -62,27 +70,34 @@ public class Flickr {
     public static boolean tracing = false;
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transport;
+    private Auth auth;
 
     private AuthInterface authInterface;
     private ActivityInterface activityInterface;
     private BlogsInterface blogsInterface;
+    private CommentsInterface commentsInterface;
     private ContactsInterface contactsInterface;
     private FavoritesInterface favoritesInterface;
+    private GeoInterface geoInterface;
     private GroupsInterface groupsInterface;
+    private InterestingnessInterface interestingnessInterface;
     private LicensesInterface licensesInterface;
     private NotesInterface notesInterface;
     private PoolsInterface poolsInterface;
     private PeopleInterface peopleInterface;
     private PhotosInterface photosInterface;
+    private PhotosetsCommentsInterface photosetsCommentsInterface;
     private PhotosetsInterface photosetsInterface;
+    private PlacesInterface placesInterface;
     private PrefsInterface prefsInterface;
     private ReflectionInterface reflectionInterface;
     private TagsInterface tagsInterface;
     private TestInterface testInterface;
     private TransformInterface transformInterface;
+    private UploadInterface uploadInterface;
     private UrlsInterface urlsInterface;
-    private InterestingnessInterface interestingnessInterface;
 
     /**
      * @see com.aetrion.flickr.photos.PhotosInterface#setContentType(String, String)
@@ -212,6 +227,12 @@ public class Flickr {
         setTransport(transport);
     }
 
+    public Flickr(String apiKey, String sharedSecret, Transport transport) {
+        setApiKey(apiKey);
+        setSharedSecret(sharedSecret);
+        setTransport(transport);
+    }
+
     /**
      * Get the API key.
      *
@@ -231,6 +252,40 @@ public class Flickr {
             throw new IllegalArgumentException("API key must not be null");
         }
         this.apiKey = apiKey;
+    }
+
+    public void setAuth(Auth auth) {
+        this.auth = auth;
+    }
+
+    /**
+     * Get the Auth-object.
+     *
+     * @return The Auth-object
+     */
+    public Auth getAuth() {
+        return auth;
+    }
+
+    /**
+     * Get the Shared-Secret.
+     *
+     * @return The Shared-Secret
+     */
+    public String getSharedSecret() {
+        return sharedSecret;
+    }
+
+    /**
+     * Set the Shared-Secret to use which must not be null.
+     *
+     * @param sharedSecret The Shared-Secret which cannot be null
+     */
+    public void setSharedSecret(String sharedSecret) {
+        if (sharedSecret == null) {
+            throw new IllegalArgumentException("Shared-Secret must not be null");
+        }
+        this.sharedSecret = sharedSecret;
     }
 
     /**
@@ -261,7 +316,7 @@ public class Flickr {
      */
     public AuthInterface getAuthInterface() {
         if (authInterface == null) {
-            authInterface = new AuthInterface(apiKey, transport);
+            authInterface = new AuthInterface(apiKey, sharedSecret, transport);
         }
         return authInterface;
     }
@@ -273,91 +328,129 @@ public class Flickr {
      */
     public ActivityInterface getActivityInterface() {
         if (activityInterface == null) {
-            activityInterface = new ActivityInterface(apiKey, transport);
+            activityInterface = new ActivityInterface(apiKey, sharedSecret, transport);
         }
         return activityInterface;
     }
 
     public synchronized BlogsInterface getBlogsInterface() {
         if (blogsInterface == null) {
-            blogsInterface = new BlogsInterface(apiKey, transport);
+            blogsInterface = new BlogsInterface(apiKey, sharedSecret, transport);
         }
         return blogsInterface;
     }
 
+    public CommentsInterface getCommentsInterface() {
+        if (commentsInterface == null) {
+            commentsInterface = new CommentsInterface(apiKey, sharedSecret, transport);
+        }
+        return commentsInterface;
+    }
+
     public ContactsInterface getContactsInterface() {
         if (contactsInterface == null) {
-            contactsInterface = new ContactsInterface(apiKey, transport);
+            contactsInterface = new ContactsInterface(apiKey, sharedSecret, transport);
         }
         return contactsInterface;
     }
 
     public FavoritesInterface getFavoritesInterface() {
         if (favoritesInterface == null) {
-            favoritesInterface = new FavoritesInterface(apiKey, transport);
+            favoritesInterface = new FavoritesInterface(apiKey, sharedSecret, transport);
         }
         return favoritesInterface;
     }
 
+    public GeoInterface getGeoInterface() {
+        if (geoInterface == null) {
+            geoInterface = new GeoInterface(apiKey, sharedSecret, transport);
+        }
+        return geoInterface;
+    }
+
     public GroupsInterface getGroupsInterface() {
         if (groupsInterface == null) {
-            groupsInterface = new GroupsInterface(apiKey, transport);
+            groupsInterface = new GroupsInterface(apiKey, sharedSecret, transport);
         }
         return groupsInterface;
     }
 
+    /**
+     * @return the interface to the flickr.interestingness methods
+     */
+    public synchronized InterestingnessInterface getInterestingnessInterface() {
+        if (interestingnessInterface == null) {
+            interestingnessInterface = new InterestingnessInterface(apiKey, sharedSecret, transport);
+        }
+        return interestingnessInterface;
+    }
+
     public LicensesInterface getLicensesInterface() {
         if (licensesInterface == null) {
-            licensesInterface = new LicensesInterface(apiKey, transport);
+            licensesInterface = new LicensesInterface(apiKey, sharedSecret, transport);
         }
         return licensesInterface;
     }
 
     public NotesInterface getNotesInterface() {
         if (notesInterface == null) {
-            notesInterface = new NotesInterface(apiKey, transport);
+            notesInterface = new NotesInterface(apiKey, sharedSecret, transport);
         }
         return notesInterface;
     }
 
     public PoolsInterface getPoolsInterface() {
         if (poolsInterface == null) {
-            poolsInterface = new PoolsInterface(apiKey, transport);
+            poolsInterface = new PoolsInterface(apiKey, sharedSecret, transport);
         }
         return poolsInterface;
     }
 
     public PeopleInterface getPeopleInterface() {
         if (peopleInterface == null) {
-            peopleInterface = new PeopleInterface(apiKey, transport);
+            peopleInterface = new PeopleInterface(apiKey, sharedSecret, transport);
         }
         return peopleInterface;
     }
 
     public PhotosInterface getPhotosInterface() {
         if (photosInterface == null) {
-            photosInterface = new PhotosInterface(apiKey, transport);
+            photosInterface = new PhotosInterface(apiKey, sharedSecret, transport);
         }
         return photosInterface;
     }
 
+    public PhotosetsCommentsInterface getPhotosetsCommentsInterface() {
+        if (photosetsCommentsInterface == null) {
+            photosetsCommentsInterface = new PhotosetsCommentsInterface(apiKey, sharedSecret, transport);
+        }
+        return photosetsCommentsInterface;
+    }
+
     public PhotosetsInterface getPhotosetsInterface() {
         if (photosetsInterface == null) {
-            photosetsInterface = new PhotosetsInterface(apiKey, transport);
+            photosetsInterface = new PhotosetsInterface(apiKey, sharedSecret, transport);
         }
         return photosetsInterface;
     }
 
+    public PlacesInterface getPlacesInterface() {
+        if (placesInterface == null) {
+            placesInterface = new PlacesInterface(apiKey, sharedSecret, transport);
+        }
+        return placesInterface;
+    }
+
     public PrefsInterface getPrefsInterface() {
         if (prefsInterface == null) {
-            prefsInterface = new PrefsInterface(apiKey, transport);
+            prefsInterface = new PrefsInterface(apiKey, sharedSecret, transport);
         }
         return prefsInterface;
     }
 
     public ReflectionInterface getReflectionInterface() {
         if (reflectionInterface == null) {
-            reflectionInterface = new ReflectionInterface(apiKey, transport);
+            reflectionInterface = new ReflectionInterface(apiKey, sharedSecret, transport);
         }
         return reflectionInterface;
     }
@@ -369,40 +462,37 @@ public class Flickr {
      */
     public TagsInterface getTagsInterface() {
         if (tagsInterface == null) {
-            tagsInterface = new TagsInterface(apiKey, transport);
+            tagsInterface = new TagsInterface(apiKey, sharedSecret, transport);
         }
         return tagsInterface;
     }
 
     public TestInterface getTestInterface() {
         if (testInterface == null) {
-            testInterface = new TestInterface(apiKey, transport);
+            testInterface = new TestInterface(apiKey, sharedSecret, transport);
         }
         return testInterface;
     }
 
     public TransformInterface getTransformInterface() {
         if (transformInterface == null) {
-            transformInterface = new TransformInterface(apiKey, transport);
+            transformInterface = new TransformInterface(apiKey, sharedSecret, transport);
         }
         return transformInterface;
     }
 
-    public UrlsInterface getUrlsInterface() {
-        if (urlsInterface == null) {
-            urlsInterface = new UrlsInterface(apiKey, transport);
+    public UploadInterface getUploadInterface() {
+        if (uploadInterface == null) {
+            uploadInterface = new UploadInterface(apiKey, sharedSecret, transport);
         }
-        return urlsInterface;
+        return uploadInterface;
     }
 
-    /**
-     * @return the interface to the flickr.interestingness methods
-     */
-    public synchronized InterestingnessInterface getInterestingnessInterface() {
-        if (interestingnessInterface == null) {
-            interestingnessInterface = new InterestingnessInterface(apiKey, transport);
+    public UrlsInterface getUrlsInterface() {
+        if (urlsInterface == null) {
+            urlsInterface = new UrlsInterface(apiKey, sharedSecret, transport);
         }
-        return interestingnessInterface;
+        return urlsInterface;
     }
 
 }

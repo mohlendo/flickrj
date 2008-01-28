@@ -18,6 +18,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.groups.Group;
 import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.Photo;
@@ -28,7 +29,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PoolsInterface.java,v 1.12 2007/09/12 22:39:27 x-mago Exp $
+ * @version $Id: PoolsInterface.java,v 1.13 2008/01/28 23:01:45 x-mago Exp $
  */
 public class PoolsInterface {
 
@@ -39,10 +40,16 @@ public class PoolsInterface {
     public static final String METHOD_REMOVE = "flickr.groups.pools.remove";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transport;
 
-    public PoolsInterface(String apiKey, Transport transport) {
+    public PoolsInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transport
+    ) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transport = transport;
     }
 
@@ -60,6 +67,12 @@ public class PoolsInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("group_id", groupId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -84,6 +97,12 @@ public class PoolsInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("group_id", groupId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -124,6 +143,12 @@ public class PoolsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_GROUPS));
         parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -188,6 +213,12 @@ public class PoolsInterface {
             }
             parameters.add(new Parameter(Extras.KEY_EXTRAS, sb.toString()));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -240,6 +271,12 @@ public class PoolsInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("group_id", groupId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {

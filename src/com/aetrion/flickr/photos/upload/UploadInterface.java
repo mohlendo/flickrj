@@ -14,23 +14,30 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 
 /**
  * Checks the status of asynchronous photo upload tickets.
  *
  * @author till (Till Krech) extranoise:flickr
- * @version $Id: UploadInterface.java,v 1.2 2007/11/02 21:46:52 x-mago Exp $
+ * @version $Id: UploadInterface.java,v 1.3 2008/01/28 23:01:45 x-mago Exp $
  */
 public class UploadInterface {
     public static final String METHOD_CHECK_TICKETS  = "flickr.photos.upload.checkTickets";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public UploadInterface(String apiKey, Transport transport) {
+    public UploadInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transport
+     ) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transportAPI = transport;
-    }
+     }
 
     /**
      * Checks the status of one or more asynchronous photo upload tickets.
@@ -61,6 +68,12 @@ public class UploadInterface {
             }
         }
         parameters.add(new Parameter("tickets", sb.toString()));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {

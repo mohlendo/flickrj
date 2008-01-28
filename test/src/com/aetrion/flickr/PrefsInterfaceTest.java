@@ -17,7 +17,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Martin Goebel
- * @version $Id: PrefsInterfaceTest.java,v 1.1 2007/07/21 19:11:27 x-mago Exp $
+ * @version $Id: PrefsInterfaceTest.java,v 1.2 2008/01/28 23:01:44 x-mago Exp $
  */
 public class PrefsInterfaceTest extends TestCase {
 
@@ -31,12 +31,14 @@ public class PrefsInterfaceTest extends TestCase {
             properties.load(in);
 
             REST rest = new REST();
-            rest.setHost(properties.getProperty("host"));
 
-            flickr = new Flickr(properties.getProperty("apiKey"), rest);
+            flickr = new Flickr(
+                properties.getProperty("apiKey"),
+                properties.getProperty("secret"),
+                rest
+            );
 
             RequestContext requestContext = RequestContext.getRequestContext();
-            requestContext.setSharedSecret(properties.getProperty("secret"));
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));

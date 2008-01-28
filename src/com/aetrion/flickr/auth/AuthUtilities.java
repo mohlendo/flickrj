@@ -5,6 +5,7 @@
 package com.aetrion.flickr.auth;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -16,12 +17,13 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.ParameterAlphaComparator;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.util.ByteUtilities;
+import com.aetrion.flickr.util.UrlUtilities;
 
 /**
  * Utilities used by the authentication API.
  *
  * @author Anthony Eden
- * @version $Id: AuthUtilities.java,v 1.6 2007/11/17 23:35:00 x-mago Exp $
+ * @version $Id: AuthUtilities.java,v 1.7 2008/01/28 23:01:45 x-mago Exp $
  */
 public class AuthUtilities {
 
@@ -58,7 +60,7 @@ public class AuthUtilities {
         while (iter.hasNext()) {
             Parameter param = (Parameter) iter.next();
             buffer.append(param.getName());
-            buffer.append(param.getValue());
+            buffer.append((String) param.getValue());
         }
 
         try {

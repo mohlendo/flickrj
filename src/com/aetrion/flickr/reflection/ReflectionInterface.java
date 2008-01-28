@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
  * Interface for testing the complete implementation of all Flickr-methods.<p>
  *
  * @author Anthony Eden
- * @version $Id: ReflectionInterface.java,v 1.9 2008/01/13 21:14:44 x-mago Exp $
+ * @version $Id: ReflectionInterface.java,v 1.10 2008/01/28 23:01:45 x-mago Exp $
  */
 public class ReflectionInterface {
 
@@ -65,6 +65,12 @@ public class ReflectionInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("method_name", methodName));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {

@@ -19,7 +19,7 @@ import java.util.List;
 /** @author Anthony Eden */
 public class UrlUtilities {
 
-    private static final String UTF8 = "UTF-8";
+    public static final String UTF8 = "UTF-8";
 
     /**
      * Build a request URL.

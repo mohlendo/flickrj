@@ -18,7 +18,7 @@ import com.aetrion.flickr.util.IOUtilities;
 /**
  * 
  * @author till
- * @version $Id: GeoInterfaceTest.java,v 1.3 2007/07/23 20:28:02 x-mago Exp $
+ * @version $Id: GeoInterfaceTest.java,v 1.4 2008/01/28 23:01:45 x-mago Exp $
  */
 public class GeoInterfaceTest extends TestCase {
 
@@ -37,12 +37,14 @@ public class GeoInterfaceTest extends TestCase {
             properties.load(in);
 
             REST rest = new REST();
-            rest.setHost(properties.getProperty("host"));
 
-            flickr = new Flickr(properties.getProperty("apiKey"), rest);
+            flickr = new Flickr(
+                properties.getProperty("apiKey"),
+                properties.getProperty("secret"),
+                rest
+            );
 
             RequestContext requestContext = RequestContext.getRequestContext();
-            requestContext.setSharedSecret(properties.getProperty("secret"));
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));

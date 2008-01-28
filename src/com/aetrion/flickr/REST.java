@@ -32,7 +32,7 @@ import com.aetrion.flickr.util.UrlUtilities;
  * Transport implementation using the REST interface.
  *
  * @author Anthony Eden
- * @version $Id: REST.java,v 1.22 2007/12/06 23:43:18 x-mago Exp $
+ * @version $Id: REST.java,v 1.23 2008/01/28 23:01:44 x-mago Exp $
  */
 public class REST extends Transport {
 
@@ -210,15 +210,15 @@ public class REST extends Transport {
                         Parameter p = (Parameter) iter.next();
                         writeParam(p.getName(), p.getValue(), out, boundary);
                     }
-                    Auth auth = requestContext.getAuth();
+/*                    Auth auth = requestContext.getAuth();
                     if (auth != null) {
                         writeParam(
                             "api_sig",
-                            AuthUtilities.getMultipartSignature(parameters),
+                            AuthUtilities.getMultipartSignature(sharedSecret, parameters),
                             out,
                             boundary
                         );
-                    }
+                    } */
                 } else {
                     Iterator iter = parameters.iterator();
                     while (iter.hasNext()) {
@@ -245,8 +245,8 @@ public class REST extends Transport {
                         // will be added at AuthUtilities.addAuthToken()
                         //out.writeBytes("&auth_token=");
                         //out.writeBytes(auth.getToken());
-                        out.writeBytes("&api_sig=");
-                        out.writeBytes(AuthUtilities.getSignature(parameters));
+                        //out.writeBytes("&api_sig=");
+                        //out.writeBytes(AuthUtilities.getSignature(parameters));
                     }
                 }
                 out.flush();

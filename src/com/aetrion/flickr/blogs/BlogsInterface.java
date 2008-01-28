@@ -7,6 +7,7 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.photos.Photo;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -21,6 +22,7 @@ import java.util.List;
  * Interface for working with Flickr blog configurations.
  *
  * @author Anthony Eden
+ * @version $Id: BlogsInterface.java,v 1.13 2008/01/28 23:01:48 x-mago Exp $
  */
 public class BlogsInterface {
 
@@ -28,10 +30,12 @@ public class BlogsInterface {
     public static final String METHOD_POST_PHOTO = "flickr.blogs.postPhoto";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public BlogsInterface(String apiKey, Transport transport) {
+    public BlogsInterface(String apiKey, String sharedSecret, Transport transport) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transportAPI = transport;
     }
 
@@ -60,6 +64,12 @@ public class BlogsInterface {
         if (blogPassword != null) {
             parameters.add(new Parameter("blog_password", blogPassword));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {

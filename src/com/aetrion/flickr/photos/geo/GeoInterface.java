@@ -11,13 +11,15 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.photos.GeoData;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * Access to the flickr.photos.geo methods.
- * @author till (Till Krech - flickr:extranoise)
  *
+ * @author till (Till Krech - flickr:extranoise)
+ * @version $Id: GeoInterface.java,v 1.2 2008/01/28 23:01:45 x-mago Exp $
  */
 public class GeoInterface {
     public static final String METHOD_GET_LOCATION = "flickr.photos.geo.getLocation";
@@ -27,16 +29,23 @@ public class GeoInterface {
     public static final String METHOD_SET_PERMS = "flickr.photos.geo.setPerms";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transport;
 
-    public GeoInterface(String apiKey, Transport transport) {
+    public GeoInterface(
+        String apiKey,
+        String sharedSecret,
+        Transport transport
+    ) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transport = transport;
     }
-    
+
     /**
      * Get the geo data (latitude and longitude and the accuracy level) for a photo.
      * This method does not require authentication.
+     *
      * @param photoId reqired photo id, not null
      * @return Geo Data, if the photo has it. 
      * @throws SAXException 
@@ -49,6 +58,12 @@ public class GeoInterface {
         parameters.add(new Parameter("method", METHOD_GET_LOCATION));
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -60,7 +75,7 @@ public class GeoInterface {
 		// </photo>
 
         Element photoElement = response.getPayload();
-        
+
         Element locationElement = XMLUtilities.getChild(photoElement, "location");
         String latStr = locationElement.getAttribute("latitude");
         String lonStr = locationElement.getAttribute("longitude");
@@ -70,7 +85,7 @@ public class GeoInterface {
         GeoData geoData = new GeoData(lonStr, latStr, accStr);
         return geoData;
     }
-    
+
     /**
      * Get permissions for who may view geo data for a photo.
      * This method requires authentication with 'read' permission.
@@ -89,7 +104,13 @@ public class GeoInterface {
         parameters.add(new Parameter("method", METHOD_GET_PERMS));
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("photo_id", photoId));
-        
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -106,7 +127,7 @@ public class GeoInterface {
         // photo id.
 		return perms;
     }
-    
+
     /**
      * Removes the geo data associated with a photo.
      * This method requires authentication with 'write' permission.
@@ -119,16 +140,22 @@ public class GeoInterface {
         parameters.add(new Parameter("method", METHOD_REMOVE_LOCATION));
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("photo_id", photoId));
-    	// Note: This method requires an HTTP POST request.
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        // Note: This method requires an HTTP POST request.
         Response response = transport.post(transport.getPath(), parameters);
         // This method has no specific response - It returns an empty sucess response 
         // if it completes without error.
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
-    	
     }
-    
+
     /**
      * Sets the geo data (latitude and longitude and, optionally, the accuracy level) for a photo. 
      * Before users may assign location data to a photo they must define who, by default, 
@@ -153,7 +180,14 @@ public class GeoInterface {
         if (accuracy > 0) {
             parameters.add(new Parameter("accuracy", String.valueOf(location.getAccuracy())));
         }
-    	// Note: This method requires an HTTP POST request.
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        // Note: This method requires an HTTP POST request.
         Response response = transport.post(transport.getPath(), parameters);
         // This method has no specific response - It returns an empty sucess response 
         // if it completes without error.
@@ -161,7 +195,7 @@ public class GeoInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
     }
-    
+
     /**
      * Set the permission for who may view the geo data associated with a photo.
      * This method requires authentication with 'write' permission.
@@ -180,7 +214,14 @@ public class GeoInterface {
         parameters.add(new Parameter("is_contact", perms.isContact() ? "1" : "0"));
         parameters.add(new Parameter("is_friend", perms.isFriend() ? "1" : "0"));
         parameters.add(new Parameter("is_family", perms.isFamily() ? "1" : "0"));
-    	// Note: This method requires an HTTP POST request.
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        // Note: This method requires an HTTP POST request.
         Response response = transport.post(transport.getPath(), parameters);
         // This method has no specific response - It returns an empty sucess response 
         // if it completes without error.
@@ -188,9 +229,5 @@ public class GeoInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
     }
-
-
-
-    
 
 }

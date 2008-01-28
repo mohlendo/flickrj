@@ -12,10 +12,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
+import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.util.StringUtilities;
@@ -24,7 +26,7 @@ import com.aetrion.flickr.util.StringUtilities;
  * Interface for working with Flickr favorites.
  *
  * @author Anthony Eden
- * @version $Id: FavoritesInterface.java,v 1.15 2007/09/30 13:11:24 x-mago Exp $
+ * @version $Id: FavoritesInterface.java,v 1.16 2008/01/28 23:01:45 x-mago Exp $
  */
 public class FavoritesInterface {
 
@@ -34,10 +36,12 @@ public class FavoritesInterface {
     public static final String METHOD_REMOVE = "flickr.favorites.remove";
 
     private String apiKey;
+    private String sharedSecret;
     private Transport transportAPI;
 
-    public FavoritesInterface(String apiKey, Transport transportAPI) {
+    public FavoritesInterface(String apiKey, String sharedSecret, Transport transportAPI) {
         this.apiKey = apiKey;
+        this.sharedSecret = sharedSecret;
         this.transportAPI = transportAPI;
     }
 
@@ -55,6 +59,12 @@ public class FavoritesInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -94,6 +104,12 @@ public class FavoritesInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -145,6 +161,12 @@ public class FavoritesInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -175,6 +197,12 @@ public class FavoritesInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
