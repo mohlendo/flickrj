@@ -40,7 +40,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr Photos.
  *
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.44 2008/01/28 23:01:44 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.45 2008/02/03 17:02:50 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -218,7 +218,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         if (count > 0) {
-            parameters.add(new Parameter("count", new Integer(count)));
+            parameters.add(new Parameter("count", count));
         }
         if (justFriends) {
             parameters.add(new Parameter("just_friends", "1"));
@@ -283,7 +283,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("user_id", userId));
 
         if (count > 0) {
-            parameters.add(new Parameter("count", new Integer(count)));
+            parameters.add(new Parameter("count", count));
         }
         if (justFriends) {
             parameters.add(new Parameter("just_friends", "1"));
@@ -462,11 +462,11 @@ public class PhotosInterface {
         parameters.add(new Parameter("photo_id", photoId));
 
         if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
+            parameters.add(new Parameter("per_page", perPage));
         }
 
         if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
+            parameters.add(new Parameter("page", page));
         }
         parameters.add(
             new Parameter(
@@ -603,10 +603,10 @@ public class PhotosInterface {
         }
 
         if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
+            parameters.add(new Parameter("per_page", perPage));
         }
         if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
+            parameters.add(new Parameter("page", page));
         }
         parameters.add(
             new Parameter(
@@ -628,21 +628,7 @@ public class PhotosInterface {
         NodeList photoElements = photosElement.getElementsByTagName("photo");
         for (int i = 0; i < photoElements.getLength(); i++) {
             Element photoElement = (Element) photoElements.item(i);
-            Photo photo = new Photo();
-            photo.setId(photoElement.getAttribute("id"));
-            photo.setSecret(photoElement.getAttribute("secret"));
-            photo.setServer(photoElement.getAttribute("server"));
-            photo.setFarm(photoElement.getAttribute("farm"));
-            photo.setTitle(photoElement.getAttribute("title"));
-            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
-            photo.setFriendFlag("1".equals(photoElement.getAttribute("isfriend")));
-            photo.setFamilyFlag("1".equals(photoElement.getAttribute("isfamily")));
-
-            User user = new User();
-            user.setId(photoElement.getAttribute("owner"));
-            photo.setOwner(user);
-
-            photos.add(photo);
+            photos.add(PhotoUtils.createPhoto(photoElement));
         }
         return photos;
     }
@@ -699,10 +685,10 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
+            parameters.add(new Parameter("per_page", perPage));
         }
         if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
+            parameters.add(new Parameter("page", page));
         }
         parameters.add(
             new Parameter(
@@ -780,10 +766,10 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
+            parameters.add(new Parameter("per_page", perPage));
         }
         if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
+            parameters.add(new Parameter("page", page));
         }
         parameters.add(
             new Parameter(
@@ -1015,7 +1001,7 @@ public class PhotosInterface {
                 AuthUtilities.getSignature(sharedSecret, parameters)
             )
         );
-            
+
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -1074,10 +1060,10 @@ public class PhotosInterface {
         parameters.addAll(params.getAsParameters());
 
         if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
+            parameters.add(new Parameter("per_page", "" + perPage));
         }
         if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
+            parameters.add(new Parameter("page", "" + page));
         }
         parameters.add(
             new Parameter(
@@ -1126,10 +1112,10 @@ public class PhotosInterface {
         parameters.addAll(params.getAsParameters());
 
         if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
+            parameters.add(new Parameter("per_page", perPage));
         }
         if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
+            parameters.add(new Parameter("page", page));
         }
         parameters.add(
             new Parameter(
@@ -1301,8 +1287,8 @@ public class PhotosInterface {
         parameters.add(new Parameter("is_public", permissions.isPublicFlag() ? "1" : "0"));
         parameters.add(new Parameter("is_friend", permissions.isFriendFlag() ? "1" : "0"));
         parameters.add(new Parameter("is_family", permissions.isFamilyFlag() ? "1" : "0"));
-        parameters.add(new Parameter("perm_comment", new Integer(permissions.getComment())));
-        parameters.add(new Parameter("perm_addmeta", new Integer(permissions.getAddmeta())));
+        parameters.add(new Parameter("perm_comment", permissions.getComment()));
+        parameters.add(new Parameter("perm_addmeta", permissions.getAddmeta()));
         parameters.add(
             new Parameter(
                 "api_sig",
