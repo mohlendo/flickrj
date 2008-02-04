@@ -3,8 +3,6 @@
  */
 package com.aetrion.flickr;
 
-import java.util.Set;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.activity.ActivityInterface;
@@ -31,6 +29,7 @@ import com.aetrion.flickr.prefs.PrefsInterface;
 import com.aetrion.flickr.reflection.ReflectionInterface;
 import com.aetrion.flickr.tags.TagsInterface;
 import com.aetrion.flickr.test.TestInterface;
+import com.aetrion.flickr.uploader.Uploader;
 import com.aetrion.flickr.urls.UrlsInterface;
 
 /**
@@ -45,7 +44,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * (You -> Your account -> Extending Flickr -> Account Links -> edit).
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.39 2008/01/28 23:01:44 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.40 2008/02/04 21:51:56 x-mago Exp $
  */
 public class Flickr {
 
@@ -97,6 +96,7 @@ public class Flickr {
     private TestInterface testInterface;
     private TransformInterface transformInterface;
     private UploadInterface uploadInterface;
+    private Uploader uploader;
     private UrlsInterface urlsInterface;
 
     /**
@@ -227,6 +227,13 @@ public class Flickr {
         setTransport(transport);
     }
 
+    /**
+     * Construct a new Flickr gateway instance.
+     *
+     * @param apiKey The API key, must be non-null
+     * @param sharedSecret
+     * @param transport
+     */
     public Flickr(String apiKey, String sharedSecret, Transport transport) {
         setApiKey(apiKey);
         setSharedSecret(sharedSecret);
@@ -486,6 +493,13 @@ public class Flickr {
             uploadInterface = new UploadInterface(apiKey, sharedSecret, transport);
         }
         return uploadInterface;
+    }
+
+    public Uploader getUploader() {
+        if (uploader == null) {
+            uploader = new Uploader(apiKey, sharedSecret);
+        }
+        return uploader;
     }
 
     public UrlsInterface getUrlsInterface() {
