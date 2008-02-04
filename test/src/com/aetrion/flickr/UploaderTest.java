@@ -11,13 +11,17 @@ import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import junit.framework.TestCase;
+
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.auth.Permission;
+import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.uploader.UploadMetaData;
 import com.aetrion.flickr.uploader.Uploader;
 import com.aetrion.flickr.util.IOUtilities;
-import com.aetrion.flickr.auth.AuthInterface;
-import com.aetrion.flickr.auth.Auth;
-import junit.framework.TestCase;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
@@ -25,31 +29,34 @@ import org.xml.sax.SAXException;
 public class UploaderTest extends TestCase {
 
     Uploader uploader = null;
+    PhotosInterface pint = null;
     Flickr flickr = null;
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
         InputStream in = null;
+        Flickr.debugRequest = true;
         Flickr.debugStream = true;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
             properties = new Properties();
             properties.load(in);
 
-            REST uploaderTransport = new REST();
-            uploaderTransport.setHost(properties.getProperty("host"));
-
             REST rest = new REST();
-            rest.setHost(properties.getProperty("host"));
 
-            uploader = new Uploader(properties.getProperty("apiKey"), uploaderTransport);
-            flickr = new Flickr(properties.getProperty("apiKey"), rest);
+            flickr = new Flickr(
+                properties.getProperty("apiKey"),
+                properties.getProperty("secret"),
+                rest
+            );
+            uploader = flickr.getUploader();
+            pint = flickr.getPhotosInterface();
 
             RequestContext requestContext = RequestContext.getRequestContext();
-            requestContext.setSharedSecret(properties.getProperty("secret"));
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));
+            auth.setPermission(Permission.DELETE);
             requestContext.setAuth(auth);
         } finally {
             IOUtilities.close(in);
@@ -75,8 +82,11 @@ public class UploaderTest extends TestCase {
                 out.write((byte) b);
             }
             UploadMetaData metaData = new UploadMetaData();
+            // check correct handling of escaped value
+            metaData.setTitle("óöä");
             String photoId = uploader.upload(out.toByteArray(), metaData);
             assertNotNull(photoId);
+            pint.delete(photoId);
         } finally {
             IOUtilities.close(in);
             IOUtilities.close(out);
@@ -96,8 +106,11 @@ public class UploaderTest extends TestCase {
         try {
             in = new FileInputStream(imageFile);
             UploadMetaData metaData = new UploadMetaData();
+            // check correct handling of escaped value
+            metaData.setTitle("óöä");
             String photoId = uploader.upload(in, metaData);
             assertNotNull(photoId);
+            pint.delete(photoId);
         } finally {
             IOUtilities.close(in);
         }

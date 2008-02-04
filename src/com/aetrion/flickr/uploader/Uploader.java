@@ -35,7 +35,7 @@ import com.aetrion.flickr.util.StringUtilities;
  * for completion.
  *
  * @author Anthony Eden
- * @version $Id: Uploader.java,v 1.10 2008/01/28 23:01:45 x-mago Exp $
+ * @version $Id: Uploader.java,v 1.11 2008/02/04 22:16:29 x-mago Exp $
  */
 public class Uploader {
     private String apiKey;
@@ -50,23 +50,12 @@ public class Uploader {
     public Uploader(String apiKey, String sharedSecret) {
         try {
             this.apiKey = apiKey;
+            this.sharedSecret = sharedSecret;
             this.transport = new REST();
             this.transport.setResponseClass(UploaderResponse.class);
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
-    }
-
-    /**
-     * Construct an uploader using the specified Transport interface.
-     *
-     * @param apiKey The API key
-     * @param transport The Transport interface
-     */
-    public Uploader(String apiKey, Transport transport) {
-        this.apiKey = apiKey;
-        this.transport = transport;
-        this.transport.setResponseClass(UploaderResponse.class);
     }
 
     /**
@@ -118,7 +107,7 @@ public class Uploader {
         parameters.add(
             new Parameter(
                 "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
+                AuthUtilities.getMultipartSignature(sharedSecret, parameters)
             )
         );
 
@@ -172,7 +161,7 @@ public class Uploader {
         parameters.add(
             new Parameter(
                 "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
+                AuthUtilities.getMultipartSignature(sharedSecret, parameters)
             )
         );
 

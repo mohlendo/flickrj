@@ -37,7 +37,10 @@ public class UploaderSOAPTest extends TestCase {
             Flickr.debugStream = true;
             SOAP soap = new SOAP(properties.getProperty("host"));
 
-            uploader = new Uploader(properties.getProperty("apiKey"), soap);
+            uploader = new Uploader(
+                properties.getProperty("apiKey"),
+                properties.getProperty("secret")
+            );
         } finally {
             IOUtilities.close(in);
         }

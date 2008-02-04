@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.UrlUtilities;
  * Utilities used by the authentication API.
  *
  * @author Anthony Eden
- * @version $Id: AuthUtilities.java,v 1.7 2008/01/28 23:01:45 x-mago Exp $
+ * @version $Id: AuthUtilities.java,v 1.8 2008/02/04 22:16:29 x-mago Exp $
  */
 public class AuthUtilities {
 
@@ -60,7 +60,7 @@ public class AuthUtilities {
         while (iter.hasNext()) {
             Parameter param = (Parameter) iter.next();
             buffer.append(param.getName());
-            buffer.append((String) param.getValue());
+            buffer.append(param.getValue());
         }
 
         try {
