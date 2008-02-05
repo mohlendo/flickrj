@@ -35,8 +35,8 @@ public class UploaderTest extends TestCase {
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
         InputStream in = null;
-        Flickr.debugRequest = true;
-        Flickr.debugStream = true;
+        Flickr.debugRequest = false;
+        Flickr.debugStream = false;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
             properties = new Properties();
