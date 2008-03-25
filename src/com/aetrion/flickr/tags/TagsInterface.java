@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr tags.
  *
  * @author Anthony Eden
- * @version $Id: TagsInterface.java,v 1.12 2008/01/27 16:09:47 x-mago Exp $
+ * @version $Id: TagsInterface.java,v 1.13 2008/03/25 20:34:05 x-mago Exp $
  */
 public class TagsInterface {
 
@@ -71,7 +71,7 @@ public class TagsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("period", period));
-        parameters.add(new Parameter("count", new Integer(count)));
+        parameters.add(new Parameter("count", "" + count));
         parameters.add(
             new Parameter(
                 "api_sig",
@@ -84,10 +84,9 @@ public class TagsInterface {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
 
-        Element listElement = response.getPayload();
+        Element tagsElement = response.getPayload();
 
         List tags = new ArrayList();
-        Element tagsElement = (Element) listElement.getElementsByTagName("hottags").item(0);
         NodeList tagElements = tagsElement.getElementsByTagName("tag");
         for (int i = 0; i < tagElements.getLength(); i++) {
             Element tagElement = (Element) tagElements.item(i);
