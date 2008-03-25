@@ -37,10 +37,13 @@ public class TagsInterfaceTest extends TestCase {
             REST rest = new REST();
             rest.setHost(properties.getProperty("host"));
 
-            flickr = new Flickr(properties.getProperty("apiKey"), rest);
+            flickr = new Flickr(
+                properties.getProperty("apiKey"),
+                properties.getProperty("secret"),
+                rest
+            );
 
             RequestContext requestContext = RequestContext.getRequestContext();
-            requestContext.setSharedSecret(properties.getProperty("secret"));
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));
@@ -59,6 +62,13 @@ public class TagsInterfaceTest extends TestCase {
         assertEquals(0, photo.getTags().size());
     }
 
+    public void testGetHotList() throws FlickrException, IOException, SAXException {
+        TagsInterface iface = flickr.getTagsInterface();
+        Collection tags = iface.getHotList("day", 20);
+        assertNotNull(tags);
+        assertTrue(tags.size() > 1);
+    }
+
     public void testGetListUser() throws FlickrException, IOException, SAXException {
         TagsInterface iface = flickr.getTagsInterface();
         Collection tags = iface.getListUser(properties.getProperty("nsid"));
@@ -75,7 +85,7 @@ public class TagsInterfaceTest extends TestCase {
         while (iter.hasNext()) {
             Tag tag = (Tag) iter.next();
             assertNotNull(tag.getValue());
-            System.out.println(tag.getValue() + ":" + tag.getCount());
+            //System.out.println(tag.getValue() + ":" + tag.getCount());
         }
     }
 
