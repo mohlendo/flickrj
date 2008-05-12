@@ -40,7 +40,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr Photos.
  *
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.45 2008/02/03 17:02:50 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.46 2008/05/12 20:26:24 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -1280,7 +1280,7 @@ public class PhotosInterface {
     public void setPerms(String photoId, Permissions permissions) throws IOException,
             SAXException, FlickrException {
         List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_SET_META));
+        parameters.add(new Parameter("method", METHOD_SET_PERMS));
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
