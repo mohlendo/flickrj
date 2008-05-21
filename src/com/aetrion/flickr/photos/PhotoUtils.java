@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.12 2008/01/13 21:04:09 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.13 2008/05/21 22:10:12 x-mago Exp $
  */
 public final class PhotoUtils {
 
@@ -44,6 +44,9 @@ public final class PhotoUtils {
         photo.setOriginalSecret(photoElement.getAttribute("originalsecret"));
         photo.setIconServer(photoElement.getAttribute("iconserver"));
         photo.setIconFarm(photoElement.getAttribute("iconfarm"));
+        photo.setDateTaken(photoElement.getAttribute("datetaken"));
+        photo.setDatePosted(photoElement.getAttribute("dateupload"));
+        photo.setLastUpdate(photoElement.getAttribute("lastupdate"));
         // flickr.groups.pools.getPhotos provides this value!
         photo.setDateAdded(photoElement.getAttribute("dateadded"));
 
