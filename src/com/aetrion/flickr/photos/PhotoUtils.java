@@ -15,11 +15,27 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.13 2008/05/21 22:10:12 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.14 2008/05/31 22:28:50 x-mago Exp $
  */
 public final class PhotoUtils {
 
     private PhotoUtils() {
+    }
+
+    /**
+     * Try to get an attribute value from two elements.
+     *
+     * @param firstElement
+     * @param secondElement
+     * @return attribute value
+     */
+    private static String getAttribute(String name, Element firstElement,
+            Element secondElement) {
+        String val = firstElement.getAttribute(name);
+        if (val.length() == 0 && secondElement != null) {
+            val = secondElement.getAttribute(name);
+        }
+        return val;
     }
 
     /**
@@ -30,6 +46,19 @@ public final class PhotoUtils {
      * @return Photo
      */
     public static final Photo createPhoto(Element photoElement) {
+        return createPhoto(photoElement, null);
+    }
+    
+    /**
+     * Transfer the Information of a photo from a DOM-object
+     * to a Photo-object.
+     *
+     * @param photoElement
+     * @param defaultElement
+     * @return Photo
+     */
+     public static final Photo createPhoto(Element photoElement,
+        Element defaultElement) {
         Photo photo = new Photo();
         photo.setId(photoElement.getAttribute("id"));
         photo.setPlaceId(photoElement.getAttribute("place_id"));
@@ -64,8 +93,8 @@ public final class PhotoUtils {
             Element ownerElement = (Element) photoElement.getElementsByTagName("owner").item(0);
             if (ownerElement == null) {
                 User owner = new User();
-                owner.setId(photoElement.getAttribute("owner"));
-                owner.setUsername(photoElement.getAttribute("ownername"));
+                owner.setId(getAttribute("owner", photoElement, defaultElement));
+                owner.setUsername(getAttribute("ownername", photoElement, defaultElement));
                 photo.setOwner(owner);
                 photo.setUrl("http://flickr.com/photos/" + owner.getId() + "/" + photo.getId());
             } else {

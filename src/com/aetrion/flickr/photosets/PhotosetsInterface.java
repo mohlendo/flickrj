@@ -33,7 +33,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with photosets.
  *
  * @author Anthony Eden
- * @version $Id: PhotosetsInterface.java,v 1.24 2008/01/28 23:01:45 x-mago Exp $
+ * @version $Id: PhotosetsInterface.java,v 1.25 2008/05/31 22:28:51 x-mago Exp $
  */
 public class PhotosetsInterface {
 
@@ -458,7 +458,7 @@ public class PhotosetsInterface {
 
         for (int i = 0; i < photoElements.getLength(); i++) {
             Element photoElement = (Element) photoElements.item(i);
-            photos.add(PhotoUtils.createPhoto(photoElement));
+            photos.add(PhotoUtils.createPhoto(photoElement, photoset));
         }
 
         return photos;
