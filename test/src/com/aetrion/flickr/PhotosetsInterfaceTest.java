@@ -112,7 +112,8 @@ public class PhotosetsInterfaceTest extends TestCase {
         );
         assertNotNull(photos);
         assertEquals(2, photos.size());
-        assertEquals("javatest3", ((Photo) photos.get(0)).getOwner().getUsername()); 
+        assertEquals(properties.getProperty("username"), ((Photo) photos.get(0)).getOwner().getUsername()); 
+        assertEquals(properties.getProperty("nsid"), ((Photo) photos.get(0)).getOwner().getId()); 
     }
 
     public void testOrderSets() throws FlickrException, IOException, SAXException {
