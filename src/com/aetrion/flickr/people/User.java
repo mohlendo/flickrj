@@ -15,11 +15,15 @@ import com.aetrion.flickr.util.UrlUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.17 2008/01/11 21:02:56 x-mago Exp $
+ * @version $Id: User.java,v 1.18 2008/06/13 22:42:59 x-mago Exp $
  */
 public class User implements Serializable, BuddyIconable {
 
-	private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
+        protected synchronized Object initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+    };
 
     private String id;
     private String username;
@@ -158,7 +162,7 @@ public class User implements Serializable, BuddyIconable {
     public void setPhotosFirstDateTaken(String photosFirstDateTaken) {
         if (photosFirstDateTaken != null) {
             try {
-                setPhotosFirstDateTaken(DF.parse(photosFirstDateTaken));
+                setPhotosFirstDateTaken(((DateFormat)DATE_FORMATS.get()).parse(photosFirstDateTaken));
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }

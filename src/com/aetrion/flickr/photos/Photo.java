@@ -27,11 +27,15 @@ import com.aetrion.flickr.util.IOUtilities;
  * {@link PhotosInterface#getImageAsStream(Photo, int)}.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.21 2008/01/13 21:04:09 x-mago Exp $
+ * @version $Id: Photo.java,v 1.22 2008/06/13 22:42:58 x-mago Exp $
  */
 public class Photo {
 
-    private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
+        protected synchronized Object initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+    };
 
     private static final String DEFAULT_ORIGINAL_IMAGE_SUFFIX = "_o.jpg";
     private static final String SMALL_SQUARE_IMAGE_SUFFIX = "_s.jpg";
@@ -230,7 +234,7 @@ public class Photo {
     public void setDateTaken(String dateTaken) {
         if (dateTaken == null || "".equals(dateTaken)) return;
         try {
-            setDateTaken(DF.parse(dateTaken));
+            setDateTaken(((DateFormat)DATE_FORMATS.get()).parse(dateTaken));
         } catch (ParseException e) {
             // TODO: figure out what to do with this error
             e.printStackTrace();

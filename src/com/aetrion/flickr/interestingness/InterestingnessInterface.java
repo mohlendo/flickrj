@@ -31,7 +31,7 @@ import com.aetrion.flickr.util.StringUtilities;
 /**
  *
  * @author till
- * @version $Id: InterestingnessInterface.java,v 1.7 2008/01/28 23:01:44 x-mago Exp $
+ * @version $Id: InterestingnessInterface.java,v 1.8 2008/06/13 22:42:59 x-mago Exp $
  */
 public class InterestingnessInterface {
 
@@ -43,6 +43,12 @@ public class InterestingnessInterface {
     private static final String KEY_EXTRAS = "extras";
     private static final String KEY_PER_PAGE = "per_page";
     private static final String KEY_PAGE = "page";
+
+    private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
+        protected synchronized Object initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd");
+        }
+    };
 
     private String apiKey;
     private String sharedSecret;
@@ -133,7 +139,7 @@ public class InterestingnessInterface {
       throws FlickrException, IOException, SAXException {
         String dateString = null;
         if (date != null) {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df = (DateFormat)DATE_FORMATS.get();
             dateString = df.format(date);
         }
         return getList(dateString, extras, perPage, page);

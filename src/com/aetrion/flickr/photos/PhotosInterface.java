@@ -40,7 +40,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr Photos.
  *
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.46 2008/05/12 20:26:24 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.47 2008/06/13 22:42:58 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -72,7 +72,12 @@ public class PhotosInterface {
     public static final String METHOD_SET_TAGS = "flickr.photos.setTags";
     public static final String METHOD_GET_INTERESTINGNESS = "flickr.interestingness.getList";
 
-    private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
+        protected synchronized Object initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+    };
+
     private GeoInterface geoInterface = null;
 
     private String apiKey;
@@ -1217,7 +1222,7 @@ public class PhotosInterface {
         }
 
         if (dateTaken != null) {
-            parameters.add(new Parameter("date_taken", DF.format(dateTaken)));
+            parameters.add(new Parameter("date_taken", ((DateFormat)DATE_FORMATS.get()).format(dateTaken)));
         }
 
         if (dateTakenGranularity != null) {

@@ -16,7 +16,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.13 2008/01/13 21:04:09 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.14 2008/06/13 22:42:58 x-mago Exp $
  */
 public class SearchParameters {
 
@@ -31,8 +31,6 @@ public class SearchParameters {
     private Date maxTakenDate;
     private Date interestingnessDate;
     private String license;
-    private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
-    private static final DateFormat MYSQLDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private boolean extrasLicense = false;
     private boolean extrasDateUpload = false;
     private boolean extrasDateTaken = false;
@@ -50,6 +48,18 @@ public class SearchParameters {
     private String safeSearch;
     private String[] machineTags;
     private String machineTagMode;
+
+    private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
+        protected synchronized Object initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd");
+        }
+    };
+
+    private static final ThreadLocal MYSQL_DATE_FORMATS = new ThreadLocal() {
+        protected synchronized Object initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+    };
 
 	/** order argument */
 	public static int DATE_POSTED_DESC = 0;
@@ -400,12 +410,12 @@ public class SearchParameters {
 
         Date minTakenDate = getMinTakenDate();
         if (minTakenDate != null) {
-            parameters.add(new Parameter("min_taken_date", MYSQLDF.format(minTakenDate)));
+            parameters.add(new Parameter("min_taken_date", ((DateFormat)MYSQL_DATE_FORMATS.get()).format(minTakenDate)));
         }
 
         Date maxTakenDate = getMaxTakenDate();
         if (maxTakenDate != null) {
-            parameters.add(new Parameter("max_taken_date", MYSQLDF.format(maxTakenDate)));
+            parameters.add(new Parameter("max_taken_date", ((DateFormat)MYSQL_DATE_FORMATS.get()).format(maxTakenDate)));
         }
 
         String license = getLicense();
@@ -415,7 +425,7 @@ public class SearchParameters {
 
         Date intrestingnessDate = getInterestingnessDate();
         if (intrestingnessDate != null) {
-            parameters.add(new Parameter("date", DF.format(intrestingnessDate)));
+            parameters.add(new Parameter("date", ((DateFormat)DATE_FORMATS.get()).format(intrestingnessDate)));
         }
 
         String[] bbox = getBBox();
