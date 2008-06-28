@@ -17,7 +17,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Martin Goebel
- * @version $Id: PrefsInterfaceTest.java,v 1.2 2008/01/28 23:01:44 x-mago Exp $
+ * @version $Id: PrefsInterfaceTest.java,v 1.3 2008/06/28 22:30:04 x-mago Exp $
  */
 public class PrefsInterfaceTest extends TestCase {
 
@@ -73,4 +73,19 @@ public class PrefsInterfaceTest extends TestCase {
         Boolean hidden = iface.getHidden();
     }
 
+    public void testGetGeoPerms() throws FlickrException, IOException, SAXException {
+        PrefsInterface iface = flickr.getPrefsInterface();
+        int geoPerm = iface.getGeoPerms();
+        // check for known levels.
+        if (
+            geoPerm != Flickr.PRIVACY_LEVEL_NO_FILTER &&
+            geoPerm != Flickr.PRIVACY_LEVEL_FRIENDS &&
+            geoPerm != Flickr.PRIVACY_LEVEL_PUBLIC &&
+            geoPerm != Flickr.PRIVACY_LEVEL_PRIVATE &&
+            geoPerm != Flickr.PRIVACY_LEVEL_FRIENDS_FAMILY &&
+            geoPerm != Flickr.PRIVACY_LEVEL_FAMILY
+        ) {
+            assertTrue(false);
+        }
+    }
 }

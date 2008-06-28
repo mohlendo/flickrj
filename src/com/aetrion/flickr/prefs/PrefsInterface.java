@@ -20,13 +20,14 @@ import com.aetrion.flickr.auth.AuthUtilities;
  * Requesting preferences for the current authenticated user.
  *
  * @author Martin Goebel
- * @version $Id: PrefsInterface.java,v 1.5 2008/01/28 23:01:48 x-mago Exp $
+ * @version $Id: PrefsInterface.java,v 1.6 2008/06/28 22:30:04 x-mago Exp $
  */
 public class PrefsInterface {
     public static final String METHOD_GET_CONTENT_TYPE = "flickr.prefs.getContentType";
     public static final String METHOD_GET_HIDDEN = "flickr.prefs.getHidden";
     public static final String METHOD_GET_SAFETY_LEVEL = "flickr.prefs.getSafetyLevel";
     public static final String METHOD_GET_PRIVACY = "flickr.prefs.getPrivacy";
+    public static final String METHOD_GET_GEO_PERMS = "flickr.prefs.getGeoPerms";
 
     private String apiKey;
     private String sharedSecret;
@@ -77,6 +78,47 @@ public class PrefsInterface {
 
         Element personElement = response.getPayload();
         return personElement.getAttribute("content_type");
+    }
+
+    /**
+     * Returns the default privacy level for geographic information attached to the user's photos.
+     *
+     * @return privacy-level
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_NO_FILTER
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_PUBLIC
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FAMILY
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_FRIENDS_FAMILY
+     * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_PRIVATE
+     */
+    public int getGeoPerms() throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_GEO_PERMS));
+        parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+
+        int perm = -1;
+        Element personElement = response.getPayload();
+        String geoPerms = personElement.getAttribute("geoperms");
+        try {
+            perm = Integer.parseInt(geoPerms);
+        } catch (NumberFormatException e) {
+            throw new FlickrException("0", "Unable to parse geoPermission");
+        }
+        return perm;
     }
 
     /**

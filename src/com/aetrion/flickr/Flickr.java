@@ -44,7 +44,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * (You -> Your account -> Extending Flickr -> Account Links -> edit).
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.40 2008/02/04 21:51:56 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.41 2008/06/28 22:30:04 x-mago Exp $
  */
 public class Flickr {
 
@@ -174,31 +174,37 @@ public class Flickr {
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getGeoPerms()
      */
     public static final int PRIVACY_LEVEL_NO_FILTER = 0;
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getGeoPerms()
      */
     public static final int PRIVACY_LEVEL_PUBLIC = 1;
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getGeoPerms()
      */
     public static final int PRIVACY_LEVEL_FRIENDS = 2;
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getGeoPerms()
      */
     public static final int PRIVACY_LEVEL_FAMILY = 3;
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getGeoPerms()
      */
     public static final int PRIVACY_LEVEL_FRIENDS_FAMILY = 4;
     /**
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
      * @see com.aetrion.flickr.prefs.PrefsInterface#getPrivacy()
+     * @see com.aetrion.flickr.prefs.PrefsInterface#getGeoPerms()
      */
     public static final int PRIVACY_LEVEL_PRIVATE = 5;
 
