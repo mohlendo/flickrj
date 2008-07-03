@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * Tests for the PlacesInterface.
  *
  * @author mago
- * @version $Id: PlacesInterfaceTest.java,v 1.3 2008/01/26 00:05:17 x-mago Exp $
+ * @version $Id: PlacesInterfaceTest.java,v 1.4 2008/07/03 21:37:44 x-mago Exp $
  */
 public class PlacesInterfaceTest extends TestCase {
 
@@ -33,6 +33,7 @@ public class PlacesInterfaceTest extends TestCase {
     public void setUp() throws
       ParserConfigurationException, IOException, FlickrException, SAXException {
         Flickr.debugRequest = false;
+        Flickr.debugStream = true;
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -70,6 +71,9 @@ public class PlacesInterfaceTest extends TestCase {
         assertEquals("sRdiycKfApRGrrU", place.getPlaceId());
         assertEquals("/Germany/Berlin/Berlin", place.getPlaceUrl());
         assertEquals(Place.TYPE_LOCALITY, place.getPlaceType());
+        assertEquals("638242", place.getWoeId());
+        assertEquals(52.515D, place.getLatitude());
+        assertEquals(13.377D, place.getLongitude());
     }
 
     public void testFind()
@@ -113,13 +117,26 @@ public class PlacesInterfaceTest extends TestCase {
             location.getPlaceId()
         );
         assertEquals(
-            "San Francisco",
-            location.getName()
-        );
-        assertEquals(
             "/United+States/California/San+Francisco",
             location.getPlaceUrl()
         );
+        assertEquals(
+            "2487956",
+            location.getWoeId()
+        );
+        assertEquals(
+            37.779D,
+            location.getLatitude()
+        );
+        assertEquals(
+            -122.420D,
+            location.getLongitude()
+        );
+        assertEquals(
+            Place.TYPE_LOCALITY,
+            location.getPlaceType()
+        );
+
         assertEquals(
             "kH8dLOubBZRvX_YZ",
             location.getLocality().getPlaceId()
@@ -127,6 +144,18 @@ public class PlacesInterfaceTest extends TestCase {
         assertEquals(
             "San Francisco",
             location.getLocality().getName()
+        );
+        assertEquals(
+            "2487956",
+            location.getLocality().getWoeId()
+        );
+        assertEquals(
+            37.779D,
+            location.getLocality().getLatitude()
+        );
+        assertEquals(
+            -122.420D,
+            location.getLocality().getLongitude()
         );
 
         assertEquals(
@@ -136,6 +165,18 @@ public class PlacesInterfaceTest extends TestCase {
         assertEquals(
             "San Francisco",
             location.getCounty().getName()
+        );
+        assertEquals(
+            "12587707",
+            location.getCounty().getWoeId()
+        );
+        assertEquals(
+            37.759D,
+            location.getCounty().getLatitude()
+        );
+        assertEquals(
+            -122.435D,
+            location.getCounty().getLongitude()
         );
 
         assertEquals(
@@ -147,12 +188,37 @@ public class PlacesInterfaceTest extends TestCase {
             location.getRegion().getName()
         );
         assertEquals(
+            "2347563",
+            location.getRegion().getWoeId()
+        );
+        assertEquals(
+            37.271D,
+            location.getRegion().getLatitude()
+        );
+        assertEquals(
+            -119.270D,
+            location.getRegion().getLongitude()
+        );
+
+        assertEquals(
             "4KO02SibApitvSBieQ",
             location.getCountry().getPlaceId()
         );
         assertEquals(
             "United States",
             location.getCountry().getName()
+        );
+        assertEquals(
+            "23424977",
+            location.getCountry().getWoeId()
+        );
+        assertEquals(
+            48.890D,
+            location.getCountry().getLatitude()
+        );
+        assertEquals(
+            -116.982D,
+            location.getCountry().getLongitude()
         );
     }
 }

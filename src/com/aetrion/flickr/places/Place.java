@@ -11,7 +11,7 @@ package com.aetrion.flickr.places;
  * delivered by resolvePlaceId and resolvePlaceUrl.
  *
  * @author mago
- * @version $Id: Place.java,v 1.3 2008/01/19 23:02:39 x-mago Exp $
+ * @version $Id: Place.java,v 1.4 2008/07/03 21:37:44 x-mago Exp $
  */
 public class Place {
     public static final int TYPE_UNSET = 0;
@@ -22,6 +22,9 @@ public class Place {
 
     private String name = "";
     private String placeId = "";
+    private String woeId = "";
+    private double latitude = 0.0;
+    private double longitude = 0.0;
     /**
      * Set only if requested by find.
      */
@@ -72,6 +75,42 @@ public class Place {
 
     public void setPlaceUrl(String placeUrl) {
         this.placeUrl = placeUrl;
+    }
+
+    public String getWoeId() {
+        return woeId;
+    }
+
+    public void setWoeId(String woeId) {
+        this.woeId = woeId;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        try {
+            setLatitude(Double.parseDouble(latitude));
+        } catch (NumberFormatException e) {}
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        try {
+            setLongitude(Double.parseDouble(longitude));
+        } catch (NumberFormatException e) {}
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
 }

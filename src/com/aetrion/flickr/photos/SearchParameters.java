@@ -11,17 +11,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.14 2008/06/13 22:42:58 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.15 2008/07/03 21:37:44 x-mago Exp $
  */
 public class SearchParameters {
 
     private String userId;
     private String groupId;
+    private String woeId;
+    private String media;
+    private String contacts;
     private String[] tags;
     private String tagMode;
     private String text;
@@ -332,11 +336,11 @@ public class SearchParameters {
      * @see com.aetrion.flickr.Flickr#SAFETYLEVEL_RESTRICTED
      */
     public void setSafeSearch(String level) {
-    	this.safeSearch = level;
+        this.safeSearch = level;
     }
-    
+
     public String getSafeSearch() {
-    	return safeSearch;
+        return safeSearch;
     }
 
     public int getSort() {
@@ -360,12 +364,105 @@ public class SearchParameters {
         this.sort = order;
     }
 
+    /**
+     * @return A placeId
+     * @see com.aetrion.flickr.places.PlacesInterface#resolvePlaceId(String)
+     */
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    /**
+     * PlaceId only used when bbox not set.
+     *
+     * @param placeId
+     * @see com.aetrion.flickr.places.PlacesInterface#resolvePlaceId(String)
+     * @see com.aetrion.flickr.places.Place#getPlaceId()
+     * @see com.aetrion.flickr.places.Location#getPlaceId()
+     */
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
+
+    public String getWoeId() {
+        return woeId;
+    }
+
+    /**
+     * A 32-bit identifier that uniquely represents spatial entities.
+     * (not used if bbox argument is present).<p/>
+     *
+     * Geo queries require some sort of limiting agent in order to prevent
+     * the database from crying. This is basically like the check against
+     * "parameterless searches" for queries without a geo component.<p/>
+     *
+     * A tag, for instance, is considered a limiting agent as are user defined
+     * min_date_taken and min_date_upload parameters.  If no limiting
+     * factor is passed we return only photos added in the last 12 hours
+     * (though we may extend the limit in the future).<p/>
+     *
+     * @param woeId
+     * @see com.aetrion.flickr.places.Place#getWoeId()
+     * @see com.aetrion.flickr.places.Location#getWoeId()
+     */
+    public void setWoeId(String woeId) {
+        this.woeId = woeId;
+    }
+
+    public String getMedia() {
+        return media;
+    }
+
+    /**
+     * Filter results by media type. Possible values are all (default),
+     * photos or videos.
+     *
+     * @param media
+     */
+    public void setMedia(String media) throws FlickrException {
+        if (media.equals("all") ||
+            media.equals("photos") ||
+            media.equals("videos")
+        ) {
+            this.media = media;
+        } else {
+            throw new FlickrException("0", "Media type is not valid.");
+        }
+    }
+
+    public String getContacts() {
+        return contacts;
+    }
+
+    /**
+     * Search your contacts. Valid arguments are either 'all' or 'ff'
+     * for just friends and family.<p/>
+     *
+     * It requires that the "user_id" field also be set and allows you to limit
+     * queries to only photos belonging to that user's photos. As in : All my
+     * contacts photos tagged "aaron". (Experimental)
+     *
+     * @param contacts
+     */
+    public void setContacts(String contacts) {
+        this.contacts = contacts;
+    }
+
     public Collection getAsParameters() {
         List parameters = new ArrayList();
+
+        String media = getMedia();
+        if (media != null) {
+            parameters.add(new Parameter("media", media));
+        }
 
         String userId = getUserId();
         if (userId != null) {
             parameters.add(new Parameter("user_id", userId));
+            String contacts = getContacts();
+            if (contacts != null) {
+                parameters.add(new Parameter("contacts", contacts));
+            }
         }
 
         String groupId = getGroupId();
@@ -387,12 +484,12 @@ public class SearchParameters {
         if (mtags != null) {
         	parameters.add(new Parameter("machine_tags", StringUtilities.join(mtags, ",")));
         }
-        
+
         String mtagMode = getMachineTagMode();
         if (mtagMode != null) {
-        	parameters.add(new Parameter("machine_tag_mode", mtagMode));
+            parameters.add(new Parameter("machine_tag_mode", mtagMode));
         }
-        
+
         String text = getText();
         if (text != null) {
             parameters.add(new Parameter("text", text));
@@ -434,8 +531,13 @@ public class SearchParameters {
             if (accuracy > 0) {
                 parameters.add(new Parameter("accuracy", accuracy));
             }
+        } else {
+            String woeId = getWoeId();
+            if (woeId != null) {
+                parameters.add(new Parameter("woe_id", woeId));
+            }
         }
-        
+
         String safeSearch = getSafeSearch();
         if (safeSearch != null) {
             parameters.add(new Parameter("safe_search", safeSearch));
@@ -473,23 +575,4 @@ public class SearchParameters {
 
         return parameters;
     }
-
-    /**
-     * @return A placeId
-     * @see com.aetrion.flickr.places.PlacesInterface#resolvePlaceId(String)
-     */
-    public String getPlaceId() {
-        return placeId;
-    }
-
-    /**
-     * PlaceId only used when bbox not set.
-     *
-     * @param placeId
-     * @see com.aetrion.flickr.places.PlacesInterface#resolvePlaceId(String)
-     */
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
-
 }

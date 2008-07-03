@@ -89,7 +89,7 @@ Thanks,
 </PRE>
 
  * @author mago
- * @version $Id: PlacesInterface.java,v 1.4 2008/01/28 23:01:45 x-mago Exp $
+ * @version $Id: PlacesInterface.java,v 1.5 2008/07/03 21:37:44 x-mago Exp $
  */
 public class PlacesInterface {
     public static final String METHOD_FIND = "flickr.places.find";
@@ -283,54 +283,63 @@ public class PlacesInterface {
         Element countryElement = (Element) locationElement.getElementsByTagName("country").item(0);
 
         location.setPlaceId(locationElement.getAttribute("place_id"));
-        location.setName(locationElement.getAttribute("name"));
+        //location.setName(locationElement.getAttribute("name"));
         location.setPlaceUrl(locationElement.getAttribute("place_url"));
+        location.setWoeId(locationElement.getAttribute("woeid"));
+        location.setLatitude(locationElement.getAttribute("latitude"));
+        location.setLongitude(locationElement.getAttribute("longitude"));
+        location.setPlaceType(determineType(locationElement.getAttribute("place_type")));
 
         location.setLocality(
-            new Place(
-                localityElement.getAttribute("place_id"),
-                XMLUtilities.getChildValue(locationElement, "locality"),
-                Place.TYPE_LOCALITY
-            )
-         );
+            parseLocationPlace(localityElement, Place.TYPE_LOCALITY)
+        );
         location.setCounty(
-            new Place(
-                countyElement.getAttribute("place_id"),
-                XMLUtilities.getChildValue(locationElement, "county"),
-                Place.TYPE_COUNTY
-            )
+            parseLocationPlace(countyElement, Place.TYPE_COUNTY)
         );
         location.setRegion(
-            new Place(
-                regionElement.getAttribute("place_id"),
-                XMLUtilities.getChildValue(locationElement, "region"),
-                Place.TYPE_REGION
-            )
+            parseLocationPlace(regionElement, Place.TYPE_REGION)
         );
         location.setCountry(
-            new Place(
-                countryElement.getAttribute("place_id"),
-                XMLUtilities.getChildValue(locationElement, "country"),
-                Place.TYPE_COUNTRY
-            )
+            parseLocationPlace(countryElement, Place.TYPE_COUNTRY)
         );
         return location;
+    }
+
+    private Place parseLocationPlace(Element element, int type) {
+        Place place = new Place();
+        place.setName(XMLUtilities.getValue(element));
+        place.setPlaceId(element.getAttribute("place_id"));
+        place.setPlaceUrl(element.getAttribute("place_url"));
+        place.setWoeId(element.getAttribute("woeid"));
+        place.setLatitude(element.getAttribute("latitude"));
+        place.setLongitude(element.getAttribute("longitude"));
+        place.setPlaceType(type);
+        return place;
     }
 
     private Place parsePlace(Element placeElement) {
         Place place = new Place();
         place.setPlaceId(placeElement.getAttribute("place_id"));
         place.setPlaceUrl(placeElement.getAttribute("place_url"));
+        place.setWoeId(placeElement.getAttribute("woeid"));
+        place.setLatitude(placeElement.getAttribute("latitude"));
+        place.setLongitude(placeElement.getAttribute("longitude"));
         String typeString = placeElement.getAttribute("place_type");
-        if (typeString.equals("locality")) {
-            place.setPlaceType(Place.TYPE_LOCALITY);
-        } else if (typeString.equals("county")) {
-            place.setPlaceType(Place.TYPE_COUNTY);
-        } else if (typeString.equals("region")) {
-            place.setPlaceType(Place.TYPE_REGION);
-        } else if (typeString.equals("country")) {
-            place.setPlaceType(Place.TYPE_COUNTRY);
-        }
+        place.setPlaceType(determineType(typeString));
         return place;
+    }
+    
+    private int determineType(String typeString) {
+    	int placeType = 0;
+        if (typeString.equals("locality")) {
+        	placeType = Place.TYPE_LOCALITY;
+        } else if (typeString.equals("county")) {
+        	placeType = Place.TYPE_COUNTY;
+        } else if (typeString.equals("region")) {
+        	placeType = Place.TYPE_REGION;
+        } else if (typeString.equals("country")) {
+        	placeType = Place.TYPE_COUNTRY;
+        }
+    	return placeType;
     }
 }
