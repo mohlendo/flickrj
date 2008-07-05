@@ -25,7 +25,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * <a href="http://www.flickr.com/services/api/registered_keys.gne">list of API keys</a>
  * 
  * @author mago
- * @version $Id: AuthExample.java,v 1.4 2007/12/01 00:05:34 x-mago Exp $
+ * @version $Id: AuthExample.java,v 1.5 2008/07/05 22:19:48 x-mago Exp $
  */
 public class AuthExample {
     Flickr f;
@@ -43,11 +43,13 @@ public class AuthExample {
         } finally {
             IOUtilities.close(in);
         }
-        f = new Flickr(properties.getProperty("apiKey"), new REST());
+        f = new Flickr(
+            properties.getProperty("apiKey"),
+            properties.getProperty("secret"),
+            new REST()
+        );
         Flickr.debugStream = false;
-        // Set the shared secret which is used for any calls which require signing.
         requestContext = RequestContext.getRequestContext();
-        requestContext.setSharedSecret(properties.getProperty("secret"));
         AuthInterface authInterface = f.getAuthInterface();
         try {
             frob = authInterface.getFrob();
@@ -55,7 +57,7 @@ public class AuthExample {
             e.printStackTrace();
         }
         System.out.println("frob: " + frob);
-        URL url = authInterface.buildAuthenticationUrl(Permission.WRITE, frob);
+        URL url = authInterface.buildAuthenticationUrl(Permission.DELETE, frob);
         System.out.println("Press return after you granted access at this URL:");
         System.out.println(url.toExternalForm());
         BufferedReader infile =

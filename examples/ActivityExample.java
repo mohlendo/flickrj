@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * Demonstration of howto use the ActivityInterface.
  *
  * @author mago
- * @version $Id: ActivityExample.java,v 1.2 2007/12/08 15:11:58 x-mago Exp $
+ * @version $Id: ActivityExample.java,v 1.3 2008/07/05 22:19:48 x-mago Exp $
  */
 public class ActivityExample {
     static String apiKey;
@@ -43,9 +43,12 @@ public class ActivityExample {
         } finally {
             IOUtilities.close(in);
         }
-        f = new Flickr(properties.getProperty("apiKey"), new REST());
+        f = new Flickr(
+            properties.getProperty("apiKey"),
+            properties.getProperty("secret"),
+            new REST()
+        );
         requestContext = RequestContext.getRequestContext();
-        requestContext.setSharedSecret(properties.getProperty("secret"));
         Auth auth = new Auth();
         auth.setPermission(Permission.READ);
         auth.setToken(properties.getProperty("token"));

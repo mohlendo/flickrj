@@ -9,10 +9,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.Permission;
@@ -32,7 +35,7 @@ import com.aetrion.flickr.util.FileAuthStore;
  * This sample also uses the AuthStore interface, so users will only be asked to authorize on the first run.
  *
  * @author Matthew MacKenzie
- * @version $Id: Backup.java,v 1.4 2008/01/02 21:48:31 x-mago Exp $
+ * @version $Id: Backup.java,v 1.5 2008/07/05 22:19:48 x-mago Exp $
  */
 
 public class Backup {
@@ -40,12 +43,10 @@ public class Backup {
     private String nsid = null;
     private Flickr flickr = null;
     private AuthStore authStore = null;
-    private String sharedSecret = null;
 
     public Backup(String apiKey, String nsid, String sharedSecret, File authsDir)
-      throws IOException {
-        this.flickr = new Flickr(apiKey);
-        this.sharedSecret = sharedSecret;
+      throws IOException, ParserConfigurationException {
+        this.flickr = new Flickr(apiKey, sharedSecret, new REST());
         this.nsid = nsid;
 
         if (authsDir != null) {
@@ -71,7 +72,6 @@ public class Backup {
 		if (!directory.exists()) directory.mkdir();
 		
 		RequestContext rc = RequestContext.getRequestContext();
-		rc.setSharedSecret(this.sharedSecret);
 		
 		if (this.authStore != null) {
 			Auth auth = this.authStore.retrieve(this.nsid);
