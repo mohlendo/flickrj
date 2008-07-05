@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.UrlUtilities;
  * Utilities used by the authentication API.
  *
  * @author Anthony Eden
- * @version $Id: AuthUtilities.java,v 1.8 2008/02/04 22:16:29 x-mago Exp $
+ * @version $Id: AuthUtilities.java,v 1.9 2008/07/05 22:42:55 x-mago Exp $
  */
 public class AuthUtilities {
 
@@ -32,12 +32,19 @@ public class AuthUtilities {
      *
      * @param parameters The parameters
      * @return The signature String
+     * @deprecated
      */
     public static String getSignature(List parameters) {
         RequestContext requestContext = RequestContext.getRequestContext();
         return getSignature(requestContext.getSharedSecret(), parameters);
     }
 
+    /**
+     * 
+     * @param parameters
+     * @return
+     * @deprecated
+     */
     public static String getMultipartSignature(List parameters) {
         RequestContext requestContext = RequestContext.getRequestContext();
         return getMultipartSignature(requestContext.getSharedSecret(), parameters);
@@ -109,18 +116,14 @@ public class AuthUtilities {
         //Checking for the auth_token parameter
         Iterator it = params.iterator();
         boolean tokenFlag = false;
-        while(it.hasNext())
-        {
-            if(((Parameter)it.next()).getName().equals("auth_token"))
-            {
+        while (it.hasNext()) {
+            if (((Parameter) it.next()).getName().equals("auth_token")) {
                 tokenFlag = true;
             }
         }
 
-        if(!tokenFlag)
-        {
-            if(RequestContext.getRequestContext().getAuth() != null)
-            {
+        if (!tokenFlag) {
+            if (RequestContext.getRequestContext().getAuth() != null) {
                 String authToken = RequestContext.getRequestContext().getAuth().getToken();
                 if(authToken != null && !authToken.equals(""))
                     params.add(new Parameter("auth_token", authToken));
