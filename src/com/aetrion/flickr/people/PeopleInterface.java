@@ -29,7 +29,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for finding Flickr users.
  *
  * @author Anthony Eden
- * @version $Id: PeopleInterface.java,v 1.24 2008/01/28 23:01:44 x-mago Exp $
+ * @version $Id: PeopleInterface.java,v 1.25 2008/07/05 22:16:22 x-mago Exp $
  */
 public class PeopleInterface {
 
@@ -238,10 +238,10 @@ public class PeopleInterface {
         parameters.add(new Parameter("user_id", userId));
 
         if (perPage > 0) {
-            parameters.add(new Parameter("per_page", new Integer(perPage)));
+            parameters.add(new Parameter("per_page", "" + perPage));
         }
         if (page > 0) {
-            parameters.add(new Parameter("page", new Integer(page)));
+            parameters.add(new Parameter("page", "" + page));
         }
 
         if (extras != null) {
