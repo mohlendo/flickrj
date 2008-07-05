@@ -32,7 +32,7 @@ import com.aetrion.flickr.util.UrlUtilities;
  * Transport implementation using the REST interface.
  *
  * @author Anthony Eden
- * @version $Id: REST.java,v 1.24 2008/02/04 21:44:39 x-mago Exp $
+ * @version $Id: REST.java,v 1.25 2008/07/05 22:52:51 x-mago Exp $
  */
 public class REST extends Transport {
 
@@ -42,6 +42,7 @@ public class REST extends Transport {
     private String proxyUser = "";
     private String proxyPassword = "";
     private DocumentBuilder builder;
+    private static Object mutex = new Object();
 
     /**
      * Construct a new REST transport instance.
@@ -141,9 +142,12 @@ public class REST extends Transport {
                 in = conn.getInputStream();
             }
 
-            Document document = builder.parse(in);
-            Response response = (Response) responseClass.newInstance();
-            response.parse(document);
+            Response response = null;
+            synchronized (mutex) {
+                Document document = builder.parse(in);
+                response = (Response) responseClass.newInstance();
+                response.parse(document);
+            }
             return response;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e); // TODO: Replace with a better exception
@@ -262,9 +266,12 @@ public class REST extends Transport {
                 } else {
                     in = conn.getInputStream();
                 }
-                Document document = builder.parse(in);
-                Response response = (Response) responseClass.newInstance();
-                response.parse(document);
+                Response response = null;
+                synchronized (mutex) {
+                    Document document = builder.parse(in);
+                    response = (Response) responseClass.newInstance();
+                    response.parse(document);
+                }
                 return response;
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e); // TODO: Replace with a better exception

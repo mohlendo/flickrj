@@ -45,6 +45,7 @@ public class RequestContext {
     /**
      * Get a shared secret which is used for any calls which require signing.
      *
+     * @deprecated Get the secret from {@link Flickr#getSharedSecret()}.
      * @return The shared secret
      */
     public String getSharedSecret() {
@@ -54,6 +55,7 @@ public class RequestContext {
     /**
      * Set the shared secret which is used for any calls which require signing.
      *
+     * @deprecated Set the secret in {@link Flickr#setSharedSecret(String)}.
      * @param sharedSecret The shared secret
      */
     public void setSharedSecret(String sharedSecret) {
