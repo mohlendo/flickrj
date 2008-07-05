@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.14 2008/05/31 22:28:50 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.15 2008/07/05 22:47:17 x-mago Exp $
  */
 public final class PhotoUtils {
 
@@ -48,7 +48,7 @@ public final class PhotoUtils {
     public static final Photo createPhoto(Element photoElement) {
         return createPhoto(photoElement, null);
     }
-    
+
     /**
      * Transfer the Information of a photo from a DOM-object
      * to a Photo-object.
@@ -159,6 +159,7 @@ public final class PhotoUtils {
             photo.setDatePosted(datesElement.getAttribute("posted"));
             photo.setDateTaken(datesElement.getAttribute("taken"));
             photo.setTakenGranularity(datesElement.getAttribute("takengranularity"));
+            photo.setLastUpdate(datesElement.getAttribute("lastupdate"));
         } catch (IndexOutOfBoundsException e) {
             photo.setDateTaken(photoElement.getAttribute("datetaken"));
         } catch (NullPointerException e) {
