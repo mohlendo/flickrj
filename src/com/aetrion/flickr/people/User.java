@@ -15,9 +15,10 @@ import com.aetrion.flickr.util.UrlUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.18 2008/06/13 22:42:59 x-mago Exp $
+ * @version $Id: User.java,v 1.19 2008/07/05 22:15:32 x-mago Exp $
  */
 public class User implements Serializable, BuddyIconable {
+    private static final long serialVersionUID = 8002108397965711265L;
 
     private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
         protected synchronized Object initialValue() {
