@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * Tests for the PlacesInterface.
  *
  * @author mago
- * @version $Id: PlacesInterfaceTest.java,v 1.4 2008/07/03 21:37:44 x-mago Exp $
+ * @version $Id: PlacesInterfaceTest.java,v 1.5 2008/07/09 21:52:01 x-mago Exp $
  */
 public class PlacesInterfaceTest extends TestCase {
 
@@ -33,7 +33,7 @@ public class PlacesInterfaceTest extends TestCase {
     public void setUp() throws
       ParserConfigurationException, IOException, FlickrException, SAXException {
         Flickr.debugRequest = false;
-        Flickr.debugStream = true;
+        Flickr.debugStream = false;
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
