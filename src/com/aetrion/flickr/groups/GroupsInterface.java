@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr Groups.
  *
  * @author Anthony Eden
- * @version $Id: GroupsInterface.java,v 1.17 2008/01/28 23:01:45 x-mago Exp $
+ * @version $Id: GroupsInterface.java,v 1.18 2008/07/09 21:21:27 x-mago Exp $
  */
 public class GroupsInterface {
 
@@ -50,6 +50,7 @@ public class GroupsInterface {
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
+     * @deprecated Flickr returns just empty results
      */
     public Category browse(String catId) throws IOException, SAXException, FlickrException {
         List subcategories = new ArrayList();

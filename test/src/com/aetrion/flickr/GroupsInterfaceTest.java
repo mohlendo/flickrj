@@ -54,7 +54,7 @@ public class GroupsInterfaceTest extends TestCase {
         }
     }
 
-    public void testBrowse() throws FlickrException, IOException, SAXException {
+    public void deprecatedBrowse() throws FlickrException, IOException, SAXException {
         GroupsInterface iface = flickr.getGroupsInterface();
         Category cat = iface.browse(null);
         assertNotNull(cat);
