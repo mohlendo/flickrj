@@ -119,19 +119,20 @@
 
         <test name="com.aetrion.flickr.ActivityInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.BlogsInterfaceTest" todir="${test.reports}"/>
+        <test name="com.aetrion.flickr.CommentsInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.ContactsInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.FavoritesInterfaceTest" todir="${test.reports}"/>
+        <test name="com.aetrion.flickr.GeoInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.GroupsInterfaceTest" todir="${test.reports}"/>
+        <test name="com.aetrion.flickr.InterestingnessInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PeopleInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PhotosetsInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PhotosInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PlacesInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PrefsInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.TestInterfaceTest" todir="${test.reports}"/>
+        <test name="com.aetrion.flickr.UploaderTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.ReflectionInterfaceTest" todir="${test.reports}"/>
-        <test name="com.aetrion.flickr.InterestingnessInterfaceTest" todir="${test.reports}"/>
-        <test name="com.aetrion.flickr.GeoInterfaceTest" todir="${test.reports}"/>
-        <test name="com.aetrion.flickr.CommentsInterfaceTest" todir="${test.reports}"/>
       	
         <test name="com.aetrion.flickr.CompletenessTest" todir="${test.reports}"/>
      </junit>
