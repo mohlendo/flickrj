@@ -29,7 +29,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PoolsInterface.java,v 1.13 2008/01/28 23:01:45 x-mago Exp $
+ * @version $Id: PoolsInterface.java,v 1.14 2008/07/10 21:44:53 x-mago Exp $
  */
 public class PoolsInterface {
 
@@ -163,7 +163,6 @@ public class PoolsInterface {
             group.setName(groupElement.getAttribute("name"));
             group.setAdmin("1".equals(groupElement.getAttribute("admin")));
             group.setPrivacy(groupElement.getAttribute("privacy"));
-            group.setPhotoCount(groupElement.getAttribute("photos"));
             groups.add(group);
         }
         return groups;
