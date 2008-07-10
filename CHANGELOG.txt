@@ -122,4 +122,22 @@ Release 1.0b4 (July 23, 2007):
  - added machine-tags to SearchParameters (patch by Matt Pettey)
  - User - Changed bandwidthMax, bandwidthUsed, filesizeMax to long (patch by Matt Pettey)
  
-  
+ Release 1.1 (July 10, 2008)
+ - added trailing slash to auth-URL (reported by Stephan Borchert).
+ - In PhotosInterface.getFavorites creation of user-object moved into the right context (reported by hallijo)
+ - fixed filename-extraction from URL in Backup-example (reported by Stephan Borchert)
+ - corrected wrong parsing of long-values in User
+ - updated javadoc in PhotosetsInterface#editMeta() (reported by Stephan Borchert).
+ - added iconFarm to Group.
+ - added createBuddyIconUrl() to UrlUtilities. Used by Group and User. 
+ - Added missing raw-attribute in getListPhoto
+ - replaced custom photo-creation with PhotoUtils.createPhoto() in getNotInSet()
+ - Fixed NPE on TagsInterface.getHotList()
+ - Fixed wrong method-constant in PhotosInterface#setPerms()
+ - Added missing setDateTaken(), setDatePosted(), setLastUpdate() in PhotoUtils#createPhoto()
+ - Extended PhotoUtils#createPhoto() to make User-Info of a Photoset available for Photos of PhotosetsInterface#getPhotos()
+ - Dateformats are now thread-safe (Robert Tsai)
+ - Added PrefsInterface#getGeoPerms()
+ - Added media and woe_id to SearchParameters
+ - GroupsInterface#browse() is deprecated, as the results from Flickr are empty for some time now
+ 
