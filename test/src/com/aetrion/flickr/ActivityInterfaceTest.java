@@ -20,7 +20,7 @@ import com.aetrion.flickr.util.IOUtilities;
 /**
  *
  * @author mago
- * @version $Id: ActivityInterfaceTest.java,v 1.1 2008/01/26 00:05:17 x-mago Exp $
+ * @version $Id: ActivityInterfaceTest.java,v 1.2 2008/07/10 20:40:46 x-mago Exp $
  */
 public class ActivityInterfaceTest extends TestCase {
 
@@ -64,7 +64,7 @@ public class ActivityInterfaceTest extends TestCase {
     public void testUserPhotos()
       throws FlickrException, IOException, SAXException {
         ActivityInterface actInterface = flickr.getActivityInterface();
-        ItemList list = actInterface.userPhotos(10, 1, "300d");
+        ItemList list = actInterface.userPhotos(10, 1, "600d");
         assertTrue(list.size() > 0);
     }
 
