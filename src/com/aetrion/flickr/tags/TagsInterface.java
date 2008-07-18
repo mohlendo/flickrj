@@ -24,10 +24,11 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr tags.
  *
  * @author Anthony Eden
- * @version $Id: TagsInterface.java,v 1.13 2008/03/25 20:34:05 x-mago Exp $
+ * @version $Id: TagsInterface.java,v 1.14 2008/07/18 22:23:35 x-mago Exp $
  */
 public class TagsInterface {
 
+    public static final String METHOD_GET_CLUSTERS = "flickr.tags.getClusters";
     public static final String METHOD_GET_HOT_LIST = "flickr.tags.getHotList";
     public static final String METHOD_GET_LIST_PHOTO = "flickr.tags.getListPhoto";
     public static final String METHOD_GET_LIST_USER = "flickr.tags.getListUser";
@@ -56,6 +57,50 @@ public class TagsInterface {
         this.apiKey = apiKey;
         this.sharedSecret = sharedSecret;
         this.transportAPI = transportAPI;
+    }
+
+    /**
+     * Search for tab-clusters.<p/>
+     * This method does not require authentication.
+     *
+     * @since 1.2
+     * @param tag
+     * @return a list of clusters
+     */
+    public ClustersList getClusters(String searchTag)
+      throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_CLUSTERS));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("tag", searchTag));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        ClustersList clusters = new ClustersList();
+        Element clustersElement = response.getPayload();
+        NodeList clusterElements = clustersElement.getElementsByTagName("cluster");
+        for (int i = 0; i < clusterElements.getLength(); i++) {
+            Cluster cluster = new Cluster();
+            NodeList tagElements = ((Element) clusterElements.item(i)).getElementsByTagName("tag");
+            for (int j = 0; j < tagElements.getLength(); j++) {
+                Tag tag = new Tag();
+                tag.setValue(
+                    ((Text) tagElements.item(j).getFirstChild()).getData()
+                );
+                cluster.addTag(tag);
+            }
+            clusters.addCluster(cluster);
+        }
+        return clusters;
     }
 
     /**
