@@ -130,6 +130,7 @@
         <test name="com.aetrion.flickr.PhotosInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PlacesInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PrefsInterfaceTest" todir="${test.reports}"/>
+        <test name="com.aetrion.flickr.TagsInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.TestInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.UploaderTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.ReflectionInterfaceTest" todir="${test.reports}"/>
