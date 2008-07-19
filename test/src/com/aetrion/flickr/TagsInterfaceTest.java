@@ -8,15 +8,19 @@ import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import junit.framework.TestCase;
+
+import org.xml.sax.SAXException;
+
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.tags.Cluster;
+import com.aetrion.flickr.tags.ClusterList;
 import com.aetrion.flickr.tags.RelatedTagsList;
 import com.aetrion.flickr.tags.Tag;
 import com.aetrion.flickr.tags.TagsInterface;
 import com.aetrion.flickr.util.IOUtilities;
-import junit.framework.TestCase;
-import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
@@ -27,7 +31,7 @@ public class TagsInterfaceTest extends TestCase {
     Properties properties = null;
 
     public void setUp() throws ParserConfigurationException, IOException, FlickrException, SAXException {
-        Flickr.debugStream = true;
+        Flickr.debugStream = false;
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/setup.properties");
@@ -53,13 +57,27 @@ public class TagsInterfaceTest extends TestCase {
         }
     }
 
+    public void testGetClusters() throws FlickrException, IOException, SAXException {
+        TagsInterface iface = flickr.getTagsInterface();
+        ClusterList clusters = iface.getClusters("api");
+        assertTrue(clusters.getClusters().size() == 4);
+        Cluster cluster = clusters.getClusters().get(0);
+        assertTrue(cluster.getTags().size() >= 19);
+        cluster = clusters.getClusters().get(1);
+        assertTrue(cluster.getTags().size() >= 8);
+        cluster = clusters.getClusters().get(2);
+        assertTrue(cluster.getTags().size() >= 16);
+        cluster = clusters.getClusters().get(3);
+        assertTrue(cluster.getTags().size() >= 3);
+    }
+
     public void testGetListPhoto() throws FlickrException, IOException, SAXException {
         TagsInterface iface = flickr.getTagsInterface();
         Photo photo = iface.getListPhoto(properties.getProperty("photoid"));
         assertNotNull(photo);
         assertEquals(properties.getProperty("photoid"), photo.getId());
         assertNotNull(photo.getTags());
-        assertEquals(0, photo.getTags().size());
+        assertEquals(3, photo.getTags().size());
     }
 
     public void testGetHotList() throws FlickrException, IOException, SAXException {
@@ -73,14 +91,14 @@ public class TagsInterfaceTest extends TestCase {
         TagsInterface iface = flickr.getTagsInterface();
         Collection tags = iface.getListUser(properties.getProperty("nsid"));
         assertNotNull(tags);
-        assertEquals(1, tags.size());
+        assertEquals(4, tags.size());
     }
 
     public void testListUserPopular() throws FlickrException, IOException, SAXException {
         TagsInterface iface = flickr.getTagsInterface();
         Collection tags = iface.getListUserPopular(properties.getProperty("nsid"));
         assertNotNull(tags);
-        assertEquals(1, tags.size());
+        assertEquals(4, tags.size());
         Iterator iter = tags.iterator();
         while (iter.hasNext()) {
             Tag tag = (Tag) iter.next();
