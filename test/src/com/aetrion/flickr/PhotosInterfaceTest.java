@@ -37,7 +37,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterfaceTest.java,v 1.15 2008/01/28 23:01:45 x-mago Exp $
+ * @version $Id: PhotosInterfaceTest.java,v 1.16 2008/11/29 20:55:56 x-mago Exp $
  */
 public class PhotosInterfaceTest extends TestCase {
 
@@ -64,10 +64,10 @@ public class PhotosInterfaceTest extends TestCase {
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));
-            auth.setPermission(Permission.WRITE);
+            auth.setPermission(Permission.WRITE); 
             requestContext.setAuth(auth);
             Flickr.debugStream = false;
-            Flickr.debugRequest = false;
+            Flickr.debugRequest = false; 
         } finally {
             IOUtilities.close(in);
         }
@@ -218,6 +218,25 @@ public class PhotosInterfaceTest extends TestCase {
         assertEquals(1, photos.getPages());
         assertEquals(100, photos.getPerPage());
         assertEquals(5, photos.getTotal());
+    }
+
+    public void testBoundingBoxSearch() throws FlickrException, IOException, SAXException {
+        PhotosInterface iface = flickr.getPhotosInterface();
+        SearchParameters searchParameters = new SearchParameters();
+        searchParameters.setBBox("-122.9", "45.0", "-122.0", "45.9");
+        Collection photos = iface.search(searchParameters, -1, -1);
+        assertNotNull(photos);
+    }
+
+    public void testRadialGeoSearch() throws FlickrException, IOException, SAXException {
+        PhotosInterface iface = flickr.getPhotosInterface();
+        SearchParameters searchParameters = new SearchParameters();
+        searchParameters.setLatitude("45.521694");
+        searchParameters.setLongitude("-122.691806");
+        searchParameters.setRadius(2);
+        searchParameters.setRadiusUnits("km");
+        Collection photos = iface.search(searchParameters, -1, -1);
+        assertNotNull(photos);
     }
 
     public void testTagSearch() throws FlickrException, IOException, SAXException {

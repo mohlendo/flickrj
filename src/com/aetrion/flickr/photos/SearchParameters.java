@@ -17,7 +17,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.15 2008/07/03 21:37:44 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.16 2008/11/29 20:55:56 x-mago Exp $
  */
 public class SearchParameters {
 
@@ -52,6 +52,10 @@ public class SearchParameters {
     private String safeSearch;
     private String[] machineTags;
     private String machineTagMode;
+    private String latitude;
+    private String longitude;
+    private int radius = -1;
+    private String radiusUnits;
 
     private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
         protected synchronized Object initialValue() {
@@ -451,6 +455,26 @@ public class SearchParameters {
     public Collection getAsParameters() {
         List parameters = new ArrayList();
 
+        String lat = getLatitude();
+        if (lat != null) {
+            parameters.add(new Parameter("lat", lat));
+        }
+
+        String lon = getLongitude();
+        if (lon != null) {
+            parameters.add(new Parameter("lon", lon));
+        }
+
+        int radius = getRadius();
+        if (radius > 0) {
+            parameters.add(new Parameter("radius", radius));
+        }
+
+        String radiusUnits = getRadiusUnits();
+        if (radiusUnits != null) {
+            parameters.add(new Parameter("radius_units", radiusUnits));
+        }
+
         String media = getMedia();
         if (media != null) {
             parameters.add(new Parameter("media", media));
@@ -575,4 +599,37 @@ public class SearchParameters {
 
         return parameters;
     }
+
+    public void setLatitude(String lat) {
+        latitude = lat;
+    }
+
+    public void setRadius(int r) {
+        radius = r;
+    }
+
+    public void setLongitude(String lon) {
+        longitude = lon;
+    }
+
+    public void setRadiusUnits(String units) {
+        radiusUnits = units;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public String getRadiusUnits() {
+        return radiusUnits;
+    }
+
 }
