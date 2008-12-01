@@ -17,7 +17,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.16 2008/11/29 20:55:56 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.17 2008/12/01 22:36:06 x-mago Exp $
  */
 public class SearchParameters {
 
@@ -56,6 +56,7 @@ public class SearchParameters {
     private String longitude;
     private int radius = -1;
     private String radiusUnits;
+    private boolean hasGeo = false;
 
     private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
         protected synchronized Object initialValue() {
@@ -69,33 +70,43 @@ public class SearchParameters {
         }
     };
 
-	/** order argument */
-	public static int DATE_POSTED_DESC = 0;
-	/** order argument */
-	public static int DATE_POSTED_ASC = 1;
-	/** order argument */
-	public static int DATE_TAKEN_DESC = 2;
-	/** order argument */
-	public static int DATE_TAKEN_ASC = 3;
-	/** order argument */
-	public static int INTERESTINGNESS_DESC = 4;
-	/** order argument */
-	public static int INTERESTINGNESS_ASC = 5;
-	/** order argument */
-	public static int RELEVANCE = 6;
-		
-	private int sort = 0;
+    /** order argument */
+    public static int DATE_POSTED_DESC = 0;
+    /** order argument */
+    public static int DATE_POSTED_ASC = 1;
+    /** order argument */
+    public static int DATE_TAKEN_DESC = 2;
+    /** order argument */
+    public static int DATE_TAKEN_ASC = 3;
+    /** order argument */
+    public static int INTERESTINGNESS_DESC = 4;
+    /** order argument */
+    public static int INTERESTINGNESS_ASC = 5;
+    /** order argument */
+    public static int RELEVANCE = 6;
+    private int sort = 0;
 
     public SearchParameters() {
 
     }
 
-    public String getUserId() {
-        return userId;
+    /**
+     * Optional to use, if BBox is set.<p>
+     * Defaults to maximum value if not specified.
+     *
+     * @param accuracy from 1 to 16
+     * @see com.aetrion.flickr.Flickr#ACCURACY_WORLD
+     * @see com.aetrion.flickr.Flickr#ACCURACY_COUNTRY
+     * @see com.aetrion.flickr.Flickr#ACCURACY_REGION
+     * @see com.aetrion.flickr.Flickr#ACCURACY_CITY
+     * @see com.aetrion.flickr.Flickr#ACCURACY_STREET
+     */
+    public void setAccuracy(int accuracy) {
+        this.accuracy = accuracy;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public int getAccuracy() {
+        return accuracy;
     }
 
     public String getGroupId() {
@@ -103,14 +114,38 @@ public class SearchParameters {
     }
 
     /**
-     * The id of a group who's pool to search. If specified, only matching photos posted to the group's pool will be returned.
+     * The id of a group who's pool to search. If specified, only matching
+     * photos posted to the group's pool will be returned.
      *
      * @param groupId
      */
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
-    
+
+    /**
+     * Any photo that has been geotagged.<p>
+     *
+     * Geo queries require some sort of limiting agent in order to prevent
+     * the database from crying. This is basically like the check against
+     * "parameterless searches" for queries without a geo component.<p>
+     *
+     * A tag, for instance, is considered a limiting agent as are user
+     * defined min_date_taken and min_date_upload parameters &emdash;
+     * If no limiting factor is passed flickr will return only photos
+     * added in the last 12 hours
+     * (though flickr may extend the limit in the future).
+     *
+     * @param hasGeo
+     */
+    public void setHasGeo(boolean hasGeo) {
+        this.hasGeo = hasGeo;
+    }
+
+    public boolean getHasGeo() {
+        return hasGeo;
+    }
+
     public String[] getTags() {
         return tags;
     }
@@ -187,18 +222,18 @@ public class SearchParameters {
     public void setInterestingnessDate(Date intrestingnessDate) {
         this.interestingnessDate = intrestingnessDate;
     }
-    
+
     /**
      * Set the machine tags, for which Photos to request.
      * 
      * @param tags
      */
     public void setMachineTags(String[] tags) {
-    	this.machineTags = tags;
+        this.machineTags = tags;
     }
 
     public String[] getMachineTags() {
-    	return machineTags;
+        return machineTags;
     }
     /**
      * Set the machine tags search mode to use when requesting photos
@@ -206,13 +241,13 @@ public class SearchParameters {
      * @param tagMode
      */
     public void setMachineTagMode(String tagMode) {
-    	this.machineTagMode = tagMode;
+        this.machineTagMode = tagMode;
     }
 
     public String getMachineTagMode() {
-    	return machineTagMode;
+        return machineTagMode;
     }
-    
+
     /**
      * Setting all toogles to get extra-fields in Photos-search.<br>
      * The default is false.
@@ -309,25 +344,6 @@ public class SearchParameters {
 
     public String[] getBBox() {
         return bbox;
-    }
-
-    /**
-     * Optional to use, if BBox is set.<p>
-     * Defaults to maximum value if not specified.
-     *
-     * @param accuracy from 1 to 16
-     * @see com.aetrion.flickr.Flickr#ACCURACY_WORLD
-     * @see com.aetrion.flickr.Flickr#ACCURACY_COUNTRY
-     * @see com.aetrion.flickr.Flickr#ACCURACY_REGION
-     * @see com.aetrion.flickr.Flickr#ACCURACY_CITY
-     * @see com.aetrion.flickr.Flickr#ACCURACY_STREET
-     */
-    public void setAccuracy(int accuracy) {
-    	this.accuracy = accuracy;
-    }
-
-    public int getAccuracy() {
-    	return accuracy;
     }
 
     /**
@@ -567,6 +583,11 @@ public class SearchParameters {
             parameters.add(new Parameter("safe_search", safeSearch));
         }
 
+        boolean hasGeo = getHasGeo();
+        if (hasGeo) {
+            parameters.add(new Parameter("has_geo", "true"));
+        }
+
         if (extrasLicense || extrasDateUpload ||
            extrasDateTaken || extrasOwnerName ||
            extrasIconServer || extrasOriginalFormat ||
@@ -630,6 +651,14 @@ public class SearchParameters {
 
     public String getRadiusUnits() {
         return radiusUnits;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 }
