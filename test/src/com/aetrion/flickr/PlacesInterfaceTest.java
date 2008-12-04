@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * Tests for the PlacesInterface.
  *
  * @author mago
- * @version $Id: PlacesInterfaceTest.java,v 1.5 2008/07/09 21:52:01 x-mago Exp $
+ * @version $Id: PlacesInterfaceTest.java,v 1.6 2008/12/04 23:28:42 x-mago Exp $
  */
 public class PlacesInterfaceTest extends TestCase {
 
@@ -68,16 +68,15 @@ public class PlacesInterfaceTest extends TestCase {
         );
         assertTrue(list.getTotal() == 1);
         Place place = (Place) list.get(0);
-        assertEquals("sRdiycKfApRGrrU", place.getPlaceId());
-        assertEquals("/Germany/Berlin/Berlin", place.getPlaceUrl());
+        assertEquals("Yg2J7kebB5RznUVpdA", place.getPlaceId());
+        assertEquals("/Germany/Berlin/Ortsteil+Mitte", place.getPlaceUrl());
         assertEquals(Place.TYPE_LOCALITY, place.getPlaceType());
-        assertEquals("638242", place.getWoeId());
-        assertEquals(52.515D, place.getLatitude());
-        assertEquals(13.377D, place.getLongitude());
+        assertEquals("26821864", place.getWoeId());
+        assertEquals(52.506D, place.getLatitude());
+        assertEquals(13.424D, place.getLongitude());
     }
 
-    public void testFind()
-      throws FlickrException, IOException, SAXException {
+    public void testFind()      throws FlickrException, IOException, SAXException {
         PlacesInterface placesInterface = flickr.getPlacesInterface();
         PlacesList list = placesInterface.find("Alabama");
         assertTrue(list.getTotal() == 3);
@@ -97,6 +96,22 @@ public class PlacesInterfaceTest extends TestCase {
         assertEquals(Place.TYPE_LOCALITY, place.getPlaceType());
     }
 
+    public void testFind2()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        PlacesList list = placesInterface.find("Europe");
+        assertTrue(list.getTotal() == 2);
+        Place place = (Place) list.get(0);
+        assertEquals("lkyV7jSbBZTkl7Wkqg", place.getPlaceId());
+        assertEquals("/lkyV7jSbBZTkl7Wkqg", place.getPlaceUrl());
+        assertEquals(Place.TYPE_CONTINENT, place.getPlaceType());
+
+        place = (Place) list.get(1);
+        assertEquals("Nf7Dq4acBJTgBHuaOQ", place.getPlaceId());
+        assertEquals("/France/%C3%8Ele-de-France/Paris/Europe", place.getPlaceUrl());
+        assertEquals(Place.TYPE_NEIGHBOURHOOD, place.getPlaceType());
+    }
+
     public void testResolvePlaceId()
       throws FlickrException, IOException, SAXException {
         PlacesInterface placesInterface = flickr.getPlacesInterface();
@@ -111,6 +126,60 @@ public class PlacesInterfaceTest extends TestCase {
         placeAssertions(location);
     }
 
+    public void testGetChildrenWithPhotosPublic()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        String woeId = "2487956";
+        String placeId = "kH8dLOubBZRvX_YZ";
+        PlacesList list = placesInterface.getChildrenWithPhotosPublic(placeId, woeId);
+        boolean presidioFound = false;
+        for(int i = 0;i < list.size();i++) {
+            Place place = (Place) list.get(i);
+            if(place.getPlaceId().equals("xrtOyiqbApl7whEZfA")) {
+                presidioFound = true;
+            }
+        }
+        assertTrue(presidioFound);
+        assertTrue(list.size() > 100);
+    }
+
+    public void testGetInfo()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        String woeId = "2487956";
+        String placeId = "kH8dLOubBZRvX_YZ";
+        Location loc = placesInterface.getInfo(woeId, null);
+        assertEquals(loc.getPlaceUrl(), "/United+States/California/San+Francisco");
+        loc = placesInterface.getInfo(null, placeId);
+        assertEquals(loc.getPlaceUrl(), "/United+States/California/San+Francisco");
+    }
+
+    public void testGetInfoByUrl()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        String woeId = "2487956";
+        String placeId = "kH8dLOubBZRvX_YZ";
+        String url = "/United+States/California/San+Francisco";
+        Location loc = placesInterface.getInfoByUrl(url);
+        assertEquals(loc.getPlaceId(), placeId);
+    }
+
+    public void testPlacesForUser()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        int placeType = Place.TYPE_REGION;
+        String placeId = null;
+        String woeId = null;
+        String threshold = null;
+        PlacesList places = placesInterface.placesForUser(placeType, placeId, woeId, threshold);
+        assertTrue((places.size() == 0));
+        for(int i = 0;i < places.size();i++) {
+            Place place = (Place) places.get(i);
+            System.out.println(place.getName() + " " + place.getPlaceUrl());
+        }
+    }
+    
+    
     private void placeAssertions(Location location) {
         assertEquals(
             "kH8dLOubBZRvX_YZ",
@@ -142,7 +211,7 @@ public class PlacesInterfaceTest extends TestCase {
             location.getLocality().getPlaceId()
         );
         assertEquals(
-            "San Francisco",
+            "San Francisco, California, United States",
             location.getLocality().getName()
         );
         assertEquals(
@@ -163,7 +232,7 @@ public class PlacesInterfaceTest extends TestCase {
             location.getCounty().getPlaceId()
         );
         assertEquals(
-            "San Francisco",
+            "San Francisco County, California, United States",
             location.getCounty().getName()
         );
         assertEquals(
@@ -184,7 +253,7 @@ public class PlacesInterfaceTest extends TestCase {
             location.getRegion().getPlaceId()
         );
         assertEquals(
-            "California",
+            "California, United States",
             location.getRegion().getName()
         );
         assertEquals(
