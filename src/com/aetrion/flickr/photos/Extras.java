@@ -8,9 +8,9 @@ import java.util.Set;
 
 /**
  * Extra-attributes for Photo-requests.
- * 
+ *
  * @author Anthony Eden
- * @version $Id: Extras.java,v 1.6 2007/09/30 15:55:42 x-mago Exp $
+ * @version $Id: Extras.java,v 1.7 2008/12/07 22:12:41 x-mago Exp $
  */
 public class Extras {
     public static final String KEY_EXTRAS = "extras";
@@ -25,6 +25,9 @@ public class Extras {
     public static final String GEO = "geo";
     public static final String TAGS = "tags";
     public static final String MACHINE_TAGS = "machine_tags";
+    public static final String O_DIMS = "O_DIMS";
+    public static final String MEDIA = "MEDIA";
+    public static final String VIEWS = "VIEWS";
 
     /**
      * Set of all extra-arguments. Used for requesting lists of photos.
@@ -36,6 +39,7 @@ public class Extras {
      * @see com.aetrion.flickr.photos.PhotosInterface#getWithGeoData(java.util.Date, java.util.Date, java.util.Date, java.util.Date, int, String, Set, int, int)
      * @see com.aetrion.flickr.photos.PhotosInterface#getWithoutGeoData(java.util.Date, java.util.Date, java.util.Date, java.util.Date, int, String, Set, int, int)
      * @see com.aetrion.flickr.photos.PhotosInterface#recentlyUpdated(java.util.Date, Set, int, int)
+     * @see com.aetrion.flickr.photos.geo.GeoInterface#photosForLocation(GeoData, Set, int, int)
      * @see com.aetrion.flickr.interestingness.InterestingnessInterface#getList(java.util.Date, Set, int, int)
      * @see com.aetrion.flickr.favorites.FavoritesInterface#getList(String, int, int, Set)
      */
@@ -52,6 +56,7 @@ public class Extras {
      * @see com.aetrion.flickr.photos.PhotosInterface#getWithGeoData(java.util.Date, java.util.Date, java.util.Date, java.util.Date, int, String, Set, int, int)
      * @see com.aetrion.flickr.photos.PhotosInterface#getWithoutGeoData(java.util.Date, java.util.Date, java.util.Date, java.util.Date, int, String, Set, int, int)
      * @see com.aetrion.flickr.photos.PhotosInterface#recentlyUpdated(java.util.Date, Set, int, int)
+     * @see com.aetrion.flickr.photos.geo.GeoInterface#photosForLocation(GeoData, Set, int, int)
      * @see com.aetrion.flickr.interestingness.InterestingnessInterface#getList(java.util.Date, Set, int, int)
      * @see com.aetrion.flickr.favorites.FavoritesInterface#getList(String, int, int, Set)
      */
@@ -68,6 +73,9 @@ public class Extras {
         ALL_EXTRAS.add(GEO);
         ALL_EXTRAS.add(TAGS);
         ALL_EXTRAS.add(MACHINE_TAGS);
+        ALL_EXTRAS.add(O_DIMS);
+        ALL_EXTRAS.add(MEDIA);
+        ALL_EXTRAS.add(VIEWS);
     }
 
     static {
