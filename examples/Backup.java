@@ -35,7 +35,7 @@ import com.aetrion.flickr.util.FileAuthStore;
  * This sample also uses the AuthStore interface, so users will only be asked to authorize on the first run.
  *
  * @author Matthew MacKenzie
- * @version $Id: Backup.java,v 1.5 2008/07/05 22:19:48 x-mago Exp $
+ * @version $Id: Backup.java,v 1.6 2009/01/01 16:44:57 x-mago Exp $
  */
 
 public class Backup {
@@ -142,7 +142,7 @@ public class Backup {
 
 	private String makeSafeFilename(String input) {
 		byte[] fname = input.getBytes();
-		byte[] bad = new byte[]{'\\', '/'};
+		byte[] bad = new byte[] {'\\', '/', '"'};
 		byte replace = '_';
 		for (int i = 0; i < fname.length; i++) {
 			for (int j = 0; j < bad.length; j++) {
@@ -151,8 +151,7 @@ public class Backup {
 		}
 		return new String(fname);
 	}
-	
-	
+
 	public static void main(String[] args) throws Exception {
 		if (args.length < 4) {
 			System.out.println("Usage: java " + Backup.class.getName() + " api_key nsid shared_secret output_dir");
