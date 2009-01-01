@@ -22,6 +22,7 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr contacts.
  *
  * @author Anthony Eden
+ * @version $Id: ContactsInterface.java,v 1.15 2009/01/01 20:25:57 x-mago Exp $
  */
 public class ContactsInterface {
 
@@ -79,6 +80,8 @@ public class ContactsInterface {
             contact.setFamily("1".equals(contactElement.getAttribute("family")));
             contact.setIgnored("1".equals(contactElement.getAttribute("ignored")));
             contact.setOnline(OnlineStatus.fromType(contactElement.getAttribute("online")));
+            contact.setIconFarm(contactElement.getAttribute("iconfarm"));
+            contact.setIconServer(contactElement.getAttribute("iconserver"));
             if (contact.getOnline() == OnlineStatus.AWAY) {
                 contactElement.normalize();
                 contact.setAwayMessage(XMLUtilities.getValue(contactElement));
@@ -126,6 +129,8 @@ public class ContactsInterface {
             contact.setUsername(contactElement.getAttribute("username"));
             contact.setIgnored("1".equals(contactElement.getAttribute("ignored")));
             contact.setOnline(OnlineStatus.fromType(contactElement.getAttribute("online")));
+            contact.setIconFarm(contactElement.getAttribute("iconfarm"));
+            contact.setIconServer(contactElement.getAttribute("iconserver"));
             if (contact.getOnline() == OnlineStatus.AWAY) {
                 contactElement.normalize();
                 contact.setAwayMessage(XMLUtilities.getValue(contactElement));

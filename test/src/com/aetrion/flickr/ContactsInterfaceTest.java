@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Anthony Eden
+ * @version $Id: ContactsInterfaceTest.java,v 1.9 2009/01/01 20:25:57 x-mago Exp $
  */
 public class ContactsInterfaceTest extends TestCase {
 
@@ -58,10 +59,12 @@ public class ContactsInterfaceTest extends TestCase {
         assertTrue("No Contacts. (You need to have contacts for this test to succceed)", contacts.size() > 0);
         Iterator it = contacts.iterator();
         for (int i = 0; it.hasNext() && i < 10; i++) {
-        	Contact contact = (Contact)it.next();
-        	assertNotNull(contact.getUsername());
-        	assertNotNull(contact.getRealName());
-        	assertNotNull(contact.getId());
+            Contact contact = (Contact)it.next();
+            assertNotNull(contact.getUsername());
+            assertNotNull(contact.getRealName());
+            assertNotNull(contact.getId());
+            assertTrue(contact.getIconFarm() > 0);
+            assertTrue(contact.getIconServer() > 0);
         }
     }
 
@@ -72,9 +75,11 @@ public class ContactsInterfaceTest extends TestCase {
         assertTrue("No Contacts. (You need to have contacts for this test to succceed)", contacts.size() > 0);
         Iterator it = contacts.iterator();
         for (int i = 0; it.hasNext() && i < 10; i++) {
-        	Contact contact = (Contact)it.next();
-        	assertNotNull(contact.getUsername());
-        	assertNotNull(contact.getId());
+            Contact contact = (Contact)it.next();
+            assertNotNull(contact.getUsername());
+            assertNotNull(contact.getId());
+            assertTrue(contact.getIconFarm() > 0);
+            assertTrue(contact.getIconServer() > 0);
         }
     }
 

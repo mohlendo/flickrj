@@ -3,12 +3,16 @@
  */
 package com.aetrion.flickr.contacts;
 
+import com.aetrion.flickr.util.BuddyIconable;
+import com.aetrion.flickr.util.UrlUtilities;
+
 /**
  * Class representing a Flickr contact.
  *
  * @author Anthony Eden
+ * @version $Id: Contact.java,v 1.4 2009/01/01 20:25:57 x-mago Exp $
  */
-public class Contact {
+public class Contact implements BuddyIconable {
 
     private String id;
     private String username;
@@ -18,6 +22,8 @@ public class Contact {
     private boolean ignored;
     private OnlineStatus online;
     private String awayMessage;
+    private int iconFarm;
+    private int iconServer;
 
     public Contact() {
 
@@ -92,4 +98,40 @@ public class Contact {
         this.awayMessage = awayMessage;
     }
 
+    /**
+     * Construct the BuddyIconUrl.<p>
+     * If none available, return the
+     * <a href="http://www.flickr.com/images/buddyicon.jpg">default</a>,
+     * or an URL assembled from farm, iconserver and nsid.
+     *
+     * @see <a href="http://flickr.com/services/api/misc.buddyicons.html">Flickr Documentation</a>
+     * @return The BuddyIconUrl
+     */
+    public String getBuddyIconUrl() {
+        return UrlUtilities.createBuddyIconUrl(iconFarm, iconServer, id);
+    }
+
+    public int getIconFarm() {
+        return iconFarm;
+    }
+
+    public void setIconFarm(int iconFarm) {
+        this.iconFarm = iconFarm;
+    }
+
+    public void setIconFarm(String iconFarm) {
+        setIconFarm(Integer.parseInt(iconFarm));
+    }
+
+    public int getIconServer() {
+        return iconServer;
+    }
+
+    public void setIconServer(int iconServer) {
+        this.iconServer = iconServer;
+    }
+
+    public void setIconServer(String iconServer) {
+        setIconServer(Integer.parseInt(iconServer));
+    }
 }
