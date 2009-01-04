@@ -1,10 +1,13 @@
 package com.aetrion.flickr.places;
 
 /**
- * A Flickr place.
+ * A Flickr place.<br>
+ * As a result to
+ * {@link PlacesInterface#getInfo(String, String)}
+ * a Location describes the relation of a place to various types of other places.
  *
  * @author mago
- * @version $Id: Location.java,v 1.2 2008/07/03 21:37:44 x-mago Exp $
+ * @version $Id: Location.java,v 1.3 2009/01/04 21:20:58 x-mago Exp $
  * @see com.aetrion.flickr.photos.SearchParameters#setPlaceId(String)
  * @see com.aetrion.flickr.photos.Photo#getPlaceId()
  */
@@ -112,12 +115,12 @@ public class Location {
         this.longitude = longitude;
     }
 
-	public int getPlaceType() {
-		return placeType;
-	}
+    public int getPlaceType() {
+        return placeType;
+    }
 
-	public void setPlaceType(int placeType) {
-		this.placeType = placeType;
-	}
+    public void setPlaceType(int placeType) {
+        this.placeType = placeType;
+    }
 
 }
