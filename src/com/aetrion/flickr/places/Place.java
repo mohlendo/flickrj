@@ -4,21 +4,23 @@ package com.aetrion.flickr.places;
  * Describes a place inside a {@link Location}.
  *
  * Each place contain its place ID, corresponding URL
- * (underneath http://www.flickr.com/places/) and place type for
+ * (underneath {@link http://www.flickr.com/places/}) and place type for
  * disambiguating different locations with the same name.<p>
  *
  * A place delivered by find contains an URL, whereas the URL is missing if
  * delivered by resolvePlaceId and resolvePlaceUrl.
  *
  * @author mago
- * @version $Id: Place.java,v 1.4 2008/07/03 21:37:44 x-mago Exp $
+ * @version $Id: Place.java,v 1.5 2009/01/04 19:53:25 x-mago Exp $
  */
 public class Place {
     public static final int TYPE_UNSET = 0;
-    public static final int TYPE_LOCALITY = 1;
-    public static final int TYPE_COUNTY = 2;
-    public static final int TYPE_REGION = 3;
-    public static final int TYPE_COUNTRY = 4;
+    public static final int TYPE_LOCALITY = 7;
+    public static final int TYPE_COUNTY = 9;
+    public static final int TYPE_REGION = 8;
+    public static final int TYPE_COUNTRY = 12;
+    public static final int TYPE_CONTINENT = 29;
+    public static final int TYPE_NEIGHBOURHOOD = 22;
 
     private String name = "";
     private String placeId = "";
@@ -30,6 +32,7 @@ public class Place {
      */
     private String placeUrl = "";
     private int placeType = 0;
+    private int photoCount = 0;
 
     public Place() {
     }
@@ -61,12 +64,38 @@ public class Place {
         this.placeId = placeId;
     }
 
+    /**
+     * The PlaceType.
+     * 
+     * @return The PlaceType
+     * @see Place#TYPE_COUNTRY
+     * @see Place#TYPE_COUNTY
+     * @see Place#TYPE_LOCALITY
+     * @see Place#TYPE_REGION
+     */
     public int getPlaceType() {
         return placeType;
     }
 
+    /**
+     * The PlaceType.
+     *
+     * @param placeId
+     * @see Place#TYPE_COUNTRY
+     * @see Place#TYPE_COUNTY
+     * @see Place#TYPE_LOCALITY
+     * @see Place#TYPE_REGION
+     * @see Place#TYPE_NEIGHBOURHOOD
+     * @see Place#TYPE_CONTINENT
+     */
     public void setPlaceType(int placeType) {
         this.placeType = placeType;
+    }
+
+    public void setPlaceType(String placeType) {
+        try {
+            setPlaceType(Integer.parseInt(placeType));
+        } catch (NumberFormatException e) {}
     }
 
     public String getPlaceUrl() {
@@ -111,6 +140,20 @@ public class Place {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public int getPhotoCount() {
+        return photoCount;
+    }
+
+    public void setPhotoCount(String photoCount) {
+        try {
+            setPhotoCount(Integer.parseInt(photoCount));
+        } catch (NumberFormatException e) {}
+    }
+
+    public void setPhotoCount(int photoCount) {
+        this.photoCount = photoCount;
     }
 
 }
