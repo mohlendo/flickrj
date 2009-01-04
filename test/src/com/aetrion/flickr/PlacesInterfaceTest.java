@@ -2,6 +2,8 @@ package com.aetrion.flickr;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,17 +17,20 @@ import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.auth.Permission;
 import com.aetrion.flickr.places.Location;
 import com.aetrion.flickr.places.Place;
+import com.aetrion.flickr.places.PlaceType;
 import com.aetrion.flickr.places.PlacesInterface;
 import com.aetrion.flickr.places.PlacesList;
+import com.aetrion.flickr.tags.Tag;
 import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * Tests for the PlacesInterface.
  *
  * @author mago
- * @version $Id: PlacesInterfaceTest.java,v 1.6 2008/12/04 23:28:42 x-mago Exp $
+ * @version $Id: PlacesInterfaceTest.java,v 1.7 2009/01/04 21:23:12 x-mago Exp $
  */
 public class PlacesInterfaceTest extends TestCase {
+    String sfWoeId = "2487956";
 
     Flickr flickr = null;
     Properties properties = null;
@@ -164,6 +169,94 @@ public class PlacesInterfaceTest extends TestCase {
         assertEquals(loc.getPlaceId(), placeId);
     }
 
+    public void testGetPlaceTypes()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        ArrayList placeTypes = placesInterface.getPlaceTypes();
+        boolean neighbourhoodFound = false;
+        boolean regionFound = false;
+        for (int i = 0; i < placeTypes.size(); i++) {
+            PlaceType placeType = (PlaceType) placeTypes.get(i);
+            if (placeType.getPlaceTypeName().equals("neighbourhood") &&
+                placeType.getPlaceTypeId() == 22) {
+                neighbourhoodFound = true;
+            }
+            if (placeType.getPlaceTypeName().equals("region") &&
+                placeType.getPlaceTypeId() == 8) {
+                regionFound = true;
+            }
+            //System.out.println(placeType.getPlaceTypeName() + " " + placeType.getPlaceTypeId());
+        }
+        assertTrue(neighbourhoodFound);
+        assertTrue(regionFound);
+        assertTrue(placeTypes.size() > 5);
+    }
+
+    public void testPlacesForBoundingBox()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        String bbox = "-122.42307100000001,37.773779,-122.381071,37.815779";
+        int placeType = Place.TYPE_LOCALITY;
+        PlacesList places = placesInterface.placesForBoundingBox(placeType, bbox);
+        assertTrue((places.size() > 0));
+        Place place = (Place) places.get(0);
+        assertEquals(sfWoeId, place.getWoeId());
+        assertEquals("kH8dLOubBZRvX_YZ", place.getPlaceId());
+        assertEquals("/United+States/California/San+Francisco", place.getPlaceUrl());
+        assertEquals(Place.TYPE_LOCALITY, place.getPlaceType());
+    }
+
+    public void testPlacesForContacts()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        int placeType = Place.TYPE_REGION;
+        String placeId = null;
+        String woeId = null;
+        String threshold = null;
+        String contacts = "all";
+        PlacesList places = placesInterface.placesForContacts(placeType, placeId, woeId, threshold, contacts);
+        assertTrue((places.size() > 0));
+        for (int i = 0; i < places.size(); i++) {
+            Place place = (Place) places.get(i);
+            assertTrue(place.getPhotoCount() > 0);
+            //System.out.println(place.getName() + " " + place.getPlaceUrl());
+        }
+    }
+
+    public void testPlacesForTags() throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        int placeTypeId = Place.TYPE_REGION;
+        String placeId = null;
+        String threshold = "4";
+        String[] tags = {"sunny", "urban"};        
+        String tagMode = "any";
+        String machineTags = null;
+        String machineTagMode = null;
+        Calendar minUploadDate = Calendar.getInstance();
+        Calendar maxUploadDate = Calendar.getInstance();
+        Calendar minTakenDate = Calendar.getInstance();
+        Calendar maxTakenDate = Calendar.getInstance();
+        minUploadDate.roll(Calendar.YEAR, -3);
+        minTakenDate.roll(Calendar.YEAR, -3);
+        PlacesList places = placesInterface.placesForTags(
+            placeTypeId,
+            sfWoeId,
+            placeId,
+            threshold,
+            tags,
+            tagMode,
+            machineTags,
+            machineTagMode,
+            minUploadDate.getTime(), maxUploadDate.getTime(),
+            minTakenDate.getTime(), maxTakenDate.getTime()
+        );
+        assertTrue((places.size() == 1));
+        Place place = (Place) places.get(0);
+        assertEquals("SVrAMtCbAphCLAtP", place.getPlaceId());
+        assertEquals(Place.TYPE_REGION, place.getPlaceType());
+        assertEquals("/United+States/California", place.getPlaceUrl());
+    }
+
     public void testPlacesForUser()
       throws FlickrException, IOException, SAXException {
         PlacesInterface placesInterface = flickr.getPlacesInterface();
@@ -171,15 +264,52 @@ public class PlacesInterfaceTest extends TestCase {
         String placeId = null;
         String woeId = null;
         String threshold = null;
-        PlacesList places = placesInterface.placesForUser(placeType, placeId, woeId, threshold);
+        Calendar minUploadDate = Calendar.getInstance();
+        Calendar maxUploadDate = Calendar.getInstance();
+        Calendar minTakenDate = Calendar.getInstance();
+        Calendar maxTakenDate = Calendar.getInstance();
+        minUploadDate.roll(Calendar.YEAR, -3);
+        minTakenDate.roll(Calendar.YEAR, -3);
+        PlacesList places = placesInterface.placesForUser(
+            placeType, woeId, placeId, threshold,
+            minUploadDate.getTime(), maxUploadDate.getTime(),
+            minTakenDate.getTime(), maxTakenDate.getTime()
+        );
         assertTrue((places.size() == 0));
-        for(int i = 0;i < places.size();i++) {
+        for (int i = 0; i < places.size(); i++) {
             Place place = (Place) places.get(i);
-            System.out.println(place.getName() + " " + place.getPlaceUrl());
+            //System.out.println(place.getName() + " " + place.getPlaceUrl());
         }
     }
-    
-    
+
+    public void testTagsForPlace()
+      throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        String placeId = null;
+        Calendar minUploadDate = Calendar.getInstance();
+        Calendar maxUploadDate = Calendar.getInstance();
+        Calendar minTakenDate = Calendar.getInstance();
+        Calendar maxTakenDate = Calendar.getInstance();
+        minUploadDate.roll(Calendar.YEAR, -3);
+        minTakenDate.roll(Calendar.YEAR, -3);
+        ArrayList tags = placesInterface.tagsForPlace(
+            sfWoeId, placeId,
+            minUploadDate.getTime(), maxUploadDate.getTime(),
+            minTakenDate.getTime(), maxTakenDate.getTime()
+        );
+        assertTrue((tags.size() > 0));
+        boolean calFound = false;
+        for (int i = 0; i < tags.size(); i++) {
+            Tag tag = (Tag) tags.get(i);
+            if (tag.getValue().equals("california") &&
+                tag.getCount() > 140000) {
+                calFound = true;
+            }
+            //System.out.println(tag.getValue() + " " + tag.getCount());
+        }
+        assertTrue(calFound);
+    }
+
     private void placeAssertions(Location location) {
         assertEquals(
             "kH8dLOubBZRvX_YZ",

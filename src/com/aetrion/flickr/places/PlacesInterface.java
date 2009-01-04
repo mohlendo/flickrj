@@ -1,7 +1,9 @@
 package com.aetrion.flickr.places;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -13,6 +15,9 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.auth.AuthUtilities;
+import com.aetrion.flickr.photos.SearchParameters;
+import com.aetrion.flickr.tags.Tag;
+import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
@@ -89,13 +94,22 @@ Thanks,
 </PRE>
 
  * @author mago
- * @version $Id: PlacesInterface.java,v 1.5 2008/07/03 21:37:44 x-mago Exp $
+ * @version $Id: PlacesInterface.java,v 1.6 2009/01/04 21:23:12 x-mago Exp $
  */
 public class PlacesInterface {
-    public static final String METHOD_FIND = "flickr.places.find";
-    public static final String METHOD_FIND_BY_LATLON = "flickr.places.findByLatLon";
-    public static final String METHOD_RESOLVE_PLACE_ID = "flickr.places.resolvePlaceId";
-    public static final String METHOD_RESOLVE_PLACE_URL = "flickr.places.resolvePlaceURL";
+    private static final String METHOD_FIND = "flickr.places.find";
+    private static final String METHOD_FIND_BY_LATLON = "flickr.places.findByLatLon";
+    private static final String METHOD_RESOLVE_PLACE_ID = "flickr.places.resolvePlaceId";
+    private static final String METHOD_RESOLVE_PLACE_URL = "flickr.places.resolvePlaceURL";
+    private static final String METHOD_GET_CHILDREN_WITH_PHOTOS_PUBLIC = "flickr.places.getChildrenWithPhotosPublic";
+    private static final String METHOD_GET_INFO = "flickr.places.getInfo";
+    private static final String METHOD_GET_INFO_BY_URL = "flickr.places.getInfoByUrl";
+    private static final String METHOD_GET_PLACETYPES = "flickr.places.getPlaceTypes";
+    private static final String METHOD_PLACES_FOR_BOUNDINGBOX = "flickr.places.placesForBoundingBox";
+    private static final String METHOD_PLACES_FOR_CONTACTS = "flickr.places.placesForContacts";
+    private static final String METHOD_PLACES_FOR_TAGS = "flickr.places.placesForTags";
+    private static final String METHOD_PLACES_FOR_USER = "flickr.places.placesForUser";
+    private static final String METHOD_TAGS_FOR_PLACE = "flickr.places.tagsForPlace";
 
     private String apiKey;
     private String sharedSecret;
@@ -194,8 +208,11 @@ public class PlacesInterface {
      * @throws IOException
      * @throws SAXException
      */
-    public PlacesList findByLatLon(double latitude, double longitude, int accuracy)
-      throws FlickrException, IOException, SAXException {
+    public PlacesList findByLatLon(
+        double latitude,
+        double longitude,
+        int accuracy
+    ) throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
         PlacesList placesList = new PlacesList();
         parameters.add(new Parameter("method", METHOD_FIND_BY_LATLON));
@@ -229,6 +246,458 @@ public class PlacesInterface {
         return placesList;
     }
 
+    /**
+     * <p>Return a list of locations with public photos that are parented by a 
+     * Where on Earth (WOE) or Places ID.</p>
+     *
+     * @param placeId A Flickr Places ID. Can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
+     * @param woeId A Where On Earth (WOE) ID. Can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
+     * @return List of Places
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public PlacesList getChildrenWithPhotosPublic(String placeId, String woeId)
+      throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        PlacesList placesList = new PlacesList();
+        parameters.add(new Parameter("method", METHOD_GET_CHILDREN_WITH_PHOTOS_PUBLIC));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        if (placeId != null) {
+            parameters.add(new Parameter("place_id", placeId));
+        }
+        if (woeId != null) {
+            parameters.add(new Parameter("woe_id", woeId));
+        }
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element placesElement = response.getPayload();
+        NodeList placesNodes = placesElement.getElementsByTagName("place");
+        placesList.setPage("1");
+        placesList.setPages("1");
+        placesList.setPerPage("" + placesNodes.getLength());
+        placesList.setTotal("" + placesNodes.getLength());
+        for (int i = 0; i < placesNodes.getLength(); i++) {
+            Element placeElement = (Element) placesNodes.item(i);
+            placesList.add(parsePlace(placeElement));
+        }
+        return placesList;
+    }
+
+    /**
+     * Get informations about a place.
+     *
+     * @param placeId A Flickr Places ID. Optioal, can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
+     * @param woeId A Where On Earth (WOE) ID. Optional, can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
+     * @return A Location
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public Location getInfo(String placeId, String woeId)
+      throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        Location loc = new Location();
+        parameters.add(new Parameter("method", METHOD_GET_INFO));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        if (placeId != null) {
+            parameters.add(new Parameter("place_id", placeId));
+        }
+        if (woeId != null) {
+            parameters.add(new Parameter("woe_id", woeId));
+        }
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element locationElement = response.getPayload();
+        return parseLocation(locationElement);
+    }
+
+    /**
+     * Lookup information about a place, by its flickr.com/places URL.
+     *
+     * @param url
+     * @return A Location
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public Location getInfoByUrl(String url)
+      throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        Location loc = new Location();
+        parameters.add(new Parameter("method", METHOD_GET_INFO_BY_URL));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("url", url));
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element locationElement = response.getPayload();
+        return parseLocation(locationElement);
+    }
+
+    public ArrayList getPlaceTypes()
+      throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        PlacesList placesList = new PlacesList();
+        parameters.add(new Parameter("method", METHOD_GET_PLACETYPES));
+        parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        ArrayList placeTypeList = new ArrayList();
+        Element placeTypeElement = response.getPayload();
+        NodeList placeTypeNodes = placeTypeElement.getElementsByTagName("place_type");
+        for (int i = 0; i < placeTypeNodes.getLength(); i++) {
+            placeTypeElement = (Element) placeTypeNodes.item(i);
+            PlaceType placeType = new PlaceType();
+            placeType.setPlaceTypeId(placeTypeElement.getAttribute("id"));
+            placeType.setPlaceTypeName(XMLUtilities.getValue(placeTypeElement));
+            placeTypeList.add(placeType);
+        }
+        return placeTypeList;
+    }
+
+    /**
+     * Return all the locations of a matching place type for a bounding box.<p>
+     *
+     * The maximum allowable size of a bounding box (the distance between the SW and NE corners) is governed by the place type you are requesting. Allowable sizes are as follows:
+     * <ul>
+     * <li>neighbourhood: 3km (1.8mi)</li>
+     * <li>locality: 7km (4.3mi)</li>
+     * <li>county: 50km (31mi)</li>
+     * <li>region: 200km (124mi)</li>
+     * <li>country: 500km (310mi)</li>
+     * <li>continent: 1500km (932mi)</li>
+     * </ul>
+     *
+     * @param bbox
+     * @param placeType
+     * @return A PlacesList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public PlacesList placesForBoundingBox(
+        int placeType,
+        String bbox
+    ) throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        PlacesList placesList = new PlacesList();
+        parameters.add(new Parameter("method", METHOD_PLACES_FOR_BOUNDINGBOX));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("place_type", intPlaceTypeToString(placeType)));
+        parameters.add(new Parameter("bbox", bbox));
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element placesElement = response.getPayload();
+        NodeList placesNodes = placesElement.getElementsByTagName("place");
+        placesList.setPage("1");
+        placesList.setPages("1");
+        placesList.setPerPage("" + placesNodes.getLength());
+        placesList.setTotal("" + placesNodes.getLength());
+        for (int i = 0; i < placesNodes.getLength(); i++) {
+            Element placeElement = (Element) placesNodes.item(i);
+            placesList.add(parsePlace(placeElement));
+        }
+        return placesList;
+    }
+
+    /**
+     * Return a list of the top 100 unique places clustered by a given placetype for a user's contacts. 
+     *
+     * @param placeType Use Type-constants at {@link Place}
+     * @param placeId A Flickr Places ID. Optional, can be null.
+     * @param woeId A Where On Earth (WOE) ID. Optional, can be null.
+     * @param threshold The minimum number of photos that a place type must have to be included. If the number of photos is lowered then the parent place type for that place will be used. Optional, can be null.
+     * @param contacts Search your contacts. Either 'all' or 'ff' for just friends and family. (Optional, default is all)
+     * @return A PlacesList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public PlacesList placesForContacts(
+        int placeType,
+        String placeId,
+        String woeId,
+        String threshold,
+        String contacts
+    ) throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        PlacesList placesList = new PlacesList();
+        parameters.add(new Parameter("method", METHOD_PLACES_FOR_CONTACTS));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("place_type", intPlaceTypeToString(placeType)));
+        if (placeId != null) {
+            parameters.add(new Parameter("place_id", placeId));
+        }
+        if (woeId != null) {
+            parameters.add(new Parameter("woe_id", woeId));
+        }
+        if (threshold != null) {
+            parameters.add(new Parameter("threshold", threshold));
+        }
+        if (threshold != null) {
+            parameters.add(new Parameter("threshold", threshold));
+        }
+        if (contacts != null) {
+            parameters.add(new Parameter("contacts", contacts));
+        }
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element placesElement = response.getPayload();
+        NodeList placesNodes = placesElement.getElementsByTagName("place");
+        placesList.setPage("1");
+        placesList.setPages("1");
+        placesList.setPerPage("" + placesNodes.getLength());
+        placesList.setTotal("" + placesNodes.getLength());
+        for (int i = 0; i < placesNodes.getLength(); i++) {
+            Element placeElement = (Element) placesNodes.item(i);
+            placesList.add(parsePlace(placeElement));
+        }
+        return placesList;
+    }
+
+    /**
+     * Return a list of the top 100 unique places clustered by a given
+     * placetype for set of tags or machine tags.
+     *
+     * @param placeTypeId
+     * @param woeId A Where On Earth (WOE) ID. Optional, can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
+     * @param placeId A Flickr Places ID. Optional, can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
+     * @param threshold The minimum number of photos that a place type must have to be included. If the number of photos is lowered then the parent place type for that place will be used. Optional, can be null.
+     * @param tags A String-array of Tags. Photos with one or more of the tags listed will be returned. Optional, can be null.
+     * @param tagMode Either 'any' for an OR combination of tags, or 'all' for an AND combination. Defaults to 'any' if not specified. Optional, can be null.
+     * @param machineTags
+     * @param machineTagMode Either 'any' for an OR combination of tags, or 'all' for an AND combination. Defaults to 'any' if not specified. Optional, can be null.
+     * @param minUploadDate Optional, can be null.
+     * @param maxUploadDate Optional, can be null.
+     * @param minTakenDate Optional, can be null.
+     * @param maxTakenDate Optional, can be null.
+     * @return A PlacesList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public PlacesList placesForTags(
+        int placeTypeId,
+        String woeId,
+        String placeId,
+        String threshold,
+        String[] tags,
+        String tagMode,
+        String machineTags,
+        String machineTagMode,
+        Date minUploadDate, Date maxUploadDate,
+        Date minTakenDate, Date maxTakenDate
+    ) throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        PlacesList placesList = new PlacesList();
+        parameters.add(new Parameter("method", METHOD_PLACES_FOR_TAGS));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("place_type_id", placeTypeId));
+        if (woeId != null) {
+            parameters.add(new Parameter("woe_id", woeId));
+        }
+        if (placeId != null) {
+            parameters.add(new Parameter("place_id", placeId));
+        }
+        if (threshold != null) {
+            parameters.add(new Parameter("threshold", threshold));
+        }
+        if (tags != null) {
+            parameters.add(new Parameter("tags", StringUtilities.join(tags, ",")));
+        }
+        if (tagMode != null) {
+            parameters.add(new Parameter("tag_mode", tagMode));
+        }
+        if (machineTags != null) {
+            parameters.add(new Parameter("machine_tags", machineTags));
+        }
+        if (machineTagMode != null) {
+            parameters.add(new Parameter("machine_tag_mode", machineTagMode));
+        }
+        if (minUploadDate != null) {
+            parameters.add(new Parameter("min_upload_date", new Long(minUploadDate.getTime() / 1000L)));
+        }
+        if (maxUploadDate != null) {
+            parameters.add(new Parameter("max_upload_date", new Long(maxUploadDate.getTime() / 1000L)));
+        }
+        if (minTakenDate != null) {
+            parameters.add(new Parameter("min_taken_date", ((DateFormat) SearchParameters.MYSQL_DATE_FORMATS.get()).format(minTakenDate)));
+        }
+        if (maxTakenDate != null) {
+            parameters.add(new Parameter("max_taken_date", ((DateFormat) SearchParameters.MYSQL_DATE_FORMATS.get()).format(maxTakenDate)));
+        }
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element placesElement = response.getPayload();
+        NodeList placesNodes = placesElement.getElementsByTagName("place");
+        placesList.setPage("1");
+        placesList.setPages("1");
+        placesList.setPerPage("" + placesNodes.getLength());
+        placesList.setTotal("" + placesNodes.getLength());
+        for (int i = 0; i < placesNodes.getLength(); i++) {
+            Element placeElement = (Element) placesNodes.item(i);
+            placesList.add(parsePlace(placeElement));
+        }
+        return placesList;
+    }
+
+    /**
+     * Return a list of the top 100 unique places clustered by a given placetype for a user.
+     *
+     * @param placeType Use Type-constants at {@link Place}
+     * @param woeId A Where On Earth (WOE) ID. Optional, can be null.
+     * @param placeId A Flickr Places ID. Optional, can be null.
+     * @param threshold The minimum number of photos that a place type must have to be included. If the number of photos is lowered then the parent place type for that place will be used. Optional, can be null.
+     * @param minUploadDate Optional, can be null.
+     * @param maxUploadDate Optional, can be null.
+     * @param minTakenDate Optional, can be null.
+     * @param maxTakenDate Optional, can be null.
+     * @return A PlacesList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public PlacesList placesForUser(
+        int placeType,
+        String woeId,
+        String placeId,
+        String threshold,
+        Date minUploadDate, Date maxUploadDate,
+        Date minTakenDate, Date maxTakenDate
+    ) throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        PlacesList placesList = new PlacesList();
+        parameters.add(new Parameter("method", METHOD_PLACES_FOR_USER));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("place_type", intPlaceTypeToString(placeType)));
+        if (placeId != null) {
+            parameters.add(new Parameter("place_id", placeId));
+        }
+        if (woeId != null) {
+            parameters.add(new Parameter("woe_id", woeId));
+        }
+        if (threshold != null) {
+            parameters.add(new Parameter("threshold", threshold));
+        }
+        if (minUploadDate != null) {
+            parameters.add(new Parameter("min_upload_date", new Long(minUploadDate.getTime() / 1000L)));
+        }
+        if (maxUploadDate != null) {
+            parameters.add(new Parameter("max_upload_date", new Long(maxUploadDate.getTime() / 1000L)));
+        }
+        if (minTakenDate != null) {
+            parameters.add(new Parameter("min_taken_date", ((DateFormat) SearchParameters.MYSQL_DATE_FORMATS.get()).format(minTakenDate)));
+        }
+        if (maxTakenDate != null) {
+            parameters.add(new Parameter("max_taken_date", ((DateFormat) SearchParameters.MYSQL_DATE_FORMATS.get()).format(maxTakenDate)));
+        }
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element placesElement = response.getPayload();
+        NodeList placesNodes = placesElement.getElementsByTagName("place");
+        placesList.setPage("1");
+        placesList.setPages("1");
+        placesList.setPerPage("" + placesNodes.getLength());
+        placesList.setTotal("" + placesNodes.getLength());
+        for (int i = 0; i < placesNodes.getLength(); i++) {
+            Element placeElement = (Element) placesNodes.item(i);
+            placesList.add(parsePlace(placeElement));
+        }
+        return placesList;
+    }
+
+    /**
+     * Find Flickr Places information by Place ID.
+     *
+     * @deprecated This method has been deprecated. It won't be removed but you should use {@link #getInfo(String, String)} instead.
+     * @param placeId
+     * @return A Location
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
     public Location resolvePlaceId(String placeId)
       throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
@@ -275,6 +744,73 @@ public class PlacesInterface {
         return parseLocation(locationElement);
     }
 
+    /**
+     * Return a list of the top 100 unique tags for a Flickr
+     * Places or Where on Earth (WOE) ID.
+     *
+     * @param woeId A Where On Earth (WOE) ID. Optional, can be null.
+     * @param placeId A Flickr Places ID. Optional, can be null.
+     * @param minUploadDate Optional, can be null.
+     * @param maxUploadDate Optional, can be null.
+     * @param minTakenDate Optional, can be null.
+     * @param maxTakenDate Optional, can be null.
+     * @return A list of Tags
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public ArrayList tagsForPlace(
+        String woeId,
+        String placeId,
+        Date minUploadDate, Date maxUploadDate,
+        Date minTakenDate, Date maxTakenDate
+    ) throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        ArrayList tagsList = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_TAGS_FOR_PLACE));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        if (woeId != null) {
+            parameters.add(new Parameter("woe_id", woeId));
+        }
+        if (placeId != null) {
+            parameters.add(new Parameter("place_id", placeId));
+        }
+        if (minUploadDate != null) {
+            parameters.add(new Parameter("min_upload_date", new Long(minUploadDate.getTime() / 1000L)));
+        }
+        if (maxUploadDate != null) {
+            parameters.add(new Parameter("max_upload_date", new Long(maxUploadDate.getTime() / 1000L)));
+        }
+        if (minTakenDate != null) {
+            parameters.add(new Parameter("min_taken_date", ((DateFormat) SearchParameters.MYSQL_DATE_FORMATS.get()).format(minTakenDate)));
+        }
+        if (maxTakenDate != null) {
+            parameters.add(new Parameter("max_taken_date", ((DateFormat) SearchParameters.MYSQL_DATE_FORMATS.get()).format(maxTakenDate)));
+        }
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element tagsElement = response.getPayload();
+        NodeList tagsNodes = tagsElement.getElementsByTagName("tag");
+        for (int i = 0; i < tagsNodes.getLength(); i++) {
+            Element tagElement = (Element) tagsNodes.item(i);
+            Tag tag = new Tag();
+            tag.setCount(tagElement.getAttribute("count"));
+            tag.setValue(XMLUtilities.getValue(tagElement));
+            tagsList.add(tag);
+        }
+        return tagsList;
+    }
+
     private Location parseLocation(Element locationElement) {
         Location location = new Location();
         Element localityElement = (Element) locationElement.getElementsByTagName("locality").item(0);
@@ -288,7 +824,7 @@ public class PlacesInterface {
         location.setWoeId(locationElement.getAttribute("woeid"));
         location.setLatitude(locationElement.getAttribute("latitude"));
         location.setLongitude(locationElement.getAttribute("longitude"));
-        location.setPlaceType(determineType(locationElement.getAttribute("place_type")));
+        location.setPlaceType(stringPlaceTypeToInt(locationElement.getAttribute("place_type")));
 
         location.setLocality(
             parseLocationPlace(localityElement, Place.TYPE_LOCALITY)
@@ -324,22 +860,47 @@ public class PlacesInterface {
         place.setWoeId(placeElement.getAttribute("woeid"));
         place.setLatitude(placeElement.getAttribute("latitude"));
         place.setLongitude(placeElement.getAttribute("longitude"));
+        place.setPhotoCount(placeElement.getAttribute("photo_count"));
         String typeString = placeElement.getAttribute("place_type");
-        place.setPlaceType(determineType(typeString));
+        // Now the place-Id is directly available
+        place.setPlaceType(placeElement.getAttribute("place_type_id"));
+        //place.setPlaceType(stringPlaceTypeToInt(typeString));
         return place;
     }
-    
-    private int determineType(String typeString) {
-    	int placeType = 0;
+
+    private int stringPlaceTypeToInt(String typeString) {
+        int placeType = 0;
         if (typeString.equals("locality")) {
-        	placeType = Place.TYPE_LOCALITY;
+            placeType = Place.TYPE_LOCALITY;
         } else if (typeString.equals("county")) {
-        	placeType = Place.TYPE_COUNTY;
+            placeType = Place.TYPE_COUNTY;
         } else if (typeString.equals("region")) {
-        	placeType = Place.TYPE_REGION;
+            placeType = Place.TYPE_REGION;
         } else if (typeString.equals("country")) {
-        	placeType = Place.TYPE_COUNTRY;
+            placeType = Place.TYPE_COUNTRY;
+        } else if (typeString.equals("continent")) {
+            placeType = Place.TYPE_CONTINENT;
+        } else if (typeString.equals("neighbourhood")) {
+            placeType = Place.TYPE_NEIGHBOURHOOD;
         }
-    	return placeType;
+        return placeType;
+    }
+
+    public String intPlaceTypeToString(int placeType) throws FlickrException {
+        String placeTypeStr = "";
+        if (placeType == Place.TYPE_COUNTRY) {
+            placeTypeStr = "country";
+        } else if (placeType == Place.TYPE_REGION) {
+            placeTypeStr = "region";
+        } else if (placeType == Place.TYPE_LOCALITY) {
+            placeTypeStr = "locality";
+        } else if (placeType == Place.TYPE_CONTINENT) {
+            placeTypeStr = "continent";
+        } else if (placeType == Place.TYPE_NEIGHBOURHOOD) {
+            placeTypeStr = "neighbourhood";
+        } else {
+            throw new FlickrException("33", "Not a valid place type");
+        }
+        return placeTypeStr;
     }
 }
