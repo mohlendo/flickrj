@@ -24,13 +24,13 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr contacts.
  *
  * @author Anthony Eden
- * @version $Id: ContactsInterface.java,v 1.16 2009/01/24 23:43:20 x-mago Exp $
+ * @version $Id: ContactsInterface.java,v 1.17 2009/01/24 23:47:24 x-mago Exp $
  */
 public class ContactsInterface {
 
-    public static final String METHOD_GET_LIST = "flickr.contacts.getList";
-    public static final String METHOD_GET_LIST_RECENTLY_UPLOADED = "flickr.contacts.getListRecentlyUploaded";
-    public static final String METHOD_GET_PUBLIC_LIST = "flickr.contacts.getPublicList";
+    private static final String METHOD_GET_LIST = "flickr.contacts.getList";
+    private static final String METHOD_GET_LIST_RECENTLY_UPLOADED = "flickr.contacts.getListRecentlyUploaded";
+    private static final String METHOD_GET_PUBLIC_LIST = "flickr.contacts.getPublicList";
 
     private String apiKey;
     private String sharedSecret;
@@ -111,7 +111,7 @@ public class ContactsInterface {
         List contacts = new ArrayList();
 
         List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_GET_LIST));
+        parameters.add(new Parameter("method", METHOD_GET_LIST_RECENTLY_UPLOADED));
         parameters.add(new Parameter("api_key", apiKey));
 
         if (lastUpload != null) {
