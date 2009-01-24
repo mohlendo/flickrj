@@ -37,7 +37,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterfaceTest.java,v 1.16 2008/11/29 20:55:56 x-mago Exp $
+ * @version $Id: PhotosInterfaceTest.java,v 1.17 2009/01/24 21:55:24 x-mago Exp $
  */
 public class PhotosInterfaceTest extends TestCase {
 
@@ -119,6 +119,7 @@ public class PhotosInterfaceTest extends TestCase {
         assertEquals("", photo.getIconServer());
         assertEquals("", photo.getIconFarm());
         assertFalse(photo.isFavorite());
+        assertTrue(photo.getViews() > 0);
 
         User owner = photo.getOwner();
         assertEquals("7317713@N04", owner.getId());
