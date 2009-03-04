@@ -3,6 +3,8 @@
  */
 package com.aetrion.flickr;
 
+import java.util.Set;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.aetrion.flickr.activity.ActivityInterface;
@@ -14,6 +16,7 @@ import com.aetrion.flickr.favorites.FavoritesInterface;
 import com.aetrion.flickr.groups.GroupsInterface;
 import com.aetrion.flickr.groups.pools.PoolsInterface;
 import com.aetrion.flickr.interestingness.InterestingnessInterface;
+import com.aetrion.flickr.machinetags.MachinetagsInterface;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.comments.CommentsInterface;
@@ -44,14 +47,14 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * (You -> Your account -> Extending Flickr -> Account Links -> edit).
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.41 2008/06/28 22:30:04 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.42 2009/03/04 18:34:24 x-mago Exp $
  */
 public class Flickr {
 
     /**
      * The default endpoint host.
      */
-    public static final String DEFAULT_HOST = "www.flickr.com";
+    public static final String DEFAULT_HOST = "api.flickr.com";
 
     /**
      * Set to true to enable response debugging (print the response stream)
@@ -83,6 +86,7 @@ public class Flickr {
     private GroupsInterface groupsInterface;
     private InterestingnessInterface interestingnessInterface;
     private LicensesInterface licensesInterface;
+    private MachinetagsInterface machinetagsInterface;
     private NotesInterface notesInterface;
     private PoolsInterface poolsInterface;
     private PeopleInterface peopleInterface;
@@ -411,7 +415,13 @@ public class Flickr {
         }
         return notesInterface;
     }
-
+    public MachinetagsInterface getMachinetagsInterface() {
+        if (machinetagsInterface == null) {
+        	machinetagsInterface = new MachinetagsInterface(apiKey, sharedSecret, transport);
+        }
+        return machinetagsInterface;
+    }
+    
     public PoolsInterface getPoolsInterface() {
         if (poolsInterface == null) {
             poolsInterface = new PoolsInterface(apiKey, sharedSecret, transport);
