@@ -3,8 +3,10 @@ package com.aetrion.flickr.photos.geo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.FlickrException;
@@ -13,13 +15,16 @@ import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.photos.GeoData;
+import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.photos.PhotoUtils;
+import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * Access to the flickr.photos.geo methods.
  *
  * @author till (Till Krech - flickr:extranoise)
- * @version $Id: GeoInterface.java,v 1.2 2008/01/28 23:01:45 x-mago Exp $
+ * @version $Id: GeoInterface.java,v 1.3 2009/03/04 21:13:41 x-mago Exp $
  */
 public class GeoInterface {
     public static final String METHOD_GET_LOCATION = "flickr.photos.geo.getLocation";
@@ -27,6 +32,10 @@ public class GeoInterface {
     public static final String METHOD_REMOVE_LOCATION = "flickr.photos.geo.removeLocation";
     public static final String METHOD_SET_LOCATION = "flickr.photos.geo.setLocation";
     public static final String METHOD_SET_PERMS = "flickr.photos.geo.setPerms";
+    public static final String METHOD_BATCH_CORRECT_LOCATION = "flickr.photos.geo.batchCorrectLocation";
+    public static final String METHOD_CORRECT_LOCATION = "flickr.photos.geo.correctLocation";
+    public static final String METHOD_PHOTOS_FOR_LOCATION = "flickr.photos.geo.photosForLocation";
+    public static final String METHOD_SET_CONTEXT = "flickr.photos.geo.setContext";
 
     private String apiKey;
     private String sharedSecret;
@@ -173,6 +182,7 @@ public class GeoInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_SET_LOCATION));
         parameters.add(new Parameter("api_key", apiKey));
+
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("lat", String.valueOf(location.getLatitude())));
         parameters.add(new Parameter("lon", String.valueOf(location.getLongitude())));
@@ -214,6 +224,187 @@ public class GeoInterface {
         parameters.add(new Parameter("is_contact", perms.isContact() ? "1" : "0"));
         parameters.add(new Parameter("is_friend", perms.isFriend() ? "1" : "0"));
         parameters.add(new Parameter("is_family", perms.isFamily() ? "1" : "0"));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        // Note: This method requires an HTTP POST request.
+        Response response = transport.post(transport.getPath(), parameters);
+        // This method has no specific response - It returns an empty sucess response 
+        // if it completes without error.
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+    }
+
+    /**
+     * Correct the places hierarchy for all the photos for a user at a given
+     * latitude, longitude and accuracy.<p>
+     *
+     * Batch corrections are processed in a delayed queue so it may take a
+     * few minutes before the changes are reflected in a user's photos.
+     *
+     * @param location The latitude/longitude and accuracy of the photos to be update.
+     * @param placeId A Flickr Places ID. (While optional, you must pass either a valid Places ID or a WOE ID.)
+     * @param woeId A Where On Earth (WOE) ID. (While optional, you must pass either a valid Places ID or a WOE ID.)
+     * @throws SAXException 
+     * @throws IOException 
+     * @throws FlickrException 
+     */
+    public void batchCorrectLocation(
+        GeoData location,
+        String placeId,
+        String woeId
+    ) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_BATCH_CORRECT_LOCATION));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        if (placeId != null) {
+            parameters.add(new Parameter("place_id", placeId));
+        }
+        if (woeId != null) {
+            parameters.add(new Parameter("woe_id", woeId));
+        }
+        parameters.add(new Parameter("lat", location.getLatitude()));
+        parameters.add(new Parameter("lon", location.getLongitude()));
+        parameters.add(new Parameter("accuracy", location.getAccuracy()));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        // Note: This method requires an HTTP POST request.
+        Response response = transport.post(transport.getPath(), parameters);
+        // This method has no specific response - It returns an empty sucess response 
+        // if it completes without error.
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+    }
+
+    /**
+     * 
+     * @param photoId Photo id (required).
+     * @param placeId A Flickr Places ID. (While optional, you must pass either a valid Places ID or a WOE ID.)
+     * @param woeId A Where On Earth (WOE) ID. (While optional, you must pass either a valid Places ID or a WOE ID.)
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void correctLocation(
+        String photoId,
+        String placeId,
+        String woeId
+    ) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_CORRECT_LOCATION));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photo_id", photoId));
+        if (placeId != null) {
+            parameters.add(new Parameter("place_id", placeId));
+        }
+        if (woeId != null) {
+            parameters.add(new Parameter("woe_id", woeId));
+        }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        // Note: This method requires an HTTP POST request.
+        Response response = transport.post(transport.getPath(), parameters);
+        // This method has no specific response - It returns an empty sucess response 
+        // if it completes without error.
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+    }
+
+    /**
+     * Return a list of photos for a user at a specific
+     * latitude, longitude and accuracy.
+     *
+     * @param location
+     * @param extras
+     * @param perPage
+     * @param page
+     * @return The collection of Photo objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     * @see com.aetrion.flickr.photos.Extras
+     */
+    public PhotoList photosForLocation(
+        GeoData location,
+        Set extras,
+        int perPage, int page
+    ) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        PhotoList photos = new PhotoList();
+        parameters.add(new Parameter("method", METHOD_PHOTOS_FOR_LOCATION));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        if (extras.size() > 0) {
+            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
+        }
+        if (perPage > 0) {
+            parameters.add(new Parameter("per_page", perPage));
+        }
+        if (page > 0) {
+            parameters.add(new Parameter("page", page));
+        }
+        parameters.add(new Parameter("lat", location.getLatitude()));
+        parameters.add(new Parameter("lon", location.getLongitude()));
+        parameters.add(new Parameter("accuracy", location.getAccuracy()));
+        Response response = transport.get(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element photosElement = response.getPayload();
+        photos.setPage(photosElement.getAttribute("page"));
+        photos.setPages(photosElement.getAttribute("pages"));
+        photos.setPerPage(photosElement.getAttribute("perpage"));
+        photos.setTotal(photosElement.getAttribute("total"));
+
+        NodeList photoElements = photosElement.getElementsByTagName("photo");
+        for (int i = 0; i < photoElements.getLength(); i++) {
+            Element photoElement = (Element) photoElements.item(i);
+            photos.add(PhotoUtils.createPhoto(photoElement));
+        }
+        return photos;
+    }
+
+    /**
+     * Indicate the state of a photo's geotagginess beyond latitude and longitude.<p>
+     *
+     * Note : photos passed to this method must already be geotagged
+     * (using the {@link GeoInterface#setLocation(String, GeoData)} method).
+     *
+     * @param photoId Photo id (required).
+     * @param context Context is a numeric value representing the photo's geotagginess beyond latitude and longitude. For example, you may wish to indicate that a photo was taken "indoors" (1) or "outdoors" (2).
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void setContext(
+        String photoId,
+        int context
+    ) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_SET_CONTEXT));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(new Parameter("context", "" + context));
         parameters.add(
             new Parameter(
                 "api_sig",

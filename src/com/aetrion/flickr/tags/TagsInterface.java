@@ -8,23 +8,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
+
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.photos.PhotoUtils;
 import com.aetrion.flickr.util.XMLUtilities;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
 /**
  * Interface for working with Flickr tags.
  *
  * @author Anthony Eden
- * @version $Id: TagsInterface.java,v 1.15 2008/07/19 14:42:54 x-mago Exp $
+ * @version $Id: TagsInterface.java,v 1.16 2009/03/04 21:13:41 x-mago Exp $
  */
 public class TagsInterface {
 
@@ -35,6 +38,7 @@ public class TagsInterface {
     public static final String METHOD_GET_LIST_USER_POPULAR = "flickr.tags.getListUserPopular";
     public static final String METHOD_GET_LIST_USER_RAW = "flickr.tags.getListUserRaw";
     public static final String METHOD_GET_RELATED = "flickr.tags.getRelated";
+    public static final String METHOD_GET_CLUSTER_PHOTOS = "flickr.tags.getClusterPhotos";
 
     public static final String PERIOD_WEEK = "week";
     public static final String PERIOD_DAY = "day";
@@ -104,6 +108,51 @@ public class TagsInterface {
         return clusters;
     }
 
+    /**
+     * Returns the first 24 photos for a given tag cluster.
+     *
+     * @param tag
+     * @param clusterId
+     * @return PhotoList
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public PhotoList getClusterPhotos(String tag, String clusterId)
+      throws IOException, SAXException, FlickrException {
+        PhotoList photos = new PhotoList();
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_CLUSTER_PHOTOS));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("tag", tag));
+        parameters.add(new Parameter("cluster_id", clusterId));
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+
+        Element photosElement = response.getPayload();
+        NodeList photoNodes = photosElement.getElementsByTagName("photo");
+        photos.setPage("1");
+		photos.setPages("1");
+		photos.setPerPage("" + photoNodes.getLength());
+		photos.setTotal("" + photoNodes.getLength());
+        for (int i = 0; i < photoNodes.getLength(); i++) {
+            Element photoElement = (Element) photoNodes.item(i);
+            photos.add(PhotoUtils.createPhoto(photoElement));
+        }
+        return photos;
+    }
+    
     /**
      * Returns a list of hot tags for the given period.
      *

@@ -10,7 +10,7 @@ import java.util.Set;
  * Extra-attributes for Photo-requests.
  *
  * @author Anthony Eden
- * @version $Id: Extras.java,v 1.7 2008/12/07 22:12:41 x-mago Exp $
+ * @version $Id: Extras.java,v 1.8 2009/03/04 21:13:41 x-mago Exp $
  */
 public class Extras {
     public static final String KEY_EXTRAS = "extras";
@@ -25,9 +25,9 @@ public class Extras {
     public static final String GEO = "geo";
     public static final String TAGS = "tags";
     public static final String MACHINE_TAGS = "machine_tags";
-    public static final String O_DIMS = "O_DIMS";
-    public static final String MEDIA = "MEDIA";
-    public static final String VIEWS = "VIEWS";
+    public static final String O_DIMS = "o_dims";
+    public static final String MEDIA = "media";
+    public static final String VIEWS = "views";
 
     /**
      * Set of all extra-arguments. Used for requesting lists of photos.

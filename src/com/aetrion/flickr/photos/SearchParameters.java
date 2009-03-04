@@ -17,7 +17,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.17 2008/12/01 22:36:06 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.18 2009/03/04 21:13:41 x-mago Exp $
  */
 public class SearchParameters {
 
@@ -46,6 +46,9 @@ public class SearchParameters {
     private boolean extrasGeo = false;
     private boolean extrasTags = false;
     private boolean extrasMachineTags = false;
+    private boolean extrasOrigDims = false;
+    private boolean extrasMedia = false;
+    private boolean extrasViews = false;
     private String[] bbox;
     private String placeId;
     private int accuracy = 0;
@@ -58,13 +61,13 @@ public class SearchParameters {
     private String radiusUnits;
     private boolean hasGeo = false;
 
-    private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
+    public static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
         protected synchronized Object initialValue() {
             return new SimpleDateFormat("yyyy-MM-dd");
         }
     };
 
-    private static final ThreadLocal MYSQL_DATE_FORMATS = new ThreadLocal() {
+    public static final ThreadLocal MYSQL_DATE_FORMATS = new ThreadLocal() {
         protected synchronized Object initialValue() {
             return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         }
@@ -265,6 +268,9 @@ public class SearchParameters {
         setExtrasGeo(toggle);
         setExtrasTags(toggle);
         setExtrasMachineTags(toggle);
+        setExtrasOrigDims(toggle);
+        setExtrasMedia(toggle);
+        setExtrasViews(toggle);
     }
 
     public void setExtrasLicense(boolean toggle) {
@@ -297,6 +303,15 @@ public class SearchParameters {
     public void setExtrasTags(boolean extrasTags) {
         this.extrasTags = extrasTags;
     }
+	public void setExtrasOrigDims(boolean extrasOrigDims) {
+		this.extrasOrigDims = extrasOrigDims;
+	}
+	public void setExtrasMedia(boolean extrasMedia) {
+		this.extrasMedia = extrasMedia;
+	}
+	public void setExtrasViews(boolean extrasViews) {
+		this.extrasViews = extrasViews;
+	}
 
     /**
      * 4 values defining the Bounding Box of the area that 
@@ -394,6 +409,15 @@ public class SearchParameters {
 
     /**
      * PlaceId only used when bbox not set.
+     * 
+     * Geo queries require some sort of limiting agent in order to prevent
+     * the database from crying. This is basically like the check against
+     * "parameterless searches" for queries without a geo component.<p>
+     *
+     * A tag, for instance, is considered a limiting agent as are user defined
+     * min_date_taken and min_date_upload parameters &emdash; If no limiting
+     * factor is passed we return only photos added in the last 12 hours
+     * (though we may extend the limit in the future).
      *
      * @param placeId
      * @see com.aetrion.flickr.places.PlacesInterface#resolvePlaceId(String)
@@ -409,7 +433,8 @@ public class SearchParameters {
     }
 
     /**
-     * A 32-bit identifier that uniquely represents spatial entities.
+     * A Where on Earth identifier to use to filter photo clusters.<br>
+     * For example all the photos clustered by locality in the United States (WOE ID 23424977).<br>
      * (not used if bbox argument is present).<p/>
      *
      * Geo queries require some sort of limiting agent in order to prevent
@@ -419,7 +444,7 @@ public class SearchParameters {
      * A tag, for instance, is considered a limiting agent as are user defined
      * min_date_taken and min_date_upload parameters.  If no limiting
      * factor is passed we return only photos added in the last 12 hours
-     * (though we may extend the limit in the future).<p/>
+     * (though flickr may extend the limit in the future).<p/>
      *
      * @param woeId
      * @see com.aetrion.flickr.places.Place#getWoeId()
@@ -592,7 +617,8 @@ public class SearchParameters {
            extrasDateTaken || extrasOwnerName ||
            extrasIconServer || extrasOriginalFormat ||
            extrasLastUpdate || extrasGeo ||
-           extrasTags || extrasMachineTags) {
+           extrasTags || extrasMachineTags ||
+           extrasOrigDims || extrasViews || extrasMedia) {
             Vector argsList = new Vector();
             if (extrasLicense) argsList.add("license");
             if (extrasDateUpload) argsList.add("date_upload");
@@ -604,6 +630,9 @@ public class SearchParameters {
             if (extrasGeo) argsList.add("geo");
             if (extrasTags) argsList.add("tags");
             if (extrasMachineTags) argsList.add("machine_tags");
+            if (extrasOrigDims) argsList.add("o_dims");
+            if (extrasViews) argsList.add("views");
+            if (extrasMedia) argsList.add("media");
             parameters.add(new Parameter("extras", StringUtilities.join(argsList,",")));
         }
 

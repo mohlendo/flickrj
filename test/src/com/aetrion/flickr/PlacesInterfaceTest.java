@@ -27,7 +27,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * Tests for the PlacesInterface.
  *
  * @author mago
- * @version $Id: PlacesInterfaceTest.java,v 1.7 2009/01/04 21:23:12 x-mago Exp $
+ * @version $Id: PlacesInterfaceTest.java,v 1.8 2009/03/04 21:13:41 x-mago Exp $
  */
 public class PlacesInterfaceTest extends TestCase {
     String sfWoeId = "2487956";
@@ -73,10 +73,10 @@ public class PlacesInterfaceTest extends TestCase {
         );
         assertTrue(list.getTotal() == 1);
         Place place = (Place) list.get(0);
-        assertEquals("Yg2J7kebB5RznUVpdA", place.getPlaceId());
-        assertEquals("/Germany/Berlin/Ortsteil+Mitte", place.getPlaceUrl());
+        assertEquals("sRdiycKfApRGrrU", place.getPlaceId());
+        assertEquals("/Germany/Berlin/Berlin", place.getPlaceUrl());
         assertEquals(Place.TYPE_LOCALITY, place.getPlaceType());
-        assertEquals("26821864", place.getWoeId());
+        assertEquals("638242", place.getWoeId());
         assertEquals(52.506D, place.getLatitude());
         assertEquals(13.424D, place.getLongitude());
     }
@@ -87,7 +87,7 @@ public class PlacesInterfaceTest extends TestCase {
         assertTrue(list.getTotal() == 3);
         Place place = (Place) list.get(0);
         assertEquals("VrrjuESbApjeFS4.", place.getPlaceId());
-        assertEquals("/United+States/Alabama", place.getPlaceUrl());
+        assertEquals("/United+States/Alabama/Alabama", place.getPlaceUrl());
         assertEquals(Place.TYPE_REGION, place.getPlaceType());
 
         place = (Place) list.get(1);
@@ -97,7 +97,7 @@ public class PlacesInterfaceTest extends TestCase {
 
         place = (Place) list.get(2);
         assertEquals("o4yVPEqYBJvFMP8Q", place.getPlaceId());
-        assertEquals("/South+Africa/North+West/Alabama", place.getPlaceUrl());
+        assertEquals("/South+Africa/North-west/Alabama", place.getPlaceUrl());
         assertEquals(Place.TYPE_LOCALITY, place.getPlaceType());
     }
 
@@ -113,7 +113,7 @@ public class PlacesInterfaceTest extends TestCase {
 
         place = (Place) list.get(1);
         assertEquals("Nf7Dq4acBJTgBHuaOQ", place.getPlaceId());
-        assertEquals("/France/%C3%8Ele-de-France/Paris/Europe", place.getPlaceUrl());
+        assertEquals("/France/Ile-de-France/Paris/Europe", place.getPlaceUrl());
         assertEquals(Place.TYPE_NEIGHBOURHOOD, place.getPlaceType());
     }
 
@@ -140,12 +140,13 @@ public class PlacesInterfaceTest extends TestCase {
         boolean presidioFound = false;
         for(int i = 0;i < list.size();i++) {
             Place place = (Place) list.get(i);
+            System.out.println(place.getName());
             if(place.getPlaceId().equals("xrtOyiqbApl7whEZfA")) {
                 presidioFound = true;
             }
         }
         assertTrue(presidioFound);
-        assertTrue(list.size() > 100);
+        assertTrue(list.size() > 40);
     }
 
     public void testGetInfo()
@@ -254,7 +255,7 @@ public class PlacesInterfaceTest extends TestCase {
         Place place = (Place) places.get(0);
         assertEquals("SVrAMtCbAphCLAtP", place.getPlaceId());
         assertEquals(Place.TYPE_REGION, place.getPlaceType());
-        assertEquals("/United+States/California", place.getPlaceUrl());
+        assertEquals("/United+States/California/California", place.getPlaceUrl());
     }
 
     public void testPlacesForUser()

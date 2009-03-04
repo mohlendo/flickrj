@@ -18,7 +18,7 @@ import com.aetrion.flickr.util.IOUtilities;
 /**
  *
  * @author till (Till Krech) flickr:extranoise
- * @version $Id: CommentsInterfaceTest.java,v 1.5 2008/01/26 00:05:17 x-mago Exp $
+ * @version $Id: CommentsInterfaceTest.java,v 1.6 2009/03/04 21:13:41 x-mago Exp $
  */
 public class CommentsInterfaceTest extends TestCase {
     Flickr flickr = null;
@@ -74,7 +74,7 @@ public class CommentsInterfaceTest extends TestCase {
     }
 
     public void testComment() throws IOException, SAXException, FlickrException {
-        String photoId = "4867789"; // http://flickr.com/photos/javatest/4867789/
+        String photoId = "419231219"; // http://www.flickr.com/photos/javatest3/419231219/
         String txt1 = "This is a test for the flickr java api";
         String txt2 = "This is an edited comment for the java flickr api";
         CommentsInterface ci = flickr.getCommentsInterface();

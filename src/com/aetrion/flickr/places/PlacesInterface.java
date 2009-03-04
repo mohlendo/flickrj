@@ -94,7 +94,7 @@ Thanks,
 </PRE>
 
  * @author mago
- * @version $Id: PlacesInterface.java,v 1.6 2009/01/04 21:23:12 x-mago Exp $
+ * @version $Id: PlacesInterface.java,v 1.7 2009/03/04 21:13:41 x-mago Exp $
  */
 public class PlacesInterface {
     private static final String METHOD_FIND = "flickr.places.find";
@@ -105,6 +105,7 @@ public class PlacesInterface {
     private static final String METHOD_GET_INFO = "flickr.places.getInfo";
     private static final String METHOD_GET_INFO_BY_URL = "flickr.places.getInfoByUrl";
     private static final String METHOD_GET_PLACETYPES = "flickr.places.getPlaceTypes";
+    private static final String METHOD_GET_SHAPEHISTORY = "flickr.places.getShapeHistory";
     private static final String METHOD_PLACES_FOR_BOUNDINGBOX = "flickr.places.placesForBoundingBox";
     private static final String METHOD_PLACES_FOR_CONTACTS = "flickr.places.placesForContacts";
     private static final String METHOD_PLACES_FOR_TAGS = "flickr.places.placesForTags";
@@ -395,6 +396,49 @@ public class PlacesInterface {
             placeTypeList.add(placeType);
         }
         return placeTypeList;
+    }
+
+    /**
+     * Return an historical list of all the shape data generated for a
+     * Places or Where on Earth (WOE) ID.<p>
+     *
+     * Not working. As it was not possible to find any results.
+     * Not even the ones, that have been described in the announcement of this feature.
+     *
+     * @param placeId
+     * @param woeId
+     * @return A list of shapes
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public ArrayList getShapeHistory(String placeId, String woeId) throws FlickrException, IOException, SAXException {
+        ArrayList shapeList = new ArrayList();
+        List parameters = new ArrayList();
+        Location loc = new Location();
+        parameters.add(new Parameter("method", METHOD_GET_SHAPEHISTORY));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        if (placeId != null) {
+            parameters.add(new Parameter("place_id", placeId));
+        }
+        if (woeId != null) {
+            parameters.add(new Parameter("woe_id", woeId));
+        }
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element shapeElement = response.getPayload();
+        return shapeList;
     }
 
     /**

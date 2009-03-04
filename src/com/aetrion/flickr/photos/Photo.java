@@ -27,7 +27,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * {@link PhotosInterface#getImageAsStream(Photo, int)}.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.22 2008/06/13 22:42:58 x-mago Exp $
+ * @version $Id: Photo.java,v 1.23 2009/03/04 21:13:41 x-mago Exp $
  */
 public class Photo {
 
@@ -77,6 +77,10 @@ public class Photo {
     private String originalFormat;
     private String originalSecret;
     private String placeId;
+    private String media;
+    private int originalWidth;
+    private int originalHeight;
+
 
     public Photo() {
     }
@@ -205,7 +209,7 @@ public class Photo {
         if (dateAdded == null || "".equals(dateAdded)) return;
         setDateAdded(Long.parseLong(dateAdded) * (long) 1000);
     }
-        
+
     public Date getDatePosted() {
         return datePosted;
     }
@@ -249,11 +253,11 @@ public class Photo {
         this.lastUpdate = lastUpdate;
     }
 
-	public void setLastUpdate(String lastUpdateStr) {
-		if (lastUpdateStr == null || "".equals(lastUpdateStr)) return;
-		long unixTime = Long.parseLong(lastUpdateStr);
-		setLastUpdate(new Date(unixTime * 1000L));
-	}
+    public void setLastUpdate(String lastUpdateStr) {
+        if (lastUpdateStr == null || "".equals(lastUpdateStr)) return;
+        long unixTime = Long.parseLong(lastUpdateStr);
+        setLastUpdate(new Date(unixTime * 1000L));
+    }
 
 	public String getTakenGranularity() {
         return takenGranularity;
@@ -324,18 +328,18 @@ public class Photo {
      */
     public void setViews(String views) {
         if (views != null) {
-        	try {
+            try {
                 setViews(Integer.parseInt(views));
-        	} catch (NumberFormatException e) {
-        		setViews(-1);
-        	}
+            } catch (NumberFormatException e) {
+                setViews(-1);
+            }
         }
     }
-    
+
     public void setViews(int views) {
         this.views = views;
     }
-    
+
     /**
      * Number of views. Set to -1 if the value is not available.
      * 
@@ -344,7 +348,7 @@ public class Photo {
     public int getViews() {
         return views;
     }
-    
+
     /**
      * Set the degrees of rotation. Value will be set to -1,
      * if not available.
@@ -364,11 +368,11 @@ public class Photo {
     public void setRotation(int rotation) {
         this.rotation = rotation;
     }
-    
+
     public int getRotation() {
         return rotation;
     }
-    
+
     public String getIconServer() {
         return iconServer;
     }
@@ -695,6 +699,42 @@ public class Photo {
 
     public void setPlaceId(String placeId) {
         this.placeId = placeId;
+    }
+
+    public String getMedia() {
+        return media;
+    }
+
+    public void setMedia(String media) {
+        this.media = media;
+    }
+
+    public int getOriginalWidth() {
+        return originalWidth;
+    }
+
+    public void setOriginalWidth(String originalWidth) {
+        try {
+            setOriginalWidth(Integer.parseInt(originalWidth));
+        } catch(NumberFormatException ex) {}
+    }
+
+    public void setOriginalWidth(int originalWidth) {
+        this.originalWidth = originalWidth;
+    }
+
+    public int getOriginalHeight() {
+        return originalHeight;
+    }
+
+    public void setOriginalHeight(String originalHeight) {
+        try {
+            setOriginalHeight(Integer.parseInt(originalHeight));
+        } catch (NumberFormatException ex) {}
+    }
+
+    public void setOriginalHeight(int originalHeight) {
+        this.originalHeight = originalHeight;
     }
 
 }

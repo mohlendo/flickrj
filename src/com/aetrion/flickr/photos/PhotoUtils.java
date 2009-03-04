@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.15 2008/07/05 22:47:17 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.16 2009/03/04 21:13:41 x-mago Exp $
  */
 public final class PhotoUtils {
 
@@ -78,6 +78,9 @@ public final class PhotoUtils {
         photo.setLastUpdate(photoElement.getAttribute("lastupdate"));
         // flickr.groups.pools.getPhotos provides this value!
         photo.setDateAdded(photoElement.getAttribute("dateadded"));
+        photo.setOriginalWidth(photoElement.getAttribute("o_width"));
+        photo.setOriginalHeight(photoElement.getAttribute("o_height"));
+        photo.setMedia(photoElement.getAttribute("media"));
 
         // Searches, or other list may contain orginal_format.
         // If not choosen via extras, set jpg as default.
