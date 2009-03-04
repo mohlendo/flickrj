@@ -14,7 +14,7 @@ import org.w3c.dom.Text;
 
 /**
  * @author Anthony Eden
- * @version $Id: XMLUtilities.java,v 1.8 2007/02/25 00:37:39 x-mago Exp $
+ * @version $Id: XMLUtilities.java,v 1.9 2009/03/04 18:46:58 x-mago Exp $
  */
 public class XMLUtilities {
 
@@ -74,7 +74,7 @@ public class XMLUtilities {
 
     public static int getIntAttribute(Element el, String name) {
         String s = el.getAttribute(name);
-        if (s != null || s.length() > 0) {
+        if (s != null && s.length() > 0) {
             return Integer.parseInt(s);
         }
         return 0;
