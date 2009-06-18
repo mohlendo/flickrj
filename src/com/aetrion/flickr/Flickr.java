@@ -17,6 +17,7 @@ import com.aetrion.flickr.groups.GroupsInterface;
 import com.aetrion.flickr.groups.pools.PoolsInterface;
 import com.aetrion.flickr.interestingness.InterestingnessInterface;
 import com.aetrion.flickr.machinetags.MachinetagsInterface;
+import com.aetrion.flickr.panda.PandaInterface;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.comments.CommentsInterface;
@@ -47,7 +48,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * (You -> Your account -> Extending Flickr -> Account Links -> edit).
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.42 2009/03/04 18:34:24 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.43 2009/06/18 20:59:15 x-mago Exp $
  */
 public class Flickr {
 
@@ -88,6 +89,7 @@ public class Flickr {
     private LicensesInterface licensesInterface;
     private MachinetagsInterface machinetagsInterface;
     private NotesInterface notesInterface;
+    private PandaInterface pandaInterface;
     private PoolsInterface poolsInterface;
     private PeopleInterface peopleInterface;
     private PhotosInterface photosInterface;
@@ -421,7 +423,14 @@ public class Flickr {
         }
         return machinetagsInterface;
     }
-    
+
+    public PandaInterface getPandaInterface() {
+        if (pandaInterface == null) {
+            pandaInterface = new PandaInterface(apiKey, sharedSecret, transport);
+        }
+        return pandaInterface;
+    }
+
     public PoolsInterface getPoolsInterface() {
         if (poolsInterface == null) {
             poolsInterface = new PoolsInterface(apiKey, sharedSecret, transport);
