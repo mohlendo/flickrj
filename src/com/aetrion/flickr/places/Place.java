@@ -4,14 +4,15 @@ package com.aetrion.flickr.places;
  * Describes a place inside a {@link Location}.
  *
  * Each place contain its place ID, corresponding URL
- * (underneath {@link http://www.flickr.com/places/}) and place type for
- * disambiguating different locations with the same name.<p>
+ * (underneath <a href="http://www.flickr.com/places/"
+ * target="_top">http://www.flickr.com/places/</a>)
+ * and place type for disambiguating different locations with the same name.<p>
  *
  * A place delivered by find contains an URL, whereas the URL is missing if
  * delivered by resolvePlaceId and resolvePlaceUrl.
  *
  * @author mago
- * @version $Id: Place.java,v 1.5 2009/01/04 19:53:25 x-mago Exp $
+ * @version $Id: Place.java,v 1.6 2009/06/20 22:25:08 x-mago Exp $
  */
 public class Place {
     public static final int TYPE_UNSET = 0;
@@ -66,7 +67,7 @@ public class Place {
 
     /**
      * The PlaceType.
-     * 
+     *
      * @return The PlaceType
      * @see Place#TYPE_COUNTRY
      * @see Place#TYPE_COUNTY
@@ -80,7 +81,7 @@ public class Place {
     /**
      * The PlaceType.
      *
-     * @param placeId
+     * @param placeType
      * @see Place#TYPE_COUNTRY
      * @see Place#TYPE_COUNTY
      * @see Place#TYPE_LOCALITY
