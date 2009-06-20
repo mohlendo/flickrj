@@ -27,7 +27,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr tags.
  *
  * @author Anthony Eden
- * @version $Id: TagsInterface.java,v 1.16 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: TagsInterface.java,v 1.17 2009/06/20 22:35:13 x-mago Exp $
  */
 public class TagsInterface {
 
@@ -68,7 +68,7 @@ public class TagsInterface {
      * This method does not require authentication.
      *
      * @since 1.2
-     * @param tag
+     * @param searchTag
      * @return a list of clusters
      */
     public ClusterList getClusters(String searchTag)
