@@ -2,6 +2,7 @@ package com.aetrion.flickr.machinetags;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -205,7 +206,7 @@ See also:
 RDF Describes Flickr. That's really all you need to know about RDF. 
 
  * @author mago
- * @version $Id: MachinetagsInterface.java,v 1.1 2009/03/04 21:13:40 x-mago Exp $
+ * @version $Id: MachinetagsInterface.java,v 1.2 2009/06/21 19:55:15 x-mago Exp $
  * @see <a href="http://code.flickr.com/blog/2008/07/18/wildcard-machine-tag-urls/">http://code.flickr.com/blog/2008/07/18/wildcard-machine-tag-urls/</a>
  * @see <a href="http://code.flickr.com/blog/2008/08/28/machine-tags-lastfm-and-rocknroll/">http://code.flickr.com/blog/2008/08/28/machine-tags-lastfm-and-rocknroll/</a>
  * @see <a href="http://blech.vox.com/library/post/flickr-exif-machine-tags.html">http://blech.vox.com/library/post/flickr-exif-machine-tags.html</a>
@@ -216,6 +217,7 @@ public class MachinetagsInterface {
     private static final String METHOD_GET_PAIRS = "flickr.machinetags.getPairs";
     private static final String METHOD_GET_PREDICATES = "flickr.machinetags.getPredicates";
     private static final String METHOD_GET_VALUES = "flickr.machinetags.getValues";
+    private static final String METHOD_GET_RECENTVALUES = "flickr.machinetags.getRecentValues";
 
     private String apiKey;
     private String sharedSecret;
@@ -226,7 +228,7 @@ public class MachinetagsInterface {
         this.sharedSecret = sharedSecret;
         this.transportAPI = transportAPI;
     }
-    
+
     /**
      * Return a list of unique namespaces, optionally limited by a given
      * predicate, in alphabetical order.
@@ -389,18 +391,18 @@ public class MachinetagsInterface {
         }
         return nsList;
     }
-    
+
     public NamespacesList getValues(String namespace, String predicate, int perPage, int page)
       throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
         NamespacesList valuesList = new NamespacesList();
         parameters.add(new Parameter("method", METHOD_GET_VALUES));
         parameters.add(new Parameter("api_key", apiKey));
-        
-        if(namespace != null) {
+
+        if (namespace != null) {
             parameters.add(new Parameter("namespace", namespace));
         }
-        if(predicate != null) {
+        if (predicate != null) {
             parameters.add(new Parameter("predicate", predicate));
         }
         if (perPage > 0) {
@@ -430,21 +432,69 @@ public class MachinetagsInterface {
             Element element = (Element) nsNodes.item(i);
             valuesList.add(parseValue(element));
         }
-    	return valuesList;
+        return valuesList;
+    }
+
+    public NamespacesList getRecentValues(String namespace, String predicate, Date addedSince)
+      throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        NamespacesList valuesList = new NamespacesList();
+        parameters.add(new Parameter("method", METHOD_GET_RECENTVALUES));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        if (namespace != null) {
+            parameters.add(new Parameter("namespace", namespace));
+        }
+        if (predicate != null) {
+            parameters.add(new Parameter("predicate", predicate));
+        }
+        if (addedSince != null) {
+            parameters.add(new Parameter(
+                "added_since",
+                new Long(addedSince.getTime() / 1000L))
+            );
+        }
+
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element nsElement = response.getPayload();
+        NodeList nsNodes = nsElement.getElementsByTagName("value");
+        valuesList.setPage(nsElement.getAttribute("page"));
+        valuesList.setPages(nsElement.getAttribute("pages"));
+        valuesList.setPerPage(nsElement.getAttribute("perPage"));
+        valuesList.setTotal("" + nsNodes.getLength());
+        for (int i = 0; i < nsNodes.getLength(); i++) {
+            Element element = (Element) nsNodes.item(i);
+            valuesList.add(parseValue(element));
+        }
+        return valuesList;
     }
 
     private Value parseValue(Element nsElement) {
-    	Value value = new Value();
-    	value.setUsage(nsElement.getAttribute("usage"));
-    	value.setValue(XMLUtilities.getValue(nsElement));
+        Value value = new Value();
+        value.setUsage(nsElement.getAttribute("usage"));
+        value.setNamespace(nsElement.getAttribute("namespace"));
+        value.setPredicate(nsElement.getAttribute("predicate"));
+        value.setFirstAdded(nsElement.getAttribute("first_added"));
+        value.setLastAdded(nsElement.getAttribute("last_added"));
+        value.setValue(XMLUtilities.getValue(nsElement));
         return value;
     }
-
+    
+    
     private Predicate parsePredicate(Element nsElement) {
-    	Predicate predicate = new Predicate();
-    	predicate.setUsage(nsElement.getAttribute("usage"));
-    	predicate.setNamespaces(nsElement.getAttribute("namespaces"));
-    	predicate.setValue(XMLUtilities.getValue(nsElement));
+        Predicate predicate = new Predicate();
+        predicate.setUsage(nsElement.getAttribute("usage"));
+        predicate.setNamespaces(nsElement.getAttribute("namespaces"));
+        predicate.setValue(XMLUtilities.getValue(nsElement));
         return predicate;
     }
 
@@ -455,7 +505,7 @@ public class MachinetagsInterface {
         ns.setValue(XMLUtilities.getValue(nsElement));
         return ns;
     }
-    
+
     private Pair parsePair(Element nsElement) {
         Pair pair = new Pair();
         pair.setUsage(nsElement.getAttribute("usage"));

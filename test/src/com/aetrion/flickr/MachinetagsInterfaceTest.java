@@ -2,6 +2,7 @@ package com.aetrion.flickr;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,7 +24,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author mago
- * @version $Id: MachinetagsInterfaceTest.java,v 1.1 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: MachinetagsInterfaceTest.java,v 1.2 2009/06/21 19:55:15 x-mago Exp $
  */
 public class MachinetagsInterfaceTest extends TestCase {
     Flickr flickr = null;
@@ -103,14 +104,15 @@ public class MachinetagsInterfaceTest extends TestCase {
         NamespacesList list = machinetagsInterface.getPairs(namespace, null, perPage, page);
         assertTrue(list.size() > 3);
         boolean contentFound = false;
-        for(int i = 0;i < list.size();i++) {
+        for (int i = 0; i < list.size(); i++) {
             Pair pair = (Pair) list.get(i);
-            if(pair.getValue().equals("ceramics:title")) {
+            if (pair.getValue().equals("ceramics:title")) {
                 contentFound = true;
             }
         }
         assertTrue(contentFound);
     }
+
     public void testGetValues()
       throws FlickrException, IOException, SAXException {
         MachinetagsInterface machinetagsInterface = flickr.getMachinetagsInterface();
@@ -121,9 +123,28 @@ public class MachinetagsInterfaceTest extends TestCase {
         NamespacesList list = machinetagsInterface.getValues(namespace, predicate, perPage, page);
         assertTrue(list.size() > 3);
         boolean contentFound = false;
-        for(int i = 0;i < list.size();i++) {
+        for (int i = 0; i < list.size(); i++) {
             Value value = (Value) list.get(i);
-            if(value.getValue().equals("porcelain")) {
+            if (value.getValue().equals("porcelain")) {
+                contentFound = true;
+            }
+        }
+        assertTrue(contentFound);
+    }
+
+    public void testGetRecentValues()
+      throws FlickrException, IOException, SAXException {
+        MachinetagsInterface machinetagsInterface = flickr.getMachinetagsInterface();
+        String namespace = "ceramics";
+        String predicate = "material";
+        Calendar addedSince = Calendar.getInstance();
+        addedSince.add(Calendar.YEAR, -1);
+        NamespacesList list = machinetagsInterface.getRecentValues(namespace, predicate, addedSince.getTime());
+        assertTrue(list.size() > 3);
+        boolean contentFound = false;
+        for (int i = 0; i < list.size(); i++) {
+            Value value = (Value) list.get(i);
+            if (value.getValue().equals("porcelain")) {
                 contentFound = true;
             }
         }

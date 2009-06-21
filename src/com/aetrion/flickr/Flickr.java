@@ -14,6 +14,7 @@ import com.aetrion.flickr.blogs.BlogsInterface;
 import com.aetrion.flickr.contacts.ContactsInterface;
 import com.aetrion.flickr.favorites.FavoritesInterface;
 import com.aetrion.flickr.groups.GroupsInterface;
+import com.aetrion.flickr.groups.members.MembersInterface;
 import com.aetrion.flickr.groups.pools.PoolsInterface;
 import com.aetrion.flickr.interestingness.InterestingnessInterface;
 import com.aetrion.flickr.machinetags.MachinetagsInterface;
@@ -48,7 +49,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * (You -> Your account -> Extending Flickr -> Account Links -> edit).
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.43 2009/06/18 20:59:15 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.44 2009/06/21 19:55:15 x-mago Exp $
  */
 public class Flickr {
 
@@ -87,6 +88,7 @@ public class Flickr {
     private GroupsInterface groupsInterface;
     private InterestingnessInterface interestingnessInterface;
     private LicensesInterface licensesInterface;
+    private MembersInterface membersInterface;
     private MachinetagsInterface machinetagsInterface;
     private NotesInterface notesInterface;
     private PandaInterface pandaInterface;
@@ -411,17 +413,25 @@ public class Flickr {
         return licensesInterface;
     }
 
-    public NotesInterface getNotesInterface() {
-        if (notesInterface == null) {
-            notesInterface = new NotesInterface(apiKey, sharedSecret, transport);
-        }
-        return notesInterface;
-    }
     public MachinetagsInterface getMachinetagsInterface() {
         if (machinetagsInterface == null) {
         	machinetagsInterface = new MachinetagsInterface(apiKey, sharedSecret, transport);
         }
         return machinetagsInterface;
+    }
+
+    public MembersInterface getMembersInterface() {
+        if (membersInterface == null) {
+        	membersInterface = new MembersInterface(apiKey, sharedSecret, transport);
+        }
+        return membersInterface;
+    }
+
+    public NotesInterface getNotesInterface() {
+        if (notesInterface == null) {
+            notesInterface = new NotesInterface(apiKey, sharedSecret, transport);
+        }
+        return notesInterface;
     }
 
     public PandaInterface getPandaInterface() {
