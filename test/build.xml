@@ -120,6 +120,7 @@
         <test name="com.aetrion.flickr.ActivityInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.BlogsInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.CommentsInterfaceTest" todir="${test.reports}"/>
+        <test name="com.aetrion.flickr.CommonsInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.ContactsInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.FavoritesInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.GeoInterfaceTest" todir="${test.reports}"/>

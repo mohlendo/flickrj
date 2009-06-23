@@ -11,6 +11,7 @@ import com.aetrion.flickr.activity.ActivityInterface;
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
 import com.aetrion.flickr.blogs.BlogsInterface;
+import com.aetrion.flickr.commons.CommonsInterface;
 import com.aetrion.flickr.contacts.ContactsInterface;
 import com.aetrion.flickr.favorites.FavoritesInterface;
 import com.aetrion.flickr.groups.GroupsInterface;
@@ -49,7 +50,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
  * (You -> Your account -> Extending Flickr -> Account Links -> edit).
  *
  * @author Anthony Eden
- * @version $Id: Flickr.java,v 1.44 2009/06/21 19:55:15 x-mago Exp $
+ * @version $Id: Flickr.java,v 1.45 2009/06/23 21:51:25 x-mago Exp $
  */
 public class Flickr {
 
@@ -82,6 +83,7 @@ public class Flickr {
     private ActivityInterface activityInterface;
     private BlogsInterface blogsInterface;
     private CommentsInterface commentsInterface;
+    private CommonsInterface commonsInterface;
     private ContactsInterface contactsInterface;
     private FavoritesInterface favoritesInterface;
     private GeoInterface geoInterface;
@@ -366,6 +368,13 @@ public class Flickr {
             commentsInterface = new CommentsInterface(apiKey, sharedSecret, transport);
         }
         return commentsInterface;
+    }
+
+    public CommonsInterface getCommonsInterface() {
+        if (commonsInterface == null) {
+            commonsInterface = new CommonsInterface(apiKey, sharedSecret, transport);
+        }
+        return commonsInterface;
     }
 
     public ContactsInterface getContactsInterface() {
