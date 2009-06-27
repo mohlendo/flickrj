@@ -2,7 +2,6 @@ package com.aetrion.flickr.panda;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -15,15 +14,21 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.auth.AuthUtilities;
-import com.aetrion.flickr.groups.Group;
-import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotoUtils;
+import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 
+/**
+ * Flickr Panda.
+ *
+ * @author mago
+ * @version $Id: PandaInterface.java,v 1.2 2009/06/27 22:35:24 x-mago Exp $
+ * @see <a href="http://www.flickr.com/explore/panda">Flickr Panda</a>
+ */
 public class PandaInterface {
-    public static final String METHOD_GET_PHOTOS = "flickr.panda.getPhotos";
-    public static final String METHOD_GET_LIST = "flickr.panda.getList";
+    private static final String METHOD_GET_PHOTOS = "flickr.panda.getPhotos";
+    private static final String METHOD_GET_LIST = "flickr.panda.getList";
 
     private String apiKey;
     private String sharedSecret;
@@ -39,6 +44,16 @@ public class PandaInterface {
         this.transportAPI = transportAPI;
     }
 
+    /**
+     * Return a list of Flickr pandas, from whom you can request photos using
+     * the {@link com.aetrion.flickr.panda.PandaInterface#getPhotos(Panda, Set, int, int)}
+     * API method.
+     *
+     * @return A list of pandas
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
     public ArrayList getList() throws FlickrException, IOException, SAXException {
         ArrayList pandas = new ArrayList();
         List parameters = new ArrayList();
@@ -67,6 +82,19 @@ public class PandaInterface {
         return pandas;
     }
 
+    /**
+     * Ask the Flickr Pandas for a list of recent public (and "safe") photos.
+     *
+     * @param panda The panda to ask for photos from.
+     * @param extras A set of Strings controlling the extra information to fetch for each returned record. {@link com.aetrion.flickr.photos.Extras#ALL_EXTRAS}
+     * @param perPage The number of photos to show per page
+     * @param page The page offset
+     * @return A PhotoList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     * @see com.aetrion.flickr.photos.Extras
+     */
     public PhotoList getPhotos(Panda panda, Set extras, int perPage, int page) throws FlickrException, IOException, SAXException {
         ArrayList pandas = new ArrayList();
         List parameters = new ArrayList();
@@ -76,15 +104,7 @@ public class PandaInterface {
         parameters.add(new Parameter("panda_name", panda.getName()));
 
         if (extras != null && !extras.isEmpty()) {
-            StringBuffer sb = new StringBuffer();
-            Iterator it = extras.iterator();
-            while (it.hasNext()) {
-                if (sb.length() > 0) {
-                    sb.append(",");
-                }
-                sb.append(it.next());
-            }
-            parameters.add(new Parameter("extras", sb.toString()));
+            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
         }
         if (perPage > 0) {
             parameters.add(new Parameter("per_page", perPage));
