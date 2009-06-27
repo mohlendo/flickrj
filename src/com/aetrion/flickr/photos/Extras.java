@@ -10,7 +10,7 @@ import java.util.Set;
  * Extra-attributes for Photo-requests.
  *
  * @author Anthony Eden
- * @version $Id: Extras.java,v 1.8 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: Extras.java,v 1.9 2009/06/27 20:49:55 x-mago Exp $
  */
 public class Extras {
     public static final String KEY_EXTRAS = "extras";
@@ -32,8 +32,9 @@ public class Extras {
     /**
      * Set of all extra-arguments. Used for requesting lists of photos.
      *
-     * @see com.aetrion.flickr.people.PeopleInterface#getPublicPhotos(String, Set, int, int)
      * @see com.aetrion.flickr.groups.pools.PoolsInterface#getPhotos(String, String[], Set, int, int)
+     * @see com.aetrion.flickr.panda.PandaInterface#getPhotos(com.aetrion.flickr.panda.Panda, Set, int, int)
+     * @see com.aetrion.flickr.people.PeopleInterface#getPublicPhotos(String, Set, int, int)
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
      * @see com.aetrion.flickr.photos.PhotosInterface#getContactsPublicPhotos(String, Set, int, boolean, boolean, boolean)
      * @see com.aetrion.flickr.photos.PhotosInterface#getWithGeoData(java.util.Date, java.util.Date, java.util.Date, java.util.Date, int, String, Set, int, int)
@@ -49,8 +50,9 @@ public class Extras {
      * Minimal Set of extra-arguments. Used by convenience-methods
      * that request lists of photos.
      *
-     * @see com.aetrion.flickr.people.PeopleInterface#getPublicPhotos(String, Set, int, int)
      * @see com.aetrion.flickr.groups.pools.PoolsInterface#getPhotos(String, String[], Set, int, int)
+     * @see com.aetrion.flickr.panda.PandaInterface#getPhotos(com.aetrion.flickr.panda.Panda, Set, int, int)
+     * @see com.aetrion.flickr.people.PeopleInterface#getPublicPhotos(String, Set, int, int)
      * @see com.aetrion.flickr.photosets.PhotosetsInterface#getPhotos(String, Set, int, int, int)
      * @see com.aetrion.flickr.photos.PhotosInterface#getContactsPublicPhotos(String, Set, int, boolean, boolean, boolean)
      * @see com.aetrion.flickr.photos.PhotosInterface#getWithGeoData(java.util.Date, java.util.Date, java.util.Date, java.util.Date, int, String, Set, int, int)
