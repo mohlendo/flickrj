@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import javax.imageio.ImageIO;
@@ -37,7 +38,7 @@ import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PhotosInterfaceTest.java,v 1.17 2009/01/24 21:55:24 x-mago Exp $
+ * @version $Id: PhotosInterfaceTest.java,v 1.18 2009/06/29 19:51:24 x-mago Exp $
  */
 public class PhotosInterfaceTest extends TestCase {
 
@@ -363,7 +364,7 @@ public class PhotosInterfaceTest extends TestCase {
         ImageIO.write(image, "jpg", new File("out.smallsquare.jpg"));
     }
 
-    public void testGetOriginalImage() throws FlickrException, IOException, SAXException {
+/*    public void testGetOriginalImage() throws FlickrException, IOException, SAXException {
         PhotosInterface iface = flickr.getPhotosInterface();
         String photoId = properties.getProperty("photoidOriginal");
         Photo photo = iface.getInfo(photoId, null);
@@ -372,7 +373,7 @@ public class PhotosInterfaceTest extends TestCase {
         assertEquals(600, image.getWidth());
         assertEquals(450, image.getHeight());
         ImageIO.write(image, "jpg", new File("out.original.jpg"));
-    }
+    } */
 
     public void testGetMediumImage() throws FlickrException, IOException, SAXException {
         PhotosInterface iface = flickr.getPhotosInterface();
@@ -403,4 +404,79 @@ public class PhotosInterfaceTest extends TestCase {
         assertNotNull(photo);
     }
 
+    /**
+     * Testing the generation of URLs and the
+     * overriding by setSizes().
+     */
+    public void testSetSizes() {
+        List sizes = new ArrayList();
+        Size size = new Size();
+        size.setLabel("Square");
+        size.setWidth("75");
+        size.setHeight("75");
+        size.setSource("urlSquare");
+        size.setUrl("urlSquarePage");
+        sizes.add(size);
+        size = new Size();
+        size.setLabel("Thumbnail");
+        size.setWidth("100");
+        size.setHeight("75");
+        size.setSource("urlThumb");
+        size.setUrl("urlThumbPage");
+        sizes.add(size);
+        size = new Size();
+        size.setLabel("Small");
+        size.setWidth("240");
+        size.setHeight("180");
+        size.setSource("urlSmall");
+        size.setUrl("urlSmallPage");
+        sizes.add(size);
+        size = new Size();
+        size.setLabel("Medium");
+        size.setWidth("240");
+        size.setHeight("180");
+        size.setSource("urlMedium");
+        size.setUrl("urlMediumPage");
+        sizes.add(size);
+        size = new Size();
+        size.setLabel("Original");
+        size.setWidth("240");
+        size.setHeight("180");
+        size.setSource("urlOriginal");
+        size.setUrl("urlOriginalPage");
+        sizes.add(size);
+        size = new Size();
+        size.setLabel("Large");
+        size.setWidth("240");
+        size.setHeight("180");
+        size.setSource("urlLarge");
+        size.setUrl("urlLargePage");
+        sizes.add(size);
+
+        Photo p = new Photo();
+        p.setId("id");
+        p.setServer("server");
+        p.setSecret("secret");
+        p.setOriginalSecret("osecret");
+        p.setFarm("1");
+
+        assertEquals("http://farm1.static.flickr.com/server/id_secret_m.jpg", p.getSmallUrl());
+        assertEquals("http://farm1.static.flickr.com/server/id_secret_s.jpg", p.getSmallSquareUrl());
+        assertEquals("http://farm1.static.flickr.com/server/id_secret_t.jpg", p.getThumbnailUrl());
+        assertEquals("http://farm1.static.flickr.com/server/id_secret.jpg", p.getMediumUrl());
+        assertEquals("http://farm1.static.flickr.com/server/id_secret_b.jpg", p.getLargeUrl());
+        try {
+            assertEquals("http://farm1.static.flickr.com/server/id_osecret_o.jpg", p.getOriginalUrl());
+        } catch (FlickrException ex) {}
+        // setSizes() to override the generated URLs.
+        p.setSizes(sizes);
+        assertEquals("urlSmall", p.getSmallUrl());
+        assertEquals("urlSquare", p.getSmallSquareUrl());
+        assertEquals("urlThumb", p.getThumbnailUrl());
+        assertEquals("urlMedium", p.getMediumUrl());
+        assertEquals("urlLarge", p.getLargeUrl());
+        try {
+            assertEquals("urlOriginal", p.getOriginalUrl());
+        } catch (FlickrException ex) {}
+    }
 }
