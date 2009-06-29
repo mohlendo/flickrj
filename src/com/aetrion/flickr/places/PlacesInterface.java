@@ -94,7 +94,7 @@ Thanks,
 </PRE>
 
  * @author mago
- * @version $Id: PlacesInterface.java,v 1.7 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: PlacesInterface.java,v 1.8 2009/06/29 20:52:05 x-mago Exp $
  */
 public class PlacesInterface {
     private static final String METHOD_FIND = "flickr.places.find";
@@ -909,6 +909,7 @@ public class PlacesInterface {
         // Now the place-Id is directly available
         place.setPlaceType(placeElement.getAttribute("place_type_id"));
         //place.setPlaceType(stringPlaceTypeToInt(typeString));
+        place.setName(XMLUtilities.getValue(placeElement));
         return place;
     }
 

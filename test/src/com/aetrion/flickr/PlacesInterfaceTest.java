@@ -27,7 +27,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * Tests for the PlacesInterface.
  *
  * @author mago
- * @version $Id: PlacesInterfaceTest.java,v 1.8 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: PlacesInterfaceTest.java,v 1.9 2009/06/29 20:52:05 x-mago Exp $
  */
 public class PlacesInterfaceTest extends TestCase {
     String sfWoeId = "2487956";
@@ -77,8 +77,8 @@ public class PlacesInterfaceTest extends TestCase {
         assertEquals("/Germany/Berlin/Berlin", place.getPlaceUrl());
         assertEquals(Place.TYPE_LOCALITY, place.getPlaceType());
         assertEquals("638242", place.getWoeId());
-        assertEquals(52.506D, place.getLatitude());
-        assertEquals(13.424D, place.getLongitude());
+        assertEquals(52.516D, place.getLatitude());
+        assertEquals(13.376D, place.getLongitude());
     }
 
     public void testFind()      throws FlickrException, IOException, SAXException {
@@ -87,7 +87,7 @@ public class PlacesInterfaceTest extends TestCase {
         assertTrue(list.getTotal() == 3);
         Place place = (Place) list.get(0);
         assertEquals("VrrjuESbApjeFS4.", place.getPlaceId());
-        assertEquals("/United+States/Alabama/Alabama", place.getPlaceUrl());
+        assertEquals("/United+States/Alabama", place.getPlaceUrl());
         assertEquals(Place.TYPE_REGION, place.getPlaceType());
 
         place = (Place) list.get(1);
@@ -138,10 +138,11 @@ public class PlacesInterfaceTest extends TestCase {
         String placeId = "kH8dLOubBZRvX_YZ";
         PlacesList list = placesInterface.getChildrenWithPhotosPublic(placeId, woeId);
         boolean presidioFound = false;
-        for(int i = 0;i < list.size();i++) {
+        for (int i = 0; i < list.size(); i++) {
             Place place = (Place) list.get(i);
-            System.out.println(place.getName());
-            if(place.getPlaceId().equals("xrtOyiqbApl7whEZfA")) {
+            //System.out.println(place.getName());
+            if (place.getPlaceId().equals("xrtOyiqbApl7whEZfA")) {
+                assertEquals("Presidio, San Francisco, CA, US, United States",place.getName());
                 presidioFound = true;
             }
         }
@@ -155,9 +156,9 @@ public class PlacesInterfaceTest extends TestCase {
         String woeId = "2487956";
         String placeId = "kH8dLOubBZRvX_YZ";
         Location loc = placesInterface.getInfo(woeId, null);
-        assertEquals(loc.getPlaceUrl(), "/United+States/California/San+Francisco");
+        assertEquals("/United+States/California/San+Francisco",loc.getPlaceUrl());
         loc = placesInterface.getInfo(null, placeId);
-        assertEquals(loc.getPlaceUrl(), "/United+States/California/San+Francisco");
+        assertEquals("/United+States/California/San+Francisco",loc.getPlaceUrl());
     }
 
     public void testGetInfoByUrl()
@@ -255,7 +256,7 @@ public class PlacesInterfaceTest extends TestCase {
         Place place = (Place) places.get(0);
         assertEquals("SVrAMtCbAphCLAtP", place.getPlaceId());
         assertEquals(Place.TYPE_REGION, place.getPlaceType());
-        assertEquals("/United+States/California/California", place.getPlaceUrl());
+        assertEquals("/United+States/California", place.getPlaceUrl());
     }
 
     public void testPlacesForUser()
