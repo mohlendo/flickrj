@@ -12,13 +12,15 @@ import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.photos.Extras;
+import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.comments.Comment;
 import com.aetrion.flickr.photos.comments.CommentsInterface;
 import com.aetrion.flickr.util.IOUtilities;
 /**
  *
  * @author till (Till Krech) flickr:extranoise
- * @version $Id: CommentsInterfaceTest.java,v 1.6 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: CommentsInterfaceTest.java,v 1.7 2009/06/30 18:48:59 x-mago Exp $
  */
 public class CommentsInterfaceTest extends TestCase {
     Flickr flickr = null;
@@ -113,5 +115,11 @@ public class CommentsInterfaceTest extends TestCase {
             }
         }
         return null;
+    }
+
+    public void testGetRecentForContacts() throws IOException, SAXException, FlickrException {
+        CommentsInterface ci = flickr.getCommentsInterface();
+        PhotoList photos = ci.getRecentForContacts(null, null, Extras.ALL_EXTRAS, 50, 1);
+        assertTrue(photos != null);
     }
 }

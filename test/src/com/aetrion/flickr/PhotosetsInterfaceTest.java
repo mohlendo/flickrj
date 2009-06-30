@@ -57,11 +57,13 @@ public class PhotosetsInterfaceTest extends TestCase {
 
     public void testCreateAndDelete() throws FlickrException, IOException, SAXException {
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
+        Flickr.debugStream = true;
         Photoset photoset = iface.create("test", "A test photoset", properties.getProperty("photoid"));
         assertNotNull(photoset);
         assertNotNull(photoset.getId());
         assertNotNull(photoset.getUrl());
         iface.delete(photoset.getId());
+        Flickr.debugStream = false;
     }
 
     public void testEditMeta() {

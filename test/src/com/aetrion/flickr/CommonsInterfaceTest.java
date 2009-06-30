@@ -4,9 +4,9 @@ package com.aetrion.flickr;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -16,17 +16,15 @@ import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.AuthInterface;
-import com.aetrion.flickr.groups.members.Member;
-import com.aetrion.flickr.groups.members.MembersInterface;
-import com.aetrion.flickr.groups.members.MembersList;
+import com.aetrion.flickr.commons.CommonsInterface;
+import com.aetrion.flickr.commons.Institution;
 import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author mago
- * @version $Id: MembersInterfaceTest.java,v 1.2 2009/06/30 18:48:59 x-mago Exp $
+ * @version $Id: CommonsInterfaceTest.java,v 1.1 2009/06/30 18:48:59 x-mago Exp $
  */
-public class MembersInterfaceTest extends TestCase {
-
+public class CommonsInterfaceTest extends TestCase {
     Flickr flickr = null;
     Properties properties = null;
 
@@ -58,21 +56,34 @@ public class MembersInterfaceTest extends TestCase {
         }
     }
 
-    public void testGetList() throws FlickrException, IOException, SAXException {
-        MembersInterface iface = flickr.getMembersInterface();
-        // Group: Urban fragments
-        String id = "64262537@N00";
-        Set memberTypes = new HashSet();
-        memberTypes.add(Member.TYPE_MEMBER);
-        memberTypes.add(Member.TYPE_ADMIN);
-        memberTypes.add(Member.TYPE_MODERATOR);
-        MembersList list = iface.getList(id, memberTypes, 50, 1);
+    public void testGetInstitutions() throws FlickrException, IOException, SAXException {
+        CommonsInterface iface = flickr.getCommonsInterface();
+        ArrayList list = iface.getInstitutions();
         assertNotNull(list);
-        assertEquals(50, list.size());
-        Member m = (Member) list.get(10);
-        assertTrue(m.getId().indexOf("@") > 0);
-        assertTrue(m.getUserName().length() > 0);
-        assertTrue(m.getIconFarm() > 0);
-        assertTrue(m.getIconServer() > 0);
+        Iterator it = list.iterator();
+        boolean museumFound = false;
+        while (it.hasNext()) {
+            Institution inst = (Institution) it.next();
+            if (inst.getName().equals("Brooklyn Museum")) {
+                assertEquals(
+                    1211958000000L,
+                    inst.getDateLaunch().getTime()
+                );
+                assertEquals(
+                    "http://www.brooklynmuseum.org/",
+                    inst.getSiteUrl()
+                );
+                assertEquals(
+                    "http://www.brooklynmuseum.org/flickr_commons.php",
+                    inst.getLicenseUrl()
+                );
+                assertEquals(
+                    "http://flickr.com/photos/brooklyn_museum/",
+                    inst.getFlickrUrl()
+                );
+                museumFound = true;
+            }
+        }
+        assertTrue(museumFound);
     }
 }
