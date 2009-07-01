@@ -32,7 +32,7 @@ import com.aetrion.flickr.util.UrlUtilities;
  * Transport implementation using the REST interface.
  *
  * @author Anthony Eden
- * @version $Id: REST.java,v 1.25 2008/07/05 22:52:51 x-mago Exp $
+ * @version $Id: REST.java,v 1.26 2009/07/01 22:07:08 x-mago Exp $
  */
 public class REST extends Transport {
 
@@ -169,7 +169,8 @@ public class REST extends Transport {
      * @throws SAXException
      */
     public Response post(String path, List parameters, boolean multipart) throws IOException, SAXException {
-        AuthUtilities.addAuthToken(parameters);
+        // see: AuthUtilities.getSignature()
+        //AuthUtilities.addAuthToken(parameters);
 
         RequestContext requestContext = RequestContext.getRequestContext();
         URL url = UrlUtilities.buildPostUrl(getHost(), getPort(), path);
