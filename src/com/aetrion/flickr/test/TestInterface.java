@@ -57,12 +57,6 @@ public class TestInterface {
         parameters.add(new Parameter("method", METHOD_ECHO));
         parameters.add(new Parameter("api_key", apiKey));
         parameters.addAll(params);
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
