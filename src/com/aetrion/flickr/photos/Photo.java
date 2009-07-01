@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
@@ -27,7 +28,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * {@link PhotosInterface#getImageAsStream(Photo, int)}.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.23 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: Photo.java,v 1.24 2009/07/01 20:39:46 x-mago Exp $
  */
 public class Photo {
 
@@ -43,6 +44,13 @@ public class Photo {
     private static final String THUMBNAIL_IMAGE_SUFFIX = "_t.jpg";
     private static final String MEDIUM_IMAGE_SUFFIX = ".jpg";
     private static final String LARGE_IMAGE_SUFFIX = "_b.jpg";
+
+    private Size squareSize;
+    private Size smallSize;
+    private Size thumbnailSize;
+    private Size mediumSize;
+    private Size largeSize;
+    private Size originalSize;
 
     private String id;
     private User owner;
@@ -80,7 +88,6 @@ public class Photo {
     private String media;
     private int originalWidth;
     private int originalHeight;
-
 
     public Photo() {
     }
@@ -460,10 +467,14 @@ public class Photo {
      * @return The original image URL
      */
     public String getOriginalUrl() throws FlickrException {
-        if (originalFormat != null) {
-            return getOriginalBaseImageUrl() + "_o." + originalFormat;
+        if (originalSize == null) {
+            if (originalFormat != null) {
+                return getOriginalBaseImageUrl() + "_o." + originalFormat;
+            }
+            return getOriginalBaseImageUrl() + DEFAULT_ORIGINAL_IMAGE_SUFFIX;
+        } else {
+            return originalSize.getSource();
         }
-        return getOriginalBaseImageUrl() + DEFAULT_ORIGINAL_IMAGE_SUFFIX;
     }
 
     /**
@@ -490,7 +501,11 @@ public class Photo {
     }
 
     public String getSmallSquareUrl() {
-        return getBaseImageUrl() + SMALL_SQUARE_IMAGE_SUFFIX;
+        if (squareSize == null) {
+            return getBaseImageUrl() + SMALL_SQUARE_IMAGE_SUFFIX;
+        } else {
+            return squareSize.getSource();
+        }
     }
 
     /**
@@ -514,7 +529,11 @@ public class Photo {
     }
 
     public String getThumbnailUrl() {
-        return getBaseImageUrl() + THUMBNAIL_IMAGE_SUFFIX;
+        if (thumbnailSize == null) {
+            return getBaseImageUrl() + THUMBNAIL_IMAGE_SUFFIX;
+        } else {
+            return thumbnailSize.getSource();
+        }
     }
 
     /**
@@ -538,7 +557,11 @@ public class Photo {
     }
 
     public String getSmallUrl() {
-        return getBaseImageUrl() + SMALL_IMAGE_SUFFIX;
+        if (smallSize == null) {
+            return getBaseImageUrl() + SMALL_IMAGE_SUFFIX;
+        } else {
+            return smallSize.getSource();
+        }
     }
 
     /**
@@ -562,7 +585,11 @@ public class Photo {
     }
 
     public String getMediumUrl() {
-        return getBaseImageUrl() + MEDIUM_IMAGE_SUFFIX;
+        if (mediumSize == null) {
+            return getBaseImageUrl() + MEDIUM_IMAGE_SUFFIX;
+        } else {
+            return mediumSize.getSource();
+        }
     }
 
     /**
@@ -586,12 +613,17 @@ public class Photo {
     }
 
     public String getLargeUrl() {
-        return getBaseImageUrl() + LARGE_IMAGE_SUFFIX;
+        if (largeSize == null) {
+            return getBaseImageUrl() + LARGE_IMAGE_SUFFIX;
+        } else {
+            return largeSize.getSource();
+        }
     }
 
     /**
      * Get an image using the specified URL suffix.
      *
+     * @deprecated
      * @param suffix The URL suffix, including the .extension
      * @return The BufferedImage object
      * @throws IOException
@@ -605,6 +637,9 @@ public class Photo {
 
     /**
      * Get the original-image using the specified URL suffix.
+     * 
+     * @deprecated
+     * @see PhotosInterface#getImage(Photo, int)
      * @param suffix The URL suffix, including the .extension
      * @return The BufferedImage object
      * @throws IOException
@@ -617,6 +652,12 @@ public class Photo {
         return _getImage(buffer.toString());
     }
 
+    /**
+     * @deprecated
+     * @param urlStr
+     * @return BufferedImage
+     * @throws IOException
+     */
     private BufferedImage _getImage(String urlStr)
       throws IOException {
         URL url = new URL(urlStr);
@@ -634,6 +675,8 @@ public class Photo {
     /**
      * Get an image as a stream. Callers must be sure to close the stream when they are done with it.
      *
+     * @deprecated
+     * @see PhotosInterface#getImageAsStream(Photo, int)
      * @param suffix The suffix
      * @return The InputStream
      * @throws IOException
@@ -644,6 +687,15 @@ public class Photo {
         return _getImageAsStream(buffer.toString());
     }
 
+    /**
+     * 
+     * @deprecated
+     * @see PhotosInterface#getImageAsStream(Photo, int)
+     * @param suffix
+     * @return InoutStream
+     * @throws IOException
+     * @throws FlickrException
+     */
     private InputStream getOriginalImageAsStream(String suffix) throws IOException, FlickrException {
         StringBuffer buffer = getOriginalBaseImageUrl();
         buffer.append(suffix);
@@ -735,6 +787,56 @@ public class Photo {
 
     public void setOriginalHeight(int originalHeight) {
         this.originalHeight = originalHeight;
+    }
+
+    /**
+     * Set sizes to override the generated URLs of the different sizes.
+     *
+     * @param sizes
+     * @see com.aetrion.flickr.photos.PhotosInterface#getSizes(String)
+     */
+    public void setSizes(Collection sizes) {
+        Iterator it = sizes.iterator();
+        while (it.hasNext()) {
+            Size size = (Size) it.next();
+            if (size.getLabel() == Size.SMALL) {
+                smallSize = size;
+            } else if (size.getLabel() == Size.SQUARE) {
+                squareSize = size;
+            } else if (size.getLabel() == Size.THUMB) {
+                thumbnailSize = size;
+            } else if (size.getLabel() == Size.MEDIUM) {
+                mediumSize = size;
+            } else if (size.getLabel() == Size.LARGE) {
+                largeSize = size;
+            } else if (size.getLabel() == Size.ORIGINAL) {
+                originalSize = size;
+            }
+        }
+    }
+
+    public Size getSquareSize() {
+        return squareSize;
+    }
+
+    public Size getSmallSize() {
+        return smallSize;
+    }
+
+    public Size getThumbnailSize() {
+        return thumbnailSize;
+    }
+
+    public Size getMediumSize() {
+        return mediumSize;
+    }
+
+    public Size getLargeSize() {
+        return largeSize;
+    }
+
+    public Size getOriginalSize() {
+        return originalSize;
     }
 
 }
