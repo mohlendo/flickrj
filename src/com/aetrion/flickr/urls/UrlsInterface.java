@@ -91,12 +91,6 @@ public class UrlsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -122,12 +116,6 @@ public class UrlsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -153,12 +141,6 @@ public class UrlsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("url", url));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
@@ -189,12 +171,6 @@ public class UrlsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("url", url));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.post(transport.getPath(), parameters);
         if (response.isError()) {
