@@ -27,7 +27,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr tags.
  *
  * @author Anthony Eden
- * @version $Id: TagsInterface.java,v 1.17 2009/06/20 22:35:13 x-mago Exp $
+ * @version $Id: TagsInterface.java,v 1.18 2009/07/02 20:15:33 x-mago Exp $
  */
 public class TagsInterface {
 
@@ -67,6 +67,8 @@ public class TagsInterface {
      * Search for tag-clusters.<p/>
      * This method does not require authentication.
      *
+     * <p>This method does not require authentication.</p>
+     *
      * @since 1.2
      * @param searchTag
      * @return a list of clusters
@@ -78,12 +80,6 @@ public class TagsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("tag", searchTag));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -111,6 +107,8 @@ public class TagsInterface {
     /**
      * Returns the first 24 photos for a given tag cluster.
      *
+     * <p>This method does not require authentication.</p>
+     *
      * @param tag
      * @param clusterId
      * @return PhotoList
@@ -127,13 +125,6 @@ public class TagsInterface {
 
         parameters.add(new Parameter("tag", tag));
         parameters.add(new Parameter("cluster_id", clusterId));
-
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -152,9 +143,11 @@ public class TagsInterface {
         }
         return photos;
     }
-    
+
     /**
      * Returns a list of hot tags for the given period.
+     *
+     * <p>This method does not require authentication.</p>
      *
      * @param period valid values are 'day' or 'week'
      * @param count maximum is 200
@@ -167,12 +160,6 @@ public class TagsInterface {
 
         parameters.add(new Parameter("period", period));
         parameters.add(new Parameter("count", "" + count));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -196,6 +183,8 @@ public class TagsInterface {
     /**
      * Get a list of tags for the specified photo.
      *
+     * <p>This method does not require authentication.</p>
+     *
      * @param photoId The photo ID
      * @return The collection of Tag objects
      */
@@ -205,12 +194,6 @@ public class TagsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -241,6 +224,8 @@ public class TagsInterface {
     /**
      * Get a collection of tags used by the specified user.
      *
+     * <p>This method does not require authentication.</p>
+     *
      * @param userId The User ID
      * @return The User object
      * @throws IOException
@@ -253,12 +238,6 @@ public class TagsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -282,6 +261,8 @@ public class TagsInterface {
     /**
      * Get a list of the user's popular tags.
      *
+     * <p>This method does not require authentication.</p>
+     *
      * @param userId The user ID
      * @return The collection of Tag objects
      * @throws IOException
@@ -294,12 +275,6 @@ public class TagsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -324,27 +299,22 @@ public class TagsInterface {
     /**
      * Get a list of the user's (identified by token) popular tags.
      *
+     * <p>This method does not require authentication.</p>
+     *
      * @param tagVal a tag to search for, or null
      * @return The collection of Tag objects
      * @throws IOException
      * @throws SAXException
      * @throws FlickrException
      */
-
     public Collection getListUserRaw(String tagVal) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST_USER_RAW));
         parameters.add(new Parameter("api_key", apiKey));
 
-        if(tagVal != null) {
+        if (tagVal != null) {
             parameters.add(new Parameter("tag", tagVal));
         }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -373,6 +343,8 @@ public class TagsInterface {
     /**
      * Get the related tags.
      *
+     * <p>This method does not require authentication.</p>
+     *
      * @param tag The source tag
      * @return A RelatedTagsList object
      * @throws IOException
@@ -385,12 +357,6 @@ public class TagsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("tag", tag));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
