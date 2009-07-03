@@ -94,7 +94,7 @@ Thanks,
 </PRE>
 
  * @author mago
- * @version $Id: PlacesInterface.java,v 1.8 2009/06/29 20:52:05 x-mago Exp $
+ * @version $Id: PlacesInterface.java,v 1.9 2009/07/03 22:31:40 x-mago Exp $
  */
 public class PlacesInterface {
     private static final String METHOD_FIND = "flickr.places.find";
@@ -106,6 +106,7 @@ public class PlacesInterface {
     private static final String METHOD_GET_INFO_BY_URL = "flickr.places.getInfoByUrl";
     private static final String METHOD_GET_PLACETYPES = "flickr.places.getPlaceTypes";
     private static final String METHOD_GET_SHAPEHISTORY = "flickr.places.getShapeHistory";
+    private static final String METHOD_GET_TOP_PLACES_LIST = "flickr.places.getTopPlacesList";
     private static final String METHOD_PLACES_FOR_BOUNDINGBOX = "flickr.places.placesForBoundingBox";
     private static final String METHOD_PLACES_FOR_CONTACTS = "flickr.places.placesForContacts";
     private static final String METHOD_PLACES_FOR_TAGS = "flickr.places.placesForTags";
@@ -122,6 +123,24 @@ public class PlacesInterface {
         this.transportAPI = transportAPI;
     }
 
+    /**
+     * Return a list of place IDs for a query string.
+     *
+     * The flickr.places.find method is not a geocoder.
+     * It will round "up" to the nearest place type to 
+     * which place IDs apply. For example, if you pass
+     * it a street level address it will return the city
+     * that contains the address rather than the street,
+     * or building, itself.
+     *
+     * <p>This method does not require authentication.</p>
+     *
+     * @param query
+     * @return PlacesList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
     public PlacesList find(String query)
       throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
@@ -130,13 +149,6 @@ public class PlacesInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("query", query));
-
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -199,6 +211,8 @@ public class PlacesInterface {
      * locating photos for places, we are happy to investigate but until then
      * it should be All Good (tm).
      *
+     * <p>This method does not require authentication.</p>
+     *
      * @param latitude The latitude whose valid range is -90 to 90.
      *        Anything more than 4 decimal places will be truncated.
      * @param longitude The longitude whose valid range is -180 to 180.
@@ -251,6 +265,8 @@ public class PlacesInterface {
      * <p>Return a list of locations with public photos that are parented by a 
      * Where on Earth (WOE) or Places ID.</p>
      *
+     * <p>This method does not require authentication.</p>
+     *
      * @param placeId A Flickr Places ID. Can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
      * @param woeId A Where On Earth (WOE) ID. Can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
      * @return List of Places
@@ -272,13 +288,6 @@ public class PlacesInterface {
             parameters.add(new Parameter("woe_id", woeId));
         }
 
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
-
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -298,6 +307,8 @@ public class PlacesInterface {
 
     /**
      * Get informations about a place.
+     *
+     * <p>This method does not require authentication.</p>
      *
      * @param placeId A Flickr Places ID. Optioal, can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
      * @param woeId A Where On Earth (WOE) ID. Optional, can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
@@ -320,13 +331,6 @@ public class PlacesInterface {
             parameters.add(new Parameter("woe_id", woeId));
         }
 
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
-
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -337,6 +341,8 @@ public class PlacesInterface {
 
     /**
      * Lookup information about a place, by its flickr.com/places URL.
+     *
+     * <p>This method does not require authentication.</p>
      *
      * @param url
      * @return A Location
@@ -353,13 +359,6 @@ public class PlacesInterface {
 
         parameters.add(new Parameter("url", url));
 
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
-
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -368,18 +367,22 @@ public class PlacesInterface {
         return parseLocation(locationElement);
     }
 
+    /**
+     * Fetches a list of available place types for Flickr.
+     *
+     * <p>This method does not require authentication.</p>
+     *
+     * @return A list of placetypes
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
     public ArrayList getPlaceTypes()
       throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
         PlacesList placesList = new PlacesList();
         parameters.add(new Parameter("method", METHOD_GET_PLACETYPES));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -402,11 +405,13 @@ public class PlacesInterface {
      * Return an historical list of all the shape data generated for a
      * Places or Where on Earth (WOE) ID.<p>
      *
-     * Not working. As it was not possible to find any results.
-     * Not even the ones, that have been described in the announcement of this feature.
+     * <p>This method does not require authentication.</p>
      *
-     * @param placeId
-     * @param woeId
+     * <p>Not working. As it was not possible to find any results.
+     * Not even the ones, that have been described in the announcement of this feature.</p>
+     *
+     * @param placeId A Flickr Places ID. Optional, can be null.
+     * @param woeId A Where On Earth (WOE) ID. Optional, can be null.
      * @return A list of shapes
      * @throws FlickrException
      * @throws IOException
@@ -426,19 +431,65 @@ public class PlacesInterface {
             parameters.add(new Parameter("woe_id", woeId));
         }
 
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
-
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
         Element shapeElement = response.getPayload();
         return shapeList;
+    }
+
+    /**
+     * Return the top 100 most geotagged places for a day.
+     *
+     * <p>This method does not require authentication.</p>
+     *
+     * @param placeType
+     * @param date Optional, can be null. The default is yesterday.
+     * @param placeId A Flickr Places ID. Optional, can be null.
+     * @param woeId A Where On Earth (WOE) ID. Optional, can be null.
+     * @return PlacesList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public PlacesList getTopPlacesList(
+        int placeType,
+        Date date,
+        String placeId,
+        String woeId
+    ) throws FlickrException, IOException, SAXException {
+        List parameters = new ArrayList();
+        PlacesList placesList = new PlacesList();
+        parameters.add(new Parameter("method", METHOD_GET_TOP_PLACES_LIST));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("place_type", intPlaceTypeToString(placeType)));
+        if (placeId != null) {
+            parameters.add(new Parameter("place_id", placeId));
+        }
+        if (woeId != null) {
+            parameters.add(new Parameter("woe_id", woeId));
+        }
+        if (date != null) {
+            parameters.add(new Parameter("date", ((DateFormat) SearchParameters.DATE_FORMATS.get()).format(date)));
+        }
+
+        Response response = transportAPI.get(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element placesElement = response.getPayload();
+        NodeList placesNodes = placesElement.getElementsByTagName("place");
+        placesList.setPage("1");
+        placesList.setPages("1");
+        placesList.setPerPage("" + placesNodes.getLength());
+        placesList.setTotal("" + placesNodes.getLength());
+        for (int i = 0; i < placesNodes.getLength(); i++) {
+            Element placeElement = (Element) placesNodes.item(i);
+            placesList.add(parsePlace(placeElement));
+        }
+        return placesList;
     }
 
     /**
@@ -453,6 +504,8 @@ public class PlacesInterface {
      * <li>country: 500km (310mi)</li>
      * <li>continent: 1500km (932mi)</li>
      * </ul>
+     *
+     * <p>This method does not require authentication.</p>
      *
      * @param bbox
      * @param placeType
@@ -473,12 +526,6 @@ public class PlacesInterface {
         parameters.add(new Parameter("place_type", intPlaceTypeToString(placeType)));
         parameters.add(new Parameter("bbox", bbox));
 
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -531,9 +578,6 @@ public class PlacesInterface {
         if (threshold != null) {
             parameters.add(new Parameter("threshold", threshold));
         }
-        if (threshold != null) {
-            parameters.add(new Parameter("threshold", threshold));
-        }
         if (contacts != null) {
             parameters.add(new Parameter("contacts", contacts));
         }
@@ -564,6 +608,8 @@ public class PlacesInterface {
     /**
      * Return a list of the top 100 unique places clustered by a given
      * placetype for set of tags or machine tags.
+     *
+     * <p>This method does not require authentication.</p>
      *
      * @param placeTypeId
      * @param woeId A Where On Earth (WOE) ID. Optional, can be null. (While optional, you must pass either a valid Places ID or a WOE ID.)
@@ -634,12 +680,6 @@ public class PlacesInterface {
             parameters.add(new Parameter("max_taken_date", ((DateFormat) SearchParameters.MYSQL_DATE_FORMATS.get()).format(maxTakenDate)));
         }
 
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -765,6 +805,19 @@ public class PlacesInterface {
         return parseLocation(locationElement);
     }
 
+    /**
+     * Find Flickr Places information by Place URL.
+     *
+     * <p>This method does not require authentication.</p>
+     *
+     * @deprecated This method has been deprecated. It won't be removed but you
+     * should use {@link PlacesInterface#getInfoByUrl(String)} instead.
+     * @param flickrPlacesUrl
+     * @return A Location
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
     public Location resolvePlaceURL(String flickrPlacesUrl)
       throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
@@ -791,6 +844,8 @@ public class PlacesInterface {
     /**
      * Return a list of the top 100 unique tags for a Flickr
      * Places or Where on Earth (WOE) ID.
+     *
+     * <p>This method does not require authentication.</p>
      *
      * @param woeId A Where On Earth (WOE) ID. Optional, can be null.
      * @param placeId A Flickr Places ID. Optional, can be null.
@@ -833,12 +888,6 @@ public class PlacesInterface {
             parameters.add(new Parameter("max_taken_date", ((DateFormat) SearchParameters.MYSQL_DATE_FORMATS.get()).format(maxTakenDate)));
         }
 
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());

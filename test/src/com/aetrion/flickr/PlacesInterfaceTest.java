@@ -27,7 +27,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * Tests for the PlacesInterface.
  *
  * @author mago
- * @version $Id: PlacesInterfaceTest.java,v 1.9 2009/06/29 20:52:05 x-mago Exp $
+ * @version $Id: PlacesInterfaceTest.java,v 1.10 2009/07/03 22:31:41 x-mago Exp $
  */
 public class PlacesInterfaceTest extends TestCase {
     String sfWoeId = "2487956";
@@ -113,7 +113,7 @@ public class PlacesInterfaceTest extends TestCase {
 
         place = (Place) list.get(1);
         assertEquals("Nf7Dq4acBJTgBHuaOQ", place.getPlaceId());
-        assertEquals("/France/Ile-de-France/Paris/Europe", place.getPlaceUrl());
+        assertEquals("/France/%C3%8Ele-de-France/Paris/Europe", place.getPlaceUrl());
         assertEquals(Place.TYPE_NEIGHBOURHOOD, place.getPlaceType());
     }
 
@@ -192,6 +192,12 @@ public class PlacesInterfaceTest extends TestCase {
         assertTrue(neighbourhoodFound);
         assertTrue(regionFound);
         assertTrue(placeTypes.size() > 5);
+    }
+
+    public void testGetTopPlacesList() throws FlickrException, IOException, SAXException {
+        PlacesInterface placesInterface = flickr.getPlacesInterface();
+        PlacesList places = placesInterface.getTopPlacesList(Place.TYPE_COUNTRY, null, null, sfWoeId);
+        assertNotNull(places);
     }
 
     public void testPlacesForBoundingBox()
