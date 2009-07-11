@@ -4,14 +4,14 @@ package com.aetrion.flickr.groups.members;
  * Group-member.
  *
  * @author mago
- * @version $Id: Member.java,v 1.1 2009/06/21 19:55:15 x-mago Exp $
+ * @version $Id: Member.java,v 1.2 2009/07/11 20:11:34 x-mago Exp $
  */
 
 public class Member {
     private String id;
     private String userName;
-    private int iconFarm;
-    private int iconServer;
+    private int iconFarm = -1;
+    private int iconServer = -1;
     private String memberType;
 
     public static final String TYPE_MEMBER = "2";

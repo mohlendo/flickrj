@@ -28,7 +28,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * {@link PhotosInterface#getImageAsStream(Photo, int)}.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.24 2009/07/01 20:39:46 x-mago Exp $
+ * @version $Id: Photo.java,v 1.25 2009/07/11 20:11:34 x-mago Exp $
  */
 public class Photo {
 
@@ -73,7 +73,7 @@ public class Photo {
     private Permissions permissions;
     private Editability editability;
     private int comments;
-    private int views;
+    private int views = -1;
     private int rotation;
     private Collection notes;
     private Collection tags;
