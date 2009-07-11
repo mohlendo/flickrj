@@ -3,31 +3,34 @@
  */
 package com.aetrion.flickr.blogs;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.photos.Photo;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * Interface for working with Flickr blog configurations.
  *
  * @author Anthony Eden
- * @version $Id: BlogsInterface.java,v 1.13 2008/01/28 23:01:48 x-mago Exp $
+ * @version $Id: BlogsInterface.java,v 1.14 2009/07/11 20:30:27 x-mago Exp $
  */
 public class BlogsInterface {
 
-    public static final String METHOD_GET_LIST = "flickr.blogs.getList";
-    public static final String METHOD_POST_PHOTO = "flickr.blogs.postPhoto";
+    private static final String METHOD_GET_SERVICES = "flickr.blogs.getServices";
+    private static final String METHOD_GET_LIST = "flickr.blogs.getList";
+    private static final String METHOD_POST_PHOTO = "flickr.blogs.postPhoto";
 
     private String apiKey;
     private String sharedSecret;
@@ -39,6 +42,38 @@ public class BlogsInterface {
         this.transportAPI = transport;
     }
 
+    /**
+     * Return a list of Flickr supported blogging services.
+     *
+     * This method does not require authentication.
+     *
+     * @return List of Services
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public Collection getServices()
+      throws IOException, SAXException, FlickrException {
+        List list = new ArrayList();
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_GET_SERVICES));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        Response response = transportAPI.post(transportAPI.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        Element servicesElement = response.getPayload();
+        NodeList serviceNodes = servicesElement.getElementsByTagName("service");
+        for (int i = 0; i < serviceNodes.getLength(); i++) {
+            Element serviceElement = (Element) serviceNodes.item(i);
+            Service srv = new Service();
+            srv.setId(serviceElement.getAttribute("id"));
+            srv.setName(XMLUtilities.getValue(serviceElement));
+            list.add(srv);
+        }
+        return list;
+    }
 
     /**
      * Post the specified photo to a blog.  Note that the Photo.title and Photo.description are used for the blog entry
@@ -51,8 +86,7 @@ public class BlogsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public void postPhoto(Photo photo, String blogId, String blogPassword)
-            throws IOException, SAXException, FlickrException {
+    public void postPhoto(Photo photo, String blogId, String blogPassword) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_POST_PHOTO));
         parameters.add(new Parameter("api_key", apiKey));
@@ -103,6 +137,12 @@ public class BlogsInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {

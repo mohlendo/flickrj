@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
  * Interface for working with Flickr Groups.
  *
  * @author Anthony Eden
- * @version $Id: GroupsInterface.java,v 1.18 2008/07/09 21:21:27 x-mago Exp $
+ * @version $Id: GroupsInterface.java,v 1.19 2009/07/11 20:30:27 x-mago Exp $
  */
 public class GroupsInterface {
 
@@ -112,6 +112,8 @@ public class GroupsInterface {
     /**
      * Get the info for a specified group.
      *
+     * This method does not require authentication.
+     *
      * @param groupId The group id
      * @return The Group object
      */
@@ -121,12 +123,6 @@ public class GroupsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("group_id", groupId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {

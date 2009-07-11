@@ -40,7 +40,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr Photos.
  *
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.47 2008/06/13 22:42:58 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.48 2009/07/11 20:30:27 x-mago Exp $
  */
 public class PhotosInterface {
 
@@ -102,8 +102,41 @@ public class PhotosInterface {
     }
 
     /**
+     * Add tags to a photo.
+     *
+     * This method requires authentication with 'write' permission.
+     *
+     * @param photoId The photo ID
+     * @param tags The tags
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public void addTags(String photoId, String[] tags) throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+        parameters.add(new Parameter("method", METHOD_ADD_TAGS));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photo_id", photoId));
+        parameters.add(new Parameter("tags", StringUtilities.join(tags, " ", true)));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
+
+        Response response = transport.post(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+    }
+
+    /**
      * Delete a photo from flickr.
+     *
      * This method requires authentication with 'delete' permission.
+     *
      * @param photoId
      * @throws SAXException 
      * @throws IOException 
@@ -134,7 +167,9 @@ public class PhotosInterface {
 
     /**
      * Returns all visble sets and pools the photo belongs to.
+     *
      * This method does not require authentication.
+     *
      * @param photoId The photo to return information for.
      * @return a list of {@link PhotoPlace} objects
      * @throws IOException
@@ -174,36 +209,9 @@ public class PhotosInterface {
     }
 
     /**
-     * Add tags to a photo.
-     *
-     * @param photoId The photo ID
-     * @param tags The tags
-     * @throws IOException
-     * @throws SAXException
-     * @throws FlickrException
-     */
-    public void addTags(String photoId, String[] tags) throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-        parameters.add(new Parameter("method", METHOD_ADD_TAGS));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        parameters.add(new Parameter("photo_id", photoId));
-        parameters.add(new Parameter("tags", StringUtilities.join(tags, " ", true)));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
-
-        Response response = transport.post(transport.getPath(), parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-    }
-
-    /**
      * Get photos from the user's contacts.
+     *
+     * This method requires authentication with 'read' permission.
      *
      * @param count The number of photos to return
      * @param justFriends Set to true to only show friends photos
@@ -261,6 +269,8 @@ public class PhotosInterface {
     /**
      * Get public photos from the user's contacts.
      *
+     * This method does not require authentication.
+     *
      * @see com.aetrion.flickr.photos.Extras
      * @param userId The user ID
      * @param count The number of photos to return
@@ -311,12 +321,6 @@ public class PhotosInterface {
             }
             parameters.add(new Parameter(Extras.KEY_EXTRAS, sb.toString()));
         }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -338,6 +342,8 @@ public class PhotosInterface {
     /**
      * Get the context for the specified photo.
      *
+     * This method does not require authentication.
+     *
      * @param photoId The photo ID
      * @return The PhotoContext
      * @throws IOException
@@ -351,12 +357,6 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -391,6 +391,8 @@ public class PhotosInterface {
 
     /**
      * Gets a collection of photo counts for the given date ranges for the calling user.
+     *
+     * This method requires authentication with 'read' permission.
      *
      * @param dates An array of dates, denoting the periods to return counts for.
      * They should be specified smallest first.
@@ -450,58 +452,11 @@ public class PhotosInterface {
     }
 
     /**
-     * Returns the list of people who have favorited a given photo.
-     *
-     * @param photoId
-     * @param perPage
-     * @param page
-     * @return List of {@link com.aetrion.flickr.people.User}
-     */
-    public Collection getFavorites(String photoId, int perPage, int page)
-        throws IOException, SAXException, FlickrException {
-        List parameters = new ArrayList();
-
-        parameters.add(new Parameter("method", METHOD_GET_FAVORITES));
-        parameters.add(new Parameter("api_key", apiKey));
-
-        parameters.add(new Parameter("photo_id", photoId));
-
-        if (perPage > 0) {
-            parameters.add(new Parameter("per_page", perPage));
-        }
-
-        if (page > 0) {
-            parameters.add(new Parameter("page", page));
-        }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
-
-        Response response = transport.get(transport.getPath(), parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-        List users = new ArrayList();
-
-        Element userRoot = response.getPayload();
-        NodeList userNodes = userRoot.getElementsByTagName("person");
-        for (int i = 0; i < userNodes.getLength(); i++) {
-            Element userElement = (Element) userNodes.item(i);
-            User user = new User();
-            user.setId(userElement.getAttribute("nsid"));
-            user.setUsername(userElement.getAttribute("username"));
-            user.setFaveDate(userElement.getAttribute("favedate"));
-            users.add(user);
-        }
-
-        return users;
-    }
-
-    /**
      * Get the Exif data for the photo.
+     * 
+     * The calling user must have permission to view the photo.
+     *
+     * This method does not require authentication.
      *
      * @param photoId The photo ID
      * @param secret The secret
@@ -520,12 +475,6 @@ public class PhotosInterface {
         if (secret != null) {
             parameters.add(new Parameter("secret", secret));
         }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -549,7 +498,57 @@ public class PhotosInterface {
     }
 
     /**
+     * Returns the list of people who have favorited a given photo.
+     *
+     * This method does not require authentication.
+     *
+     * @param photoId
+     * @param perPage
+     * @param page
+     * @return List of {@link com.aetrion.flickr.people.User}
+     */
+    public Collection getFavorites(String photoId, int perPage, int page)
+        throws IOException, SAXException, FlickrException {
+        List parameters = new ArrayList();
+
+        parameters.add(new Parameter("method", METHOD_GET_FAVORITES));
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("photo_id", photoId));
+
+        if (perPage > 0) {
+            parameters.add(new Parameter("per_page", perPage));
+        }
+
+        if (page > 0) {
+            parameters.add(new Parameter("page", page));
+        }
+
+        Response response = transport.get(transport.getPath(), parameters);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        List users = new ArrayList();
+
+        Element userRoot = response.getPayload();
+        NodeList userNodes = userRoot.getElementsByTagName("person");
+        for (int i = 0; i < userNodes.getLength(); i++) {
+            Element userElement = (Element) userNodes.item(i);
+            User user = new User();
+            user.setId(userElement.getAttribute("nsid"));
+            user.setUsername(userElement.getAttribute("username"));
+            user.setFaveDate(userElement.getAttribute("favedate"));
+            users.add(user);
+        }
+        return users;
+    }
+
+    /**
      * Get all info for the specified photo.
+     *
+     * The calling user must have permission to view the photo.
+     *
+     * This method does not require authentication.
      *
      * @param photoId The photo Id
      * @param secret The optional secret String
@@ -567,12 +566,6 @@ public class PhotosInterface {
         if (secret != null) {
             parameters.add(new Parameter("secret", secret));
         }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -585,6 +578,8 @@ public class PhotosInterface {
 
     /**
      * Return a collection of Photo objects not in part of any sets.
+     *
+     * This method requires authentication with 'read' permission.
      *
      * @param perPage The per page
      * @param page The page
@@ -638,8 +633,11 @@ public class PhotosInterface {
         return photos;
     }
 
+
     /**
      * Get the permission information for the specified photo.
+     *
+     * This method requires authentication with 'read' permission.
      *
      * @param photoId The photo id
      * @return The Permissions object
@@ -674,8 +672,11 @@ public class PhotosInterface {
         return permissions;
     }
 
+
     /**
      * Get a collection of recent photos.
+     *
+     * This method does not require authentication.
      *
      * @param perPage The number of photos per page
      * @param page The page offset
@@ -695,12 +696,6 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", page));
         }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -713,6 +708,10 @@ public class PhotosInterface {
 
     /**
      * Get the available sizes of a Photo.
+     *
+     * The calling user must have permission to view the photo.
+     *
+     * This method does not require authentication.
      *
      * @param photoId The photo ID
      * @return A collection of {@link Size}
@@ -728,12 +727,6 @@ public class PhotosInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photo_id", photoId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -754,8 +747,11 @@ public class PhotosInterface {
         return sizes;
     }
 
+
     /**
      * Get the collection of untagged photos.
+     *
+     * This method requires authentication with 'read' permission.
      *
      * @param perPage
      * @param page
@@ -792,9 +788,12 @@ public class PhotosInterface {
         return photos;
     }
 
+
     /**
      * Returns a list of your geo-tagged photos.
+     *
      * This method requires authentication with 'read' permission.
+     *
      * @param minUploadDate Minimum upload date. Photos with an upload date greater than or equal to this value will be returned. Set to null to not specify a date.
      * @param maxUploadDate Maximum upload date. Photos with an upload date less than or equal to this value will be returned. Set to null to not specify a date.
      * @param minTakenDate Minimum taken date. Photos with an taken date greater than or equal to this value will be returned. Set to null to not specify a date.
@@ -847,15 +846,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("sort", sort));
         }
         if (extras != null && !extras.isEmpty()) {
-            StringBuffer sb = new StringBuffer();
-            Iterator it = extras.iterator();
-            while (it.hasNext()) {
-                if (sb.length() > 0) {
-                    sb.append(",");
-                }
-                sb.append(it.next());
-            }
-            parameters.add(new Parameter("extras", sb.toString()));
+            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
         }
         if (perPage > 0) {
             parameters.add(new Parameter("per_page", perPage));
@@ -879,9 +870,12 @@ public class PhotosInterface {
         return photos;
     }
 
+
     /**
      * Returns a list of your photos which haven't been geo-tagged.
+     *
      * This method requires authentication with 'read' permission.
+     *
      * @param minUploadDate Minimum upload date. Photos with an upload date greater than or equal to this value will be returned. Set to null to not specify a date.
      * @param maxUploadDate Maximum upload date. Photos with an upload date less than or equal to this value will be returned. Set to null to not specify a date.
      * @param minTakenDate Minimum taken date. Photos with an taken date greater than or equal to this value will be returned. Set to null to not specify a date.
@@ -930,15 +924,7 @@ public class PhotosInterface {
             parameters.add(new Parameter("sort", sort));
         }
         if (extras != null && !extras.isEmpty()) {
-            StringBuffer sb = new StringBuffer();
-            Iterator it = extras.iterator();
-            while (it.hasNext()) {
-                if (sb.length() > 0) {
-                    sb.append(",");
-                }
-                sb.append(it.next());
-            }
-            parameters.add(new Parameter("extras", sb.toString()));
+            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
         }
         if (perPage > 0) {
             parameters.add(new Parameter("per_page", perPage));
@@ -962,9 +948,12 @@ public class PhotosInterface {
         return photos;
     }
 
+
     /**
      * Return a list of your photos that have been recently created or which have been recently modified. 
      * Recently modified may mean that the photo's metadata (title, description, tags) may have been changed or a comment has been added (or just modified somehow :-)
+     *
+     * This method requires authentication with 'read' permission.
      *
      * @see com.aetrion.flickr.photos.Extras
      * @param minDate Date indicating the date from which modifications should be compared. Must be given.
@@ -984,15 +973,7 @@ public class PhotosInterface {
         parameters.add(new Parameter("min_date", minDate.getTime() / 1000L));
 
         if (extras != null && !extras.isEmpty()) {
-            StringBuffer sb = new StringBuffer();
-            Iterator it = extras.iterator();
-            while (it.hasNext()) {
-                if (sb.length() > 0) {
-                    sb.append(",");
-                }
-                sb.append(it.next());
-            }
-            parameters.add(new Parameter("extras", sb.toString()));
+            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
         }
         if (perPage > 0) {
             parameters.add(new Parameter("per_page", perPage));
@@ -1018,6 +999,8 @@ public class PhotosInterface {
 
     /**
      * Remove a tag from a photo.
+     *
+     * This method requires authentication with 'write' permission.
      *
      * @param tagId The tag ID
      * @throws IOException
@@ -1046,6 +1029,8 @@ public class PhotosInterface {
     /**
      * Search for photos which match the given search parameters.
      *
+     * This method does not require authentication.
+     *
      * @param params The search parameters
      * @param perPage The number of photos to show per page
      * @param page The page offset
@@ -1070,12 +1055,6 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", "" + page));
         }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -1168,6 +1147,8 @@ public class PhotosInterface {
     /**
      * Set the content type of a photo.
      *
+     * This method requires authentication with 'write' permission.
+     *
      * @see com.aetrion.flickr.Flickr#CONTENTTYPE_PHOTO
      * @see com.aetrion.flickr.Flickr#CONTENTTYPE_SCREENSHOT
      * @see com.aetrion.flickr.Flickr#CONTENTTYPE_OTHER
@@ -1200,6 +1181,8 @@ public class PhotosInterface {
 
     /**
      * Set the dates for the specified photo.
+     *
+     * This method requires authentication with 'write' permission.
      *
      * @param photoId The photo ID
      * @param datePosted The date the photo was posted or null
@@ -1244,6 +1227,8 @@ public class PhotosInterface {
     /**
      * Set the meta data for the photo.
      *
+     * This method requires authentication with 'write' permission.
+     *
      * @param photoId The photo ID
      * @param title The new title
      * @param description The new description
@@ -1275,6 +1260,8 @@ public class PhotosInterface {
 
     /**
      * Set the permissions for the photo.
+     *
+     * This method requires authentication with 'write' permission.
      *
      * @param photoId The photo ID
      * @param permissions The permissions object
@@ -1309,6 +1296,8 @@ public class PhotosInterface {
 
     /**
      * Set the safety level (adultness) of a photo.<p>
+     *
+     * This method requires authentication with 'write' permission.
      *
      * @param photoId The photo ID
      * @param safetyLevel The safety level of the photo or null
@@ -1350,6 +1339,8 @@ public class PhotosInterface {
 
     /**
      * Set the tags for a photo.
+     *
+     * This method requires authentication with 'write' permission.
      *
      * @param photoId The photo ID
      * @param tags The tag array

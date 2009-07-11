@@ -29,7 +29,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: PoolsInterface.java,v 1.14 2008/07/10 21:44:53 x-mago Exp $
+ * @version $Id: PoolsInterface.java,v 1.15 2009/07/11 20:30:27 x-mago Exp $
  */
 public class PoolsInterface {
 
@@ -83,6 +83,8 @@ public class PoolsInterface {
     /**
      * Get the context for a photo in the group pool.
      *
+     * This method does not require authentication.
+     *
      * @param photoId The photo ID
      * @param groupId The group ID
      * @return The PhotoContext
@@ -97,12 +99,6 @@ public class PoolsInterface {
 
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("group_id", groupId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -170,6 +166,8 @@ public class PoolsInterface {
 
     /**
      * Get the photos for the specified group pool, optionally filtering by taf.
+     *
+     * This method does not require authentication.
      *
      * @see com.aetrion.flickr.photos.Extras
      * @param groupId The group ID
@@ -240,6 +238,8 @@ public class PoolsInterface {
 
     /**
      * Convenience/Compatibility method.
+     *
+     * This method does not require authentication.
      *
      * @see com.aetrion.flickr.photos.Extras
      * @param groupId The group ID

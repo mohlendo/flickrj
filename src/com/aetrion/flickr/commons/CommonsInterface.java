@@ -18,7 +18,7 @@ import com.aetrion.flickr.util.XMLUtilities;
 /**
  *
  * @author mago
- * @version $Id: CommonsInterface.java,v 1.1 2009/06/23 21:51:25 x-mago Exp $
+ * @version $Id: CommonsInterface.java,v 1.2 2009/07/11 20:30:27 x-mago Exp $
  */
 public class CommonsInterface {
     public static final String METHOD_GET_INSTITUTIONS = "flickr.commons.getInstitutions";
@@ -37,18 +37,22 @@ public class CommonsInterface {
         this.transportAPI = transportAPI;
     }
 
+    /**
+     * Retrieves a list of the current Commons institutions.
+     *
+     * This method does not require authentication.
+     *
+     * @return List of Institution
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
     public ArrayList getInstitutions() throws FlickrException, IOException, SAXException {
         ArrayList institutions = new ArrayList();
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_INSTITUTIONS));
         parameters.add(new Parameter("api_key", apiKey));
 
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());

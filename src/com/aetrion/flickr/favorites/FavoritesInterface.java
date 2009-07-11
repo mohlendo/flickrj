@@ -26,7 +26,7 @@ import com.aetrion.flickr.util.StringUtilities;
  * Interface for working with Flickr favorites.
  *
  * @author Anthony Eden
- * @version $Id: FavoritesInterface.java,v 1.16 2008/01/28 23:01:45 x-mago Exp $
+ * @version $Id: FavoritesInterface.java,v 1.17 2009/07/11 20:30:27 x-mago Exp $
  */
 public class FavoritesInterface {
 
@@ -132,6 +132,8 @@ public class FavoritesInterface {
     /**
      * Get the specified user IDs public contacts.
      *
+     * This method does not require authentication.
+     *
      * @param userId The user ID
      * @param perPage The optional per page value.  Values <= 0 will be ignored.
      * @param page The optional page to view.  Values <= 0 will be ignored
@@ -161,12 +163,6 @@ public class FavoritesInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", new Integer(page)));
         }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {

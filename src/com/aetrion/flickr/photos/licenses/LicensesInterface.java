@@ -44,18 +44,19 @@ public class LicensesInterface {
     }
 
     /**
+     * Fetches a list of available photo licenses for Flickr.
+     *
+     * This method does not require authentication.
+     *
      * @return A collection of License objects
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
      */
     public Collection getInfo() throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_INFO));
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -77,7 +78,9 @@ public class LicensesInterface {
 
     /**
      * Sets the license for a photo.
+     *
      * This method requires authentication with 'write' permission.
+     *
      * @param photoId The photo to update the license for.
      * @param licenseId The license to apply, or 0 (zero) to remove the current license.
      * @throws IOException

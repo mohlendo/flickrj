@@ -24,7 +24,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr contacts.
  *
  * @author Anthony Eden
- * @version $Id: ContactsInterface.java,v 1.17 2009/01/24 23:47:24 x-mago Exp $
+ * @version $Id: ContactsInterface.java,v 1.18 2009/07/11 20:30:27 x-mago Exp $
  */
 public class ContactsInterface {
 
@@ -159,6 +159,8 @@ public class ContactsInterface {
     /**
      * Get the collection of public contacts for the specified user ID.
      *
+     * This method does not require authentication.
+     *
      * @param userId The user ID
      * @return The Collection of Contact objects
      * @throws IOException
@@ -173,12 +175,6 @@ public class ContactsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {

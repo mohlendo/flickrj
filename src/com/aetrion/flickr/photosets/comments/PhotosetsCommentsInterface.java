@@ -21,7 +21,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Access to the <b>flickr.photosets.comments</b> methods.
  *
  * @author till (Till Krech) flickr:extranoise
- * @version $Id: PhotosetsCommentsInterface.java,v 1.2 2008/01/28 23:01:48 x-mago Exp $
+ * @version $Id: PhotosetsCommentsInterface.java,v 1.3 2009/07/11 20:30:27 x-mago Exp $
  */
 public class PhotosetsCommentsInterface {
 	public static final String METHOD_ADD_COMMENT = "flickr.photosets.comments.addComment";
@@ -139,7 +139,9 @@ public class PhotosetsCommentsInterface {
 
     /**
      * Returns the comments for a photoset.
+     *
      * This method does not require authentication.
+     *
      * @param photosetId The id of the photoset to fetch comments for.
      * @return a list of {@link Comment} objects
      * @throws SAXException
@@ -152,12 +154,6 @@ public class PhotosetsCommentsInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("photoset_id", photosetId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {

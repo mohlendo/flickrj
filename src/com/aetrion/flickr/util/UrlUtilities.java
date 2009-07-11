@@ -36,7 +36,8 @@ public class UrlUtilities {
         String path,
         List parameters
     ) throws MalformedURLException {
-        AuthUtilities.addAuthToken(parameters);
+        // see: AuthUtilities.getSignature()
+        // AuthUtilities.addAuthToken(parameters);
 
         StringBuffer buffer = new StringBuffer();
         buffer.append("http://");

@@ -29,7 +29,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for finding Flickr users.
  *
  * @author Anthony Eden
- * @version $Id: PeopleInterface.java,v 1.25 2008/07/05 22:16:22 x-mago Exp $
+ * @version $Id: PeopleInterface.java,v 1.26 2009/07/11 20:30:27 x-mago Exp $
  */
 public class PeopleInterface {
 
@@ -58,6 +58,8 @@ public class PeopleInterface {
     /**
      * Find the user by their email address.
      *
+     * This method does not require authentication.
+     *
      * @param email The email address
      * @return The User
      * @throws IOException
@@ -70,12 +72,6 @@ public class PeopleInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("find_email", email));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -91,6 +87,8 @@ public class PeopleInterface {
     /**
      * Find a User by the username.
      *
+     * This method does not require authentication.
+     *
      * @param username The username
      * @return The User object
      * @throws IOException
@@ -103,12 +101,6 @@ public class PeopleInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("username", username));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -124,6 +116,8 @@ public class PeopleInterface {
     /**
      * Get info about the specified user.
      *
+     * This method does not require authentication.
+     *
      * @param userId The user ID
      * @return The User object
      * @throws IOException
@@ -136,12 +130,6 @@ public class PeopleInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -170,6 +158,8 @@ public class PeopleInterface {
     /**
      * Get a collection of public groups for the user.
      *
+     * This method does not require authentication.
+     *
      * @param userId The user ID
      * @return The public groups
      * @throws IOException
@@ -185,12 +175,6 @@ public class PeopleInterface {
         parameters.add(new Parameter("api_key", apiKey));
 
         parameters.add(new Parameter("user_id", userId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -216,6 +200,8 @@ public class PeopleInterface {
 
     /**
      * Get a collection of public photos for the specified user ID.
+     *
+     * This method does not require authentication.
      *
      * @see com.aetrion.flickr.photos.Extras
      * @param userId The User ID
@@ -247,12 +233,6 @@ public class PeopleInterface {
         if (extras != null) {
             parameters.add(new Parameter(Extras.KEY_EXTRAS, StringUtilities.join(extras, ",")));
         }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -274,8 +254,8 @@ public class PeopleInterface {
 
     /**
      * Get upload status for the currently authenticated user.
-     * <p/>
-     * Note: Requires authentication with 'read' permission using the new authentication API.
+     *
+     * Requires authentication with 'read' permission using the new authentication API.
      *
      * @return A User object with upload status data fields filled
      * @throws IOException
@@ -286,6 +266,12 @@ public class PeopleInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_UPLOAD_STATUS));
         parameters.add(new Parameter("api_key", apiKey));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {

@@ -27,7 +27,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * Tests for the PlacesInterface.
  *
  * @author mago
- * @version $Id: PlacesInterfaceTest.java,v 1.10 2009/07/03 22:31:41 x-mago Exp $
+ * @version $Id: PlacesInterfaceTest.java,v 1.11 2009/07/11 20:30:27 x-mago Exp $
  */
 public class PlacesInterfaceTest extends TestCase {
     String sfWoeId = "2487956";
@@ -113,7 +113,7 @@ public class PlacesInterfaceTest extends TestCase {
 
         place = (Place) list.get(1);
         assertEquals("Nf7Dq4acBJTgBHuaOQ", place.getPlaceId());
-        assertEquals("/France/%C3%8Ele-de-France/Paris/Europe", place.getPlaceUrl());
+        assertEquals("/France/Ile-de-France/Paris/Europe", place.getPlaceUrl());
         assertEquals(Place.TYPE_NEIGHBOURHOOD, place.getPlaceType());
     }
 

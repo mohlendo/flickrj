@@ -24,7 +24,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Access to the flickr.photos.geo methods.
  *
  * @author till (Till Krech - flickr:extranoise)
- * @version $Id: GeoInterface.java,v 1.3 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: GeoInterface.java,v 1.4 2009/07/11 20:30:27 x-mago Exp $
  */
 public class GeoInterface {
     public static final String METHOD_GET_LOCATION = "flickr.photos.geo.getLocation";
@@ -53,6 +53,7 @@ public class GeoInterface {
 
     /**
      * Get the geo data (latitude and longitude and the accuracy level) for a photo.
+     *
      * This method does not require authentication.
      *
      * @param photoId reqired photo id, not null
@@ -67,12 +68,6 @@ public class GeoInterface {
         parameters.add(new Parameter("method", METHOD_GET_LOCATION));
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("photo_id", photoId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
@@ -97,15 +92,17 @@ public class GeoInterface {
 
     /**
      * Get permissions for who may view geo data for a photo.
+     *
      * This method requires authentication with 'read' permission.
+     *
      * @param photoId reqired photo id, not null
      * @return the permissions
-     * @throws SAXException 
-     * @throws IOException 
-     * @throws SAXException 
-     * @throws IOException 
-     * @throws FlickrException 
-     * @throws FlickrException if photo id is invalid, if photo has no geodata 
+     * @throws SAXException
+     * @throws IOException
+     * @throws SAXException
+     * @throws IOException
+     * @throws FlickrException
+     * @throws FlickrException if photo id is invalid, if photo has no geodata
      * or if any other error has been reported in the response.
      */
     public GeoPermissions getPerms(String photoId) throws IOException, SAXException, FlickrException {
@@ -139,9 +136,11 @@ public class GeoInterface {
 
     /**
      * Removes the geo data associated with a photo.
+     *
      * This method requires authentication with 'write' permission.
-     * @throws SAXException 
-     * @throws IOException 
+     *
+     * @throws SAXException
+     * @throws IOException
      * @throws FlickrException
      */
     public void removeLocation(String photoId) throws IOException, SAXException, FlickrException {
@@ -169,9 +168,11 @@ public class GeoInterface {
      * Sets the geo data (latitude and longitude and, optionally, the accuracy level) for a photo. 
      * Before users may assign location data to a photo they must define who, by default, 
      * may view that information. Users can edit this preference 
-     * at http://www.flickr.com/account/geo/privacy/. If a user has not set this preference, 
+     * at {@link http://www.flickr.com/account/geo/privacy/}. If a user has not set this preference, 
      * the API method will return an error.
+     *
      * This method requires authentication with 'write' permission.
+     *
      * @param photoId The id of the photo to cet permissions for.
      * @param location geo data with optional accuracy (1-16), accuracy 0 to use the default.
      * @throws SAXException 
@@ -208,7 +209,9 @@ public class GeoInterface {
 
     /**
      * Set the permission for who may view the geo data associated with a photo.
+     *
      * This method requires authentication with 'write' permission.
+     *
      * @param photoId The id of the photo to set permissions for.
      * @param perms Permissions, who can see the geo data of this photo
      * @throws SAXException 

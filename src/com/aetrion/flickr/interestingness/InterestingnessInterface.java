@@ -31,7 +31,7 @@ import com.aetrion.flickr.util.StringUtilities;
 /**
  *
  * @author till
- * @version $Id: InterestingnessInterface.java,v 1.8 2008/06/13 22:42:59 x-mago Exp $
+ * @version $Id: InterestingnessInterface.java,v 1.9 2009/07/11 20:30:27 x-mago Exp $
  */
 public class InterestingnessInterface {
 
@@ -65,11 +65,14 @@ public class InterestingnessInterface {
     }
 
     /**
-     * 
+     * Returns the list of interesting photos for the most recent day or a user-specified date.
+     *
+     * This method does not require authentication.
+     *
      * @param date
-     * @param extras
-     * @param perPage
-     * @param page
+     * @param extras A set of Strings controlling the extra information to fetch for each returned record. Currently supported fields are: license, date_upload, date_taken, owner_name, icon_server, original_format, last_update, geo. Set to null or an empty set to not specify any extras.
+     * @param perPage The number of photos to show per page
+     * @param page The page offset
      * @return PhotoList
      * @throws FlickrException
      * @throws IOException
@@ -97,12 +100,6 @@ public class InterestingnessInterface {
         if (page > 0) {
             parameters.add(new Parameter(KEY_PAGE, String.valueOf(page)));
         }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {

@@ -2,18 +2,24 @@
 
 package com.aetrion.flickr;
 
-import com.aetrion.flickr.auth.Auth;
-import com.aetrion.flickr.auth.AuthInterface;
-import com.aetrion.flickr.blogs.BlogsInterface;
-import com.aetrion.flickr.util.IOUtilities;
-import junit.framework.TestCase;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Properties;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import junit.framework.TestCase;
+
+import org.xml.sax.SAXException;
+
+import com.aetrion.flickr.auth.Auth;
+import com.aetrion.flickr.auth.AuthInterface;
+import com.aetrion.flickr.auth.Permission;
+import com.aetrion.flickr.blogs.BlogsInterface;
+import com.aetrion.flickr.blogs.Service;
+import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author Anthony Eden
@@ -41,6 +47,7 @@ public class BlogsInterfaceTest extends TestCase {
 
             AuthInterface authInterface = flickr.getAuthInterface();
             Auth auth = authInterface.checkToken(properties.getProperty("token"));
+            auth.setPermission(Permission.READ); 
             requestContext.setAuth(auth);
         } finally {
             IOUtilities.close(in);
@@ -51,7 +58,23 @@ public class BlogsInterfaceTest extends TestCase {
         BlogsInterface blogsInterface = flickr.getBlogsInterface();
         Collection blogs = blogsInterface.getList();
         assertNotNull(blogs);
-        assertEquals(1, blogs.size());
+        assertEquals(0, blogs.size());
+    }
+
+    public void testGetServices() throws FlickrException, IOException, SAXException {
+        BlogsInterface blogsInterface = flickr.getBlogsInterface();
+        Collection services = blogsInterface.getServices();
+        Iterator it = services.iterator();
+        boolean bloggerFound = false;
+        while (it.hasNext()) {
+            Service ser = (Service) it.next();
+            if (ser.getId().equals("beta.blogger.com") &&
+                ser.getName().equals("Blogger")) {
+                bloggerFound = true;
+            }
+            //System.out.println(ser.getId() + " " + ser.getName());
+        }
+        assertTrue(bloggerFound);
     }
 
     public void testPostImage() {

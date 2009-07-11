@@ -9,7 +9,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
@@ -206,7 +205,7 @@ See also:
 RDF Describes Flickr. That's really all you need to know about RDF. 
 
  * @author mago
- * @version $Id: MachinetagsInterface.java,v 1.2 2009/06/21 19:55:15 x-mago Exp $
+ * @version $Id: MachinetagsInterface.java,v 1.3 2009/07/11 20:30:27 x-mago Exp $
  * @see <a href="http://code.flickr.com/blog/2008/07/18/wildcard-machine-tag-urls/">http://code.flickr.com/blog/2008/07/18/wildcard-machine-tag-urls/</a>
  * @see <a href="http://code.flickr.com/blog/2008/08/28/machine-tags-lastfm-and-rocknroll/">http://code.flickr.com/blog/2008/08/28/machine-tags-lastfm-and-rocknroll/</a>
  * @see <a href="http://blech.vox.com/library/post/flickr-exif-machine-tags.html">http://blech.vox.com/library/post/flickr-exif-machine-tags.html</a>
@@ -232,7 +231,9 @@ public class MachinetagsInterface {
     /**
      * Return a list of unique namespaces, optionally limited by a given
      * predicate, in alphabetical order.
-     * 
+     *
+     * This method does not require authentication.
+     *
      * @param predicate
      * @param perPage
      * @param page
@@ -248,7 +249,7 @@ public class MachinetagsInterface {
         parameters.add(new Parameter("method", METHOD_GET_NAMESPACES));
         parameters.add(new Parameter("api_key", apiKey));
 
-        if(predicate != null) {
+        if (predicate != null) {
             parameters.add(new Parameter("predicate", predicate));
         }
         if (perPage > 0) {
@@ -257,13 +258,6 @@ public class MachinetagsInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", "" + page));
         }
-
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -286,10 +280,12 @@ public class MachinetagsInterface {
      * Return a list of unique namespace and predicate pairs,
      * optionally limited by predicate or namespace, in alphabetical order.
      *
+     * This method does not require authentication.
+     *
      * @param namespace optional, can be null
      * @param predicate optional, can be null
-     * @param perPage
-     * @param page
+     * @param perPage The number of photos to show per page
+     * @param page The page offset
      * @return NamespacesList containing Pair-objects
      * @throws FlickrException
      * @throws IOException
@@ -302,10 +298,10 @@ public class MachinetagsInterface {
         parameters.add(new Parameter("method", METHOD_GET_PAIRS));
         parameters.add(new Parameter("api_key", apiKey));
 
-        if(namespace != null) {
+        if (namespace != null) {
             parameters.add(new Parameter("namespace", namespace));
         }
-        if(predicate != null) {
+        if (predicate != null) {
             parameters.add(new Parameter("predicate", predicate));
         }
         if (perPage > 0) {
@@ -314,13 +310,6 @@ public class MachinetagsInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", "" + page));
         }
-
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -343,9 +332,11 @@ public class MachinetagsInterface {
      * Return a list of unique predicates,
      * optionally limited by a given namespace.
      *
-     * @param namespace
-     * @param perPage
-     * @param page
+     * This method does not require authentication.
+     *
+     * @param namespace The namespace that all values should be restricted to.
+     * @param perPage The number of photos to show per page
+     * @param page The page offset
      * @return NamespacesList containing Predicate
      * @throws FlickrException
      * @throws IOException
@@ -358,7 +349,7 @@ public class MachinetagsInterface {
         parameters.add(new Parameter("method", METHOD_GET_PREDICATES));
         parameters.add(new Parameter("api_key", apiKey));
 
-        if(namespace != null) {
+        if (namespace != null) {
             parameters.add(new Parameter("namespace", namespace));
         }
         if (perPage > 0) {
@@ -367,13 +358,6 @@ public class MachinetagsInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", "" + page));
         }
-
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -392,6 +376,20 @@ public class MachinetagsInterface {
         return nsList;
     }
 
+    /**
+     * Return a list of unique values for a namespace and predicate.
+     *
+     * This method does not require authentication.
+     *
+     * @param namespace The namespace that all values should be restricted to.
+     * @param predicate The predicate that all values should be restricted to.
+     * @param perPage The number of photos to show per page
+     * @param page The page offset
+     * @return NamespacesList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
     public NamespacesList getValues(String namespace, String predicate, int perPage, int page)
       throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
@@ -412,12 +410,6 @@ public class MachinetagsInterface {
             parameters.add(new Parameter("page", "" + page));
         }
 
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -435,6 +427,19 @@ public class MachinetagsInterface {
         return valuesList;
     }
 
+    /**
+     * Fetch recently used (or created) machine tags values.
+     *
+     * This method does not require authentication.
+     *
+     * @param namespace The namespace that all values should be restricted to.
+     * @param predicate The predicate that all values should be restricted to.
+     * @param addedSince Only return machine tags values that have been added since this Date. 
+     * @return NamespacesList
+     * @throws FlickrException
+     * @throws IOException
+     * @throws SAXException
+     */
     public NamespacesList getRecentValues(String namespace, String predicate, Date addedSince)
       throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
@@ -455,12 +460,6 @@ public class MachinetagsInterface {
             );
         }
 
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());

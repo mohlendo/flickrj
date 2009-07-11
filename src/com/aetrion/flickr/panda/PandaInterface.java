@@ -23,7 +23,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Flickr Panda.
  *
  * @author mago
- * @version $Id: PandaInterface.java,v 1.2 2009/06/27 22:35:24 x-mago Exp $
+ * @version $Id: PandaInterface.java,v 1.3 2009/07/11 20:30:27 x-mago Exp $
  * @see <a href="http://www.flickr.com/explore/panda">Flickr Panda</a>
  */
 public class PandaInterface {
@@ -49,6 +49,8 @@ public class PandaInterface {
      * the {@link com.aetrion.flickr.panda.PandaInterface#getPhotos(Panda, Set, int, int)}
      * API method.
      *
+     * This method does not require authentication.
+     *
      * @return A list of pandas
      * @throws FlickrException
      * @throws IOException
@@ -59,13 +61,6 @@ public class PandaInterface {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
-
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -84,6 +79,8 @@ public class PandaInterface {
 
     /**
      * Ask the Flickr Pandas for a list of recent public (and "safe") photos.
+     *
+     * This method does not require authentication.
      *
      * @param panda The panda to ask for photos from.
      * @param extras A set of Strings controlling the extra information to fetch for each returned record. {@link com.aetrion.flickr.photos.Extras#ALL_EXTRAS}
@@ -112,13 +109,6 @@ public class PandaInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", page));
         }
-
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {

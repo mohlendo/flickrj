@@ -26,7 +26,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Work on Comments.
  *
  * @author till (Till Krech) flickr:extranoise
- * @version $Id: CommentsInterface.java,v 1.3 2009/06/27 20:56:23 x-mago Exp $
+ * @version $Id: CommentsInterface.java,v 1.4 2009/07/11 20:30:27 x-mago Exp $
  */
 public class CommentsInterface {
     public static final String METHOD_ADD_COMMENT    = "flickr.photos.comments.addComment";
@@ -51,7 +51,9 @@ public class CommentsInterface {
 
     /**
      * Add comment to a photo as the currently authenticated user.
+     *
      * This method requires authentication with 'write' permission.
+     *
      * @param photoId The id of the photo to add a comment to.
      * @param commentText Text of the comment.
      * @return a unique comment id.
@@ -84,7 +86,9 @@ public class CommentsInterface {
 
     /**
      * Delete a comment as the currently authenticated user.
+     *
      * This method requires authentication with 'write' permission.
+     *
      * @param commentId The id of the comment to delete.
      * @throws IOException
      * @throws SAXException
@@ -114,7 +118,9 @@ public class CommentsInterface {
 
     /**
      * Edit the text of a comment as the currently authenticated user.
+     *
      * This method requires authentication with 'write' permission.
+     *
      * @param commentId The id of the comment to edit.
      * @param commentText Update the comment to this text.
      * @throws IOException
@@ -146,6 +152,9 @@ public class CommentsInterface {
 
     /**
      * Returns the comments for a photo.
+     *
+     * This method does not require authentication.
+     *
      * @param photoId The id of the photo to fetch comments for.
      * @return a List of {@link Comment} objects.
      * @throws FlickrException
@@ -158,12 +167,6 @@ public class CommentsInterface {
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(new Parameter("photo_id", photoId));
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
@@ -208,6 +211,8 @@ public class CommentsInterface {
      * <p>It has the added bonus / side-effect of bubbling up photos a person 
      * may have missed because they were uploaded before the photo owner was 
      * made a contact or the business of life got in the way.</p>
+     *
+     * This method requires authentication with 'read' permission.
      *
      * @param lastComment Limits the resultset to photos that have been commented on since this date. The default, and maximum, offset is (1) hour. Optional, can be null.
      * @param contactsFilter A list of contact NSIDs to limit the scope of the query to. Optional, can be null.
