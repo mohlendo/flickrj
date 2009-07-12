@@ -6,9 +6,10 @@ import java.util.Date;
  * A commons institution.
  *
  * @author mago
- * @version $Id: Institution.java,v 1.1 2009/06/23 21:51:25 x-mago Exp $
+ * @version $Id: Institution.java,v 1.2 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Institution {
+	private static final long serialVersionUID = 12L;
     String id;
     String name;
     Date dateLaunch;

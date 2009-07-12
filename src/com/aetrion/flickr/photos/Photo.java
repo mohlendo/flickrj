@@ -28,9 +28,10 @@ import com.aetrion.flickr.util.IOUtilities;
  * {@link PhotosInterface#getImageAsStream(Photo, int)}.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.25 2009/07/11 20:11:34 x-mago Exp $
+ * @version $Id: Photo.java,v 1.26 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Photo {
+	private static final long serialVersionUID = 12L;
 
     private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
         protected synchronized Object initialValue() {

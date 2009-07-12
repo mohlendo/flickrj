@@ -10,9 +10,10 @@ import java.util.Set;
  * Extra-attributes for Photo-requests.
  *
  * @author Anthony Eden
- * @version $Id: Extras.java,v 1.9 2009/06/27 20:49:55 x-mago Exp $
+ * @version $Id: Extras.java,v 1.10 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Extras {
+	private static final long serialVersionUID = 12L;
     public static final String KEY_EXTRAS = "extras";
 
     public static final String LICENSE = "license";

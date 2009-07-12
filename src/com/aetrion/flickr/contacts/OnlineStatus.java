@@ -11,9 +11,9 @@ import java.io.Serializable;
  * @author Anthony Eden
  */
 public class OnlineStatus implements Serializable {
+	private static final long serialVersionUID = 12L;
 
-   
-	public static final int OFFLINE_TYPE = 0;
+    public static final int OFFLINE_TYPE = 0;
     public static final int AWAY_TYPE = 1;
     public static final int ONLINE_TYPE = 2;
     public static final int UNKNOWN_TYPE = 100;

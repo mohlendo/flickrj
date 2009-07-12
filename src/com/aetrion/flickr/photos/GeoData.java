@@ -4,9 +4,10 @@ package com.aetrion.flickr.photos;
  * A geographic position.
  *
  * @author mago
- * @version $Id: GeoData.java,v 1.2 2008/12/07 22:35:28 x-mago Exp $
+ * @version $Id: GeoData.java,v 1.3 2009/07/12 22:43:07 x-mago Exp $
  */
 public class GeoData {
+	private static final long serialVersionUID = 12L;
     private float longitude;
     private float latitude;
     private int accuracy;

@@ -5,9 +5,11 @@ package com.aetrion.flickr.groups;
  * on a per user per post basis. "No more than X in Y days".
  *
  * @author Anthony Eden
- * @version $Id: Throttle.java,v 1.2 2007/12/17 19:00:16 x-mago Exp $
+ * @version $Id: Throttle.java,v 1.3 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Throttle {
+    private static final long serialVersionUID = 12L;
+
     private int count;
     private String mode;
     private int remaining;

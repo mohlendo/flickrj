@@ -40,9 +40,10 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr Photos.
  *
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.48 2009/07/11 20:30:27 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.49 2009/07/12 22:43:07 x-mago Exp $
  */
 public class PhotosInterface {
+	private static final long serialVersionUID = 12L;
 
     public static final String METHOD_ADD_TAGS = "flickr.photos.addTags";
     public static final String METHOD_DELETE = "flickr.photos.delete";

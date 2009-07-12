@@ -7,11 +7,13 @@ package com.aetrion.flickr.places;
  * a Location describes the relation of a place to various types of other places.
  *
  * @author mago
- * @version $Id: Location.java,v 1.3 2009/01/04 21:20:58 x-mago Exp $
+ * @version $Id: Location.java,v 1.4 2009/07/12 22:43:07 x-mago Exp $
  * @see com.aetrion.flickr.photos.SearchParameters#setPlaceId(String)
  * @see com.aetrion.flickr.photos.Photo#getPlaceId()
  */
 public class Location {
+    private static final long serialVersionUID = 12L;
+
     private String woeId = "";
     private String placeId = "";
     private String placeUrl = "";

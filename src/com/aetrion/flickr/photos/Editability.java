@@ -7,6 +7,7 @@ package com.aetrion.flickr.photos;
  * @author Anthony Eden
  */
 public class Editability {
+	private static final long serialVersionUID = 12L;
 
     private boolean comment;
     private boolean addmeta;

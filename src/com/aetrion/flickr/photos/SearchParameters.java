@@ -17,9 +17,10 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.18 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.19 2009/07/12 22:43:07 x-mago Exp $
  */
 public class SearchParameters {
+	private static final long serialVersionUID = 12L;
 
     private String userId;
     private String groupId;

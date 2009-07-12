@@ -13,6 +13,8 @@ import com.aetrion.flickr.util.UrlUtilities;
  * @author Anthony Eden
  */
 public class Group implements BuddyIconable {
+	private static final long serialVersionUID = 12L;
+
     private String id;
     private String name;
     private int members;

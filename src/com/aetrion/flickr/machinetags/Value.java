@@ -2,7 +2,14 @@ package com.aetrion.flickr.machinetags;
 
 import java.util.Date;
 
+/**
+ *
+ * @author mago
+ * @version $Id: Value.java,v 1.3 2009/07/12 22:43:07 x-mago Exp $
+ */
 public class Value {
+    private static final long serialVersionUID = 12L;
+
     String value;
     int usage;
     String namespace;

@@ -12,9 +12,11 @@ package com.aetrion.flickr.places;
  * delivered by resolvePlaceId and resolvePlaceUrl.
  *
  * @author mago
- * @version $Id: Place.java,v 1.6 2009/06/20 22:25:08 x-mago Exp $
+ * @version $Id: Place.java,v 1.7 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Place {
+    private static final long serialVersionUID = 12L;
+
     public static final int TYPE_UNSET = 0;
     public static final int TYPE_LOCALITY = 7;
     public static final int TYPE_COUNTY = 9;

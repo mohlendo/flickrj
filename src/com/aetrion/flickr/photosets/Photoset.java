@@ -12,9 +12,10 @@ import com.aetrion.flickr.photos.Photo;
  * Meta information about a photoset.  To retrieve the photos in the photoset use PhotosetsInterface.getPhotos().
  *
  * @author Anthony Eden
- * @version $Id: Photoset.java,v 1.6 2007/03/13 22:57:43 x-mago Exp $
+ * @version $Id: Photoset.java,v 1.7 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Photoset {
+	private static final long serialVersionUID = 12L;
 
     private String id;
     private String url;

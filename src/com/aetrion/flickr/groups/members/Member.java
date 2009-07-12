@@ -4,11 +4,13 @@ package com.aetrion.flickr.groups.members;
  * Group-member.
  *
  * @author mago
- * @version $Id: Member.java,v 1.2 2009/07/11 20:11:34 x-mago Exp $
+ * @version $Id: Member.java,v 1.3 2009/07/12 22:43:07 x-mago Exp $
  */
 
 public class Member {
-    private String id;
+	private static final long serialVersionUID = 12L;
+
+	private String id;
     private String userName;
     private int iconFarm = -1;
     private int iconServer = -1;

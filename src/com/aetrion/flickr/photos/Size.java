@@ -7,10 +7,12 @@ package com.aetrion.flickr.photos;
  * This class descibes a Size of a Photo.<p>
  *
  * @author Anthony Eden
- * @version $Id: Size.java,v 1.5 2007/12/02 22:52:47 x-mago Exp $
+ * @version $Id: Size.java,v 1.6 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Size {
-    /**
+	private static final long serialVersionUID = 12L;
+
+	/**
      * Thumbnail, 100 on longest side.
      *
      * @see com.aetrion.flickr.photos.Size#getLabel()

@@ -6,6 +6,7 @@ package com.aetrion.flickr.photos;
  * @author Anthony Eden
  */
 public class PhotoUrl {
+	private static final long serialVersionUID = 12L;
 
     private String url;
     private String type;

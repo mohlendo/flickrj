@@ -15,9 +15,10 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.16 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.17 2009/07/12 22:43:07 x-mago Exp $
  */
 public final class PhotoUtils {
+	private static final long serialVersionUID = 12L;
 
     private PhotoUtils() {
     }

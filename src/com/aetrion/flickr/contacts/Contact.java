@@ -10,9 +10,10 @@ import com.aetrion.flickr.util.UrlUtilities;
  * Class representing a Flickr contact.
  *
  * @author Anthony Eden
- * @version $Id: Contact.java,v 1.4 2009/01/01 20:25:57 x-mago Exp $
+ * @version $Id: Contact.java,v 1.5 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Contact implements BuddyIconable {
+	private static final long serialVersionUID = 12L;
 
     private String id;
     private String username;

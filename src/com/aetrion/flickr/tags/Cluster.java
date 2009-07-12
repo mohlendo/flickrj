@@ -7,9 +7,10 @@ import java.util.ArrayList;
  *
  * @author mago
  * @since 1.2
- * @version $Id: Cluster.java,v 1.1 2008/07/18 22:23:35 x-mago Exp $
+ * @version $Id: Cluster.java,v 1.2 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Cluster {
+	private static final long serialVersionUID = 12L;
     private ArrayList<Tag> tags = new ArrayList<Tag>();
 
     public void addTag(Tag tag) {

@@ -8,6 +8,7 @@ package com.aetrion.flickr.photos;
  * @author Anthony Eden
  */
 public class Exif {
+	private static final long serialVersionUID = 12L;
 
     private String tagspace;
     private String tagspaceId;

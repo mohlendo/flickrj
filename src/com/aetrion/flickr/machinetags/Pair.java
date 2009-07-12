@@ -3,9 +3,11 @@ package com.aetrion.flickr.machinetags;
 /**
  * 
  * @author mago
- * @version $Id: Pair.java,v 1.1 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: Pair.java,v 1.2 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Pair {
+    private static final long serialVersionUID = 12L;
+
     String namespace;
     String predicate;
     int usage;

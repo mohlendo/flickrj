@@ -3,9 +3,11 @@ package com.aetrion.flickr.machinetags;
 /**
  * 
  * @author mago
- * @version $Id: Predicate.java,v 1.1 2009/03/04 21:13:41 x-mago Exp $
+ * @version $Id: Predicate.java,v 1.2 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Predicate {
+    private static final long serialVersionUID = 12L;
+
     int usage;
     int namespaces;
     String value;

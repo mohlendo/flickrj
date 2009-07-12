@@ -11,6 +11,7 @@ import java.util.Collection;
  * @author Anthony Eden
  */
 public class Photosets {
+	private static final long serialVersionUID = 12L;
 
     private boolean canCreate;
     private Collection photosets;

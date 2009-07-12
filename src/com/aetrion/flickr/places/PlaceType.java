@@ -10,9 +10,11 @@ package com.aetrion.flickr.places;
  * @see Place#TYPE_NEIGHBOURHOOD
  * @see Place#TYPE_CONTINENT
  * @author mago
- * @version $Id: PlaceType.java,v 1.1 2009/01/04 21:18:19 x-mago Exp $
+ * @version $Id: PlaceType.java,v 1.2 2009/07/12 22:43:07 x-mago Exp $
  */
 public class PlaceType {
+    private static final long serialVersionUID = 12L;
+
     int placeTypeId;
     String placeTypeName;
 

@@ -8,6 +8,7 @@ package com.aetrion.flickr.photos.licenses;
  * @author Anthony Eden
  */
 public class License {
+    private static final long serialVersionUID = 12L;
 
     private String id;
     private String name;
