@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.17 2009/07/12 22:43:07 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.18 2009/07/21 19:39:44 x-mago Exp $
  */
 public final class PhotoUtils {
 	private static final long serialVersionUID = 12L;
@@ -82,6 +82,57 @@ public final class PhotoUtils {
         photo.setOriginalWidth(photoElement.getAttribute("o_width"));
         photo.setOriginalHeight(photoElement.getAttribute("o_height"));
         photo.setMedia(photoElement.getAttribute("media"));
+        photo.setMediaStatus(photoElement.getAttribute("media_status"));
+
+        // If the attributes active that contain the image-urls,
+        // Size-objects created from them, which are used to override
+        // the Url-generation.
+        List sizes = new ArrayList();
+        String urlTmp = photoElement.getAttribute("url_t");
+        if (urlTmp.startsWith("http")) {
+            Size sizeT = new Size();
+            sizeT.setLabel(Size.THUMB);
+            sizeT.setSource(urlTmp);
+            sizes.add(sizeT);
+        }
+        urlTmp = photoElement.getAttribute("url_s");
+        if (urlTmp.startsWith("http")) {
+            Size sizeT = new Size();
+            sizeT.setLabel(Size.SMALL);
+            sizeT.setSource(urlTmp);
+            sizes.add(sizeT);
+        }
+        urlTmp = photoElement.getAttribute("url_sq");
+        if (urlTmp.startsWith("http")) {
+            Size sizeT = new Size();
+            sizeT.setLabel(Size.SQUARE);
+            sizeT.setSource(urlTmp);
+            sizes.add(sizeT);
+        }
+        urlTmp = photoElement.getAttribute("url_m");
+        if (urlTmp.startsWith("http")) {
+            Size sizeT = new Size();
+            sizeT.setLabel(Size.MEDIUM);
+            sizeT.setSource(urlTmp);
+            sizes.add(sizeT);
+        }
+        urlTmp = photoElement.getAttribute("url_l");
+        if (urlTmp.startsWith("http")) {
+            Size sizeT = new Size();
+            sizeT.setLabel(Size.LARGE);
+            sizeT.setSource(urlTmp);
+            sizes.add(sizeT);
+        }
+        urlTmp = photoElement.getAttribute("url_o");
+        if (urlTmp.startsWith("http")) {
+            Size sizeT = new Size();
+            sizeT.setLabel(Size.ORIGINAL);
+            sizeT.setSource(urlTmp);
+            sizes.add(sizeT);
+        }
+        if (sizes.size() > 0) {
+            photo.setSizes(sizes);
+        }
 
         // Searches, or other list may contain orginal_format.
         // If not choosen via extras, set jpg as default.
