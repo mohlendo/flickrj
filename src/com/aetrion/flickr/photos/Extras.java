@@ -10,7 +10,7 @@ import java.util.Set;
  * Extra-attributes for Photo-requests.
  *
  * @author Anthony Eden
- * @version $Id: Extras.java,v 1.10 2009/07/12 22:43:07 x-mago Exp $
+ * @version $Id: Extras.java,v 1.11 2009/07/21 16:57:05 x-mago Exp $
  */
 public class Extras {
 	private static final long serialVersionUID = 12L;
@@ -29,6 +29,12 @@ public class Extras {
     public static final String O_DIMS = "o_dims";
     public static final String MEDIA = "media";
     public static final String VIEWS = "views";
+    public static final String PATH_ALIAS = "path_alias";
+    public static final String URL_S = "url_s";
+    public static final String URL_SQ = "url_sq";
+    public static final String URL_T = "url_t";
+    public static final String URL_M = "url_m";
+    public static final String URL_O = "url_o";
 
     /**
      * Set of all extra-arguments. Used for requesting lists of photos.
@@ -79,6 +85,12 @@ public class Extras {
         ALL_EXTRAS.add(O_DIMS);
         ALL_EXTRAS.add(MEDIA);
         ALL_EXTRAS.add(VIEWS);
+        ALL_EXTRAS.add(PATH_ALIAS);
+        ALL_EXTRAS.add(URL_S);
+        ALL_EXTRAS.add(URL_SQ);
+        ALL_EXTRAS.add(URL_T);
+        ALL_EXTRAS.add(URL_M);
+        ALL_EXTRAS.add(URL_O);
     }
 
     static {
