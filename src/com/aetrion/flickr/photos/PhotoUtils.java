@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.18 2009/07/21 19:39:44 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.19 2009/07/21 19:58:08 x-mago Exp $
  */
 public final class PhotoUtils {
 	private static final long serialVersionUID = 12L;
@@ -83,6 +83,7 @@ public final class PhotoUtils {
         photo.setOriginalHeight(photoElement.getAttribute("o_height"));
         photo.setMedia(photoElement.getAttribute("media"));
         photo.setMediaStatus(photoElement.getAttribute("media_status"));
+        photo.setPathAlias(photoElement.getAttribute("pathalias"));
 
         // If the attributes active that contain the image-urls,
         // Size-objects created from them, which are used to override
