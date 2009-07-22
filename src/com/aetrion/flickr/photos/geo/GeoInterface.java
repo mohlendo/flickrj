@@ -24,7 +24,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Access to the flickr.photos.geo methods.
  *
  * @author till (Till Krech - flickr:extranoise)
- * @version $Id: GeoInterface.java,v 1.4 2009/07/11 20:30:27 x-mago Exp $
+ * @version $Id: GeoInterface.java,v 1.5 2009/07/22 22:39:36 x-mago Exp $
  */
 public class GeoInterface {
     public static final String METHOD_GET_LOCATION = "flickr.photos.geo.getLocation";
@@ -168,7 +168,7 @@ public class GeoInterface {
      * Sets the geo data (latitude and longitude and, optionally, the accuracy level) for a photo. 
      * Before users may assign location data to a photo they must define who, by default, 
      * may view that information. Users can edit this preference 
-     * at {@link http://www.flickr.com/account/geo/privacy/}. If a user has not set this preference, 
+     * at <a href="http://www.flickr.com/account/geo/privacy/">flickr</a>. If a user has not set this preference, 
      * the API method will return an error.
      *
      * This method requires authentication with 'write' permission.
