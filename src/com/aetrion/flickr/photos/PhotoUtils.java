@@ -15,7 +15,7 @@ import com.aetrion.flickr.tags.Tag;
  * Utilitiy-methods to transfer requested XML to Photo-objects.
  *
  * @author till, x-mago
- * @version $Id: PhotoUtils.java,v 1.19 2009/07/21 19:58:08 x-mago Exp $
+ * @version $Id: PhotoUtils.java,v 1.20 2009/07/23 21:49:35 x-mago Exp $
  */
 public final class PhotoUtils {
 	private static final long serialVersionUID = 12L;
@@ -66,7 +66,6 @@ public final class PhotoUtils {
         photo.setSecret(photoElement.getAttribute("secret"));
         photo.setServer(photoElement.getAttribute("server"));
         photo.setFarm(photoElement.getAttribute("farm"));
-        photo.setViews(photoElement.getAttribute("views"));
         photo.setRotation(photoElement.getAttribute("rotation"));
         photo.setFavorite("1".equals(photoElement.getAttribute("isfavorite")));
         photo.setLicense(photoElement.getAttribute("license"));

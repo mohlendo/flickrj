@@ -35,7 +35,7 @@ import com.aetrion.flickr.util.StringUtilities;
  * {@link PhotosInterface#getImageAsStream(Photo, int)}.
  *
  * @author Anthony Eden
- * @version $Id: Photo.java,v 1.27 2009/07/23 20:41:03 x-mago Exp $
+ * @version $Id: Photo.java,v 1.28 2009/07/23 21:49:35 x-mago Exp $
  */
 public class Photo {
     private static final long serialVersionUID = 12L;
@@ -350,6 +350,7 @@ public class Photo {
      * and will be set to -1.
      *
      * @param views
+     * @deprecated attribute no longer available
      */
     public void setViews(String views) {
         if (views != null) {
@@ -361,6 +362,11 @@ public class Photo {
         }
     }
 
+    /**
+     * 
+     * @param views
+     * @deprecated attribute no longer available
+     */
     public void setViews(int views) {
         this.views = views;
     }
@@ -369,6 +375,7 @@ public class Photo {
      * Number of views. Set to -1 if the value is not available.
      * 
      * @return Number of views
+     * @deprecated attribute no longer available
      */
     public int getViews() {
         return views;
