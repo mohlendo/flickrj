@@ -4,18 +4,31 @@
 package com.aetrion.flickr.people;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
 
 import com.aetrion.flickr.contacts.OnlineStatus;
+import com.aetrion.flickr.photos.Editability;
+import com.aetrion.flickr.photos.GeoData;
+import com.aetrion.flickr.photos.Note;
+import com.aetrion.flickr.photos.Permissions;
+import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.PhotoUrl;
+import com.aetrion.flickr.photos.Size;
+import com.aetrion.flickr.tags.Tag;
 import com.aetrion.flickr.util.BuddyIconable;
+import com.aetrion.flickr.util.StringUtilities;
 import com.aetrion.flickr.util.UrlUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: User.java,v 1.20 2009/07/12 22:43:07 x-mago Exp $
+ * @version $Id: User.java,v 1.21 2009/07/23 20:41:03 x-mago Exp $
  */
 public class User implements Serializable, BuddyIconable {
     private static final long serialVersionUID = 12L;
@@ -278,5 +291,98 @@ public class User implements Serializable, BuddyIconable {
 
     public String getMbox_sha1sum() {
         return this.mbox_sha1sum;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ((obj == null) || (obj.getClass() != this.getClass())) {
+            return false;
+        }
+		// object must be User at this point
+        User test = (User) obj;
+        Class cl = this.getClass();
+        Method[] method = cl.getMethods();
+        for (int i = 0; i < method.length; i++) {
+            Matcher m = StringUtilities.getterPattern.matcher(method[i].getName());
+            if (m.find() && !method[i].getName().equals("getClass")) {
+                try {
+                    Object res = method[i].invoke(this, null);
+                    Object resTest = method[i].invoke(test, null);
+                    String retType = method[i].getReturnType().toString();
+                    if (retType.indexOf("class") == 0) {
+                        if (res != null && resTest != null) {
+                            if (!res.equals(resTest)) return false;
+                        } else {
+                            if (res == null && resTest == null) {
+                                // nop
+                            } else if (res == null || resTest == null) {
+                                // one ist set and one is null
+                                return false;
+                            }
+                        }
+                    } else if (retType.equals("int")) {
+                        if (!((Integer) res).equals(((Integer)resTest))) return false;
+                    } else if (retType.equals("boolean")) {
+                        if (!((Boolean) res).equals(((Boolean)resTest))) return false;
+                    } else if (retType.equals("long")) {
+                        if (!((Long) res).equals(((Long)resTest))) return false;
+                    } else {
+                        System.out.println("User#equals() missing type " + method[i].getName() + "|" +
+                            method[i].getReturnType().toString());
+                    }
+                } catch (IllegalAccessException ex) {
+                    System.out.println("equals " + method[i].getName() + " " + ex);
+                } catch (InvocationTargetException ex) {
+                    //System.out.println("equals " + method[i].getName() + " " + ex);
+                } catch (Exception ex) {
+                    System.out.println("equals " + method[i].getName() + " " + ex);
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        int hash = 1;
+        Class cl = this.getClass();
+        Method[] method = cl.getMethods();
+        for (int i = 0; i < method.length; i++) {
+            Matcher m = StringUtilities.getterPattern.matcher(method[i].getName());
+            if (m.find() && !method[i].getName().equals("getClass")) {
+                Object res = null;
+                try {
+                    res = method[i].invoke(this, null);
+                } catch (IllegalAccessException ex) {
+                    System.out.println("hashCode " + method[i].getName() + " " + ex);
+                } catch (InvocationTargetException ex) {
+                    //System.out.println("hashCode " + method[i].getName() + " " + ex);
+                }
+                if (res != null) {
+                    if (res instanceof Boolean) {
+                        Boolean bool = (Boolean) res;
+                        hash += bool.hashCode();
+                    } else if (res instanceof Integer) {
+                        Integer inte = (Integer) res;
+                        hash += inte.hashCode();
+                    } else if (res instanceof String) {
+                        String str = (String) res;
+                        hash += str.hashCode();
+                    } else if (res instanceof Long) {
+                        Long lon = (Long) res;
+                        hash += lon.hashCode();
+                    } else if (res instanceof OnlineStatus) {
+                        OnlineStatus os = (OnlineStatus) res;
+                        hash += os.hashCode();
+                    } else {
+                        System.out.println("User hashCode unrecognised object: " + res.getClass().getName());
+                    }
+                }
+            }
+        }
+        return hash;
     }
 }

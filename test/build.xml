@@ -128,6 +128,7 @@
         <test name="com.aetrion.flickr.InterestingnessInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.MachinetagsInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.MembersInterfaceTest" todir="${test.reports}"/>
+        <test name="com.aetrion.flickr.ObjectTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PandaInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PeopleInterfaceTest" todir="${test.reports}"/>
         <test name="com.aetrion.flickr.PhotosetsInterfaceTest" todir="${test.reports}"/>

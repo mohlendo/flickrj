@@ -3,6 +3,13 @@
  */
 package com.aetrion.flickr.tags;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+
+import com.aetrion.flickr.photos.Size;
+import com.aetrion.flickr.util.StringUtilities;
+
 /**
  * @author Anthony Eden
  */
@@ -72,4 +79,55 @@ public class Tag {
         setCount(Integer.parseInt(count));
     }
 
+	@Override
+	public boolean equals(Object obj) {
+        if ((obj == null) || (obj.getClass() != this.getClass())) {
+            return false;
+        }
+		// object must be GeoData at this point
+        Tag test = (Tag) obj;
+        Class cl = this.getClass();
+        Method[] method = cl.getMethods();
+        for (int i = 0; i < method.length; i++) {
+            Matcher m = StringUtilities.getterPattern.matcher(method[i].getName());
+            if (m.find() && !method[i].getName().equals("getClass")) {
+                try {
+                    Object res = method[i].invoke(this, null);
+                    Object resTest = method[i].invoke(test, null);
+                    String retType = method[i].getReturnType().toString();
+                    if (retType.indexOf("class") == 0) {
+                        if (res != null && resTest != null) {
+                            if (!res.equals(resTest)) return false;
+                        } else {
+                            //return false;
+                        }
+                    } else if (retType.equals("int")) {
+                        if (!((Integer) res).equals(((Integer)resTest))) return false;
+                    } else {
+                        System.out.println(method[i].getName() + "|" +
+                            method[i].getReturnType().toString());
+                    }
+                } catch (IllegalAccessException ex) {
+                    System.out.println("Size equals " + method[i].getName() + " " + ex);
+                } catch (InvocationTargetException ex) {
+                    //System.out.println("equals " + method[i].getName() + " " + ex);
+                } catch (Exception ex) {
+                    System.out.println("Size equals " + method[i].getName() + " " + ex);
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 1;
+        hash += new Integer(count).hashCode();
+        if (value != null) hash += value.hashCode();
+        if (raw != null) hash += raw.hashCode();
+        if (author != null) hash += author.hashCode();
+        if (authorName != null) hash += authorName.hashCode();
+        if (id != null) hash += id.hashCode();
+        return hash;
+    }
 }

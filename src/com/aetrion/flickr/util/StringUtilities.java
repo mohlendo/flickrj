@@ -6,14 +6,16 @@ package com.aetrion.flickr.util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
 /**
  * String utility methods.
  *
  * @author Anthony Eden
- * @version $Id: StringUtilities.java,v 1.4 2007/09/09 17:13:39 x-mago Exp $
+ * @version $Id: StringUtilities.java,v 1.5 2009/07/23 20:41:03 x-mago Exp $
  */
 public class StringUtilities {
+    public static final Pattern getterPattern = Pattern.compile("^is|^get");
 
     private StringUtilities() {
 
@@ -29,11 +31,11 @@ public class StringUtilities {
     public static String join(String[] s, String delimiter) {
         return join(s, delimiter, false);
     }
-    
+
     public static String join(String[] s, String delimiter, boolean doQuote) {
         return join(Arrays.asList(s), delimiter, doQuote);
     }
-    
+
     /**
      * Join the Collection of Strings using the specified delimter and
      * optionally quoting each

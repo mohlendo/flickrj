@@ -19,6 +19,11 @@ public class PhotoUrl {
         this.url = url;
     }
 
+    /**
+     * Possible known type is photopage.
+     *
+     * @return Type of URL
+     */
     public String getType() {
         return type;
     }

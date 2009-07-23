@@ -3,6 +3,12 @@
  */
 package com.aetrion.flickr.photos;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+
+import com.aetrion.flickr.util.StringUtilities;
+
 /**
  * @author Anthony Eden
  */
@@ -76,4 +82,57 @@ public class Permissions {
         if (addmeta != null) setAddmeta(Integer.parseInt(addmeta));
     }
 
+	@Override
+	public boolean equals(Object obj) {
+        if ((obj == null) || (obj.getClass() != this.getClass())) {
+            return false;
+        }
+		// object must be Permissions at this point
+        Permissions test = (Permissions) obj;
+        Class cl = this.getClass();
+        Method[] method = cl.getMethods();
+        for (int i = 0; i < method.length; i++) {
+            Matcher m = StringUtilities.getterPattern.matcher(method[i].getName());
+            if (m.find() && !method[i].getName().equals("getClass")) {
+                try {
+                    Object res = method[i].invoke(this, null);
+                    Object resTest = method[i].invoke(test, null);
+                    String retType = method[i].getReturnType().toString();
+                    if (retType.indexOf("class") == 0) {
+                        if (res != null && resTest != null) {
+                            if (!res.equals(resTest)) return false;
+                        } else {
+                            //return false;
+                        }
+                    } else if (retType.equals("int")) {
+                        if (!((Integer) res).equals(((Integer)resTest))) return false;
+                    } else if (retType.equals("boolean")) {
+                        if (!((Boolean) res).equals(((Boolean)resTest))) return false;
+                    } else {
+                        System.out.println(method[i].getName() + "|" +
+                            method[i].getReturnType().toString());
+                    }
+                } catch (IllegalAccessException ex) {
+                    System.out.println("equals " + method[i].getName() + " " + ex);
+                } catch (InvocationTargetException ex) {
+                    //System.out.println("equals " + method[i].getName() + " " + ex);
+                } catch (Exception ex) {
+                    System.out.println("equals " + method[i].getName() + " " + ex);
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 87;
+        hash += id.hashCode();
+        hash += new Integer(comment).hashCode();
+        hash += new Integer(addmeta).hashCode();
+        hash += new Boolean(publicFlag).hashCode();
+        hash += new Boolean(friendFlag).hashCode();
+        hash += new Boolean(familyFlag).hashCode();
+        return hash;
+    }
 }

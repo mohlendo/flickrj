@@ -10,7 +10,7 @@ import java.util.Set;
  * Extra-attributes for Photo-requests.
  *
  * @author Anthony Eden
- * @version $Id: Extras.java,v 1.11 2009/07/21 16:57:05 x-mago Exp $
+ * @version $Id: Extras.java,v 1.12 2009/07/23 20:41:03 x-mago Exp $
  */
 public class Extras {
 	private static final long serialVersionUID = 12L;
@@ -34,6 +34,7 @@ public class Extras {
     public static final String URL_SQ = "url_sq";
     public static final String URL_T = "url_t";
     public static final String URL_M = "url_m";
+    public static final String URL_L = "url_l";
     public static final String URL_O = "url_o";
 
     /**
@@ -47,6 +48,7 @@ public class Extras {
      * @see com.aetrion.flickr.photos.PhotosInterface#getWithGeoData(java.util.Date, java.util.Date, java.util.Date, java.util.Date, int, String, Set, int, int)
      * @see com.aetrion.flickr.photos.PhotosInterface#getWithoutGeoData(java.util.Date, java.util.Date, java.util.Date, java.util.Date, int, String, Set, int, int)
      * @see com.aetrion.flickr.photos.PhotosInterface#recentlyUpdated(java.util.Date, Set, int, int)
+     * @see com.aetrion.flickr.photos.SearchParameters#setExtras(Set)
      * @see com.aetrion.flickr.photos.geo.GeoInterface#photosForLocation(GeoData, Set, int, int)
      * @see com.aetrion.flickr.interestingness.InterestingnessInterface#getList(java.util.Date, Set, int, int)
      * @see com.aetrion.flickr.favorites.FavoritesInterface#getList(String, int, int, Set)
@@ -91,6 +93,7 @@ public class Extras {
         ALL_EXTRAS.add(URL_T);
         ALL_EXTRAS.add(URL_M);
         ALL_EXTRAS.add(URL_O);
+        ALL_EXTRAS.add(URL_L);
     }
 
     static {

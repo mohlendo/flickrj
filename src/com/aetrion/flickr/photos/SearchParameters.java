@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import com.aetrion.flickr.FlickrException;
@@ -17,7 +18,7 @@ import com.aetrion.flickr.util.StringUtilities;
 
 /**
  * @author Anthony Eden
- * @version $Id: SearchParameters.java,v 1.19 2009/07/12 22:43:07 x-mago Exp $
+ * @version $Id: SearchParameters.java,v 1.20 2009/07/23 20:41:03 x-mago Exp $
  */
 public class SearchParameters {
 	private static final long serialVersionUID = 12L;
@@ -36,20 +37,7 @@ public class SearchParameters {
     private Date maxTakenDate;
     private Date interestingnessDate;
     private String license;
-    private boolean extrasLicense = false;
-    private boolean extrasDateUpload = false;
-    private boolean extrasDateTaken = false;
-    private boolean extrasOwnerName = false;
-    private boolean extrasIconServer = false;
-    // default true, to ensure it's possible to generate a valid original-URL for requested Photos.
-    private boolean extrasOriginalFormat = true;
-    private boolean extrasLastUpdate = false;
-    private boolean extrasGeo = false;
-    private boolean extrasTags = false;
-    private boolean extrasMachineTags = false;
-    private boolean extrasOrigDims = false;
-    private boolean extrasMedia = false;
-    private boolean extrasViews = false;
+    private Set extras;
     private String[] bbox;
     private String placeId;
     private int accuracy = 0;
@@ -253,66 +241,20 @@ public class SearchParameters {
     }
 
     /**
-     * Setting all toogles to get extra-fields in Photos-search.<br>
-     * The default is false.
-     * 
-     * @param toggle to include or exclude all extra fields.
+     * List of extra information to fetch for each returned
+     * record. Currently supported fields are:
+     * license, date_upload, date_taken, owner_name,
+     * icon_server, original_format, last_update, geo,
+     * tags, machine_tags, o_dims, views, media, path_alias,
+     * url_sq, url_t, url_s, url_m, url_l, url_o
+     *
+     * @param extras A set of extra-attributes
+     * @see com.aetrion.flickr.photos.Extras#ALL_EXTRAS
+     * @see com.aetrion.flickr.photos.Extras#MIN_EXTRAS
      */
-    public void setExtras(boolean toggle) {
-        setExtrasLicense(toggle);
-        setExtrasDateUpload(toggle);
-        setExtrasDateTaken(toggle);
-        setExtrasOwnerName(toggle);
-        setExtrasIconServer(toggle);
-        setExtrasOriginalFormat(toggle);
-        setExtrasLastUpdate(toggle);
-        setExtrasGeo(toggle);
-        setExtrasTags(toggle);
-        setExtrasMachineTags(toggle);
-        setExtrasOrigDims(toggle);
-        setExtrasMedia(toggle);
-        setExtrasViews(toggle);
+    public void setExtras(Set extras) {
+        this.extras = extras;
     }
-
-    public void setExtrasLicense(boolean toggle) {
-        this.extrasLicense = toggle;
-    }
-    public void setExtrasDateUpload(boolean toggle) {
-        this.extrasDateUpload = toggle;
-    }
-    public void setExtrasDateTaken(boolean toggle) {
-        this.extrasDateTaken = toggle;
-    }
-    public void setExtrasOwnerName(boolean toggle) {
-        this.extrasOwnerName = toggle;
-    }
-    public void setExtrasIconServer(boolean toggle) {
-        this.extrasIconServer = toggle;
-    }
-    public void setExtrasOriginalFormat(boolean toggle) {
-        this.extrasOriginalFormat = toggle;
-    }
-    public void setExtrasGeo(boolean extrasGeo) {
-        this.extrasGeo = extrasGeo;
-    }
-    public void setExtrasLastUpdate(boolean extrasLastUpdate) {
-        this.extrasLastUpdate = extrasLastUpdate;
-    }
-    public void setExtrasMachineTags(boolean extrasMachineTags) {
-        this.extrasMachineTags = extrasMachineTags;
-    }
-    public void setExtrasTags(boolean extrasTags) {
-        this.extrasTags = extrasTags;
-    }
-	public void setExtrasOrigDims(boolean extrasOrigDims) {
-		this.extrasOrigDims = extrasOrigDims;
-	}
-	public void setExtrasMedia(boolean extrasMedia) {
-		this.extrasMedia = extrasMedia;
-	}
-	public void setExtrasViews(boolean extrasViews) {
-		this.extrasViews = extrasViews;
-	}
 
     /**
      * 4 values defining the Bounding Box of the area that 
@@ -614,27 +556,8 @@ public class SearchParameters {
             parameters.add(new Parameter("has_geo", "true"));
         }
 
-        if (extrasLicense || extrasDateUpload ||
-           extrasDateTaken || extrasOwnerName ||
-           extrasIconServer || extrasOriginalFormat ||
-           extrasLastUpdate || extrasGeo ||
-           extrasTags || extrasMachineTags ||
-           extrasOrigDims || extrasViews || extrasMedia) {
-            Vector argsList = new Vector();
-            if (extrasLicense) argsList.add("license");
-            if (extrasDateUpload) argsList.add("date_upload");
-            if (extrasDateTaken) argsList.add("date_taken");
-            if (extrasOwnerName) argsList.add("owner_name");
-            if (extrasIconServer) argsList.add("icon_server");
-            if (extrasOriginalFormat) argsList.add("original_format");
-            if (extrasLastUpdate) argsList.add("last_update");
-            if (extrasGeo) argsList.add("geo");
-            if (extrasTags) argsList.add("tags");
-            if (extrasMachineTags) argsList.add("machine_tags");
-            if (extrasOrigDims) argsList.add("o_dims");
-            if (extrasViews) argsList.add("views");
-            if (extrasMedia) argsList.add("media");
-            parameters.add(new Parameter("extras", StringUtilities.join(argsList,",")));
+        if (extras != null && !extras.isEmpty()) {
+            parameters.add(new Parameter("extras", StringUtilities.join(extras, ",")));
         }
 
         if (sort != DATE_POSTED_DESC) {
