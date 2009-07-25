@@ -141,3 +141,27 @@ Release 1.0b4 (July 23, 2007):
  - Added media and woe_id to SearchParameters
  - GroupsInterface#browse() is deprecated, as the results from Flickr are empty for some time now
  
+ Release 1.2 (July 24, 2009)
+ - added PlacesInterface
+ - Radial geo search added (Sean Sullivan)
+ - added SearchParameters#setHasGeo()
+ - GeoInterface#batchCorrectLocation()
+ - GeoInterface#correctLocation()
+ - GeoInterface#photosForLocation()
+ - GeoInterface#setContext()
+ - added PlacesInterface#placesForBoundingBox()
+ - added PlacesInterface#placesForContacts()
+ - Extras has new attributes o_dims, views, media
+ - added bad char to Backup#makeSafeFilename() (Benjamin Hill)
+ - applied patch to Contact to implement BuddyIconable (Richard Barnett)
+ - Set the place-type (Place) constants to the place-type ids as returned by getPlaceTypes()
+ - added ContactsInterface#getListRecentlyUploaded()
+ - added PlacesInterface#getShapeHistory()
+ - API-Url changed to api.flickr.com
+ - Bug 2648788 fixed
+ - added CommentsInterface#getRecentForContacts()
+ - added PandaInterface
+ - removed api_sig from all methods, that can be called without authentication.
+ - equals() and hashCode() implementation on Photo and its members.
+ - SearchParameters - replaced the boolean toggles for extra attributes with Set of Extra's
+ 
