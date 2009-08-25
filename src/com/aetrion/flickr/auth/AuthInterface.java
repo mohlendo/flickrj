@@ -201,6 +201,9 @@ public class AuthInterface {
     /**
      * Build the authentication URL using the given permission and frob.
      *
+     * The hostname used here is www.flickr.com. It differs from the api-default
+     * api.flickr.com.
+     * 
      * @param permission The Permission
      * @param frob The frob returned from getFrob()
      * @return The URL
@@ -215,7 +218,7 @@ public class AuthInterface {
         // The parameters in the url must be signed
         parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
 
-        String host = transportAPI.getHost();
+        String host = "www.flickr.com";
         int port = transportAPI.getPort();
         String path = "/services/auth/";
 

@@ -25,7 +25,7 @@ import com.aetrion.flickr.util.IOUtilities;
  * <a href="http://www.flickr.com/services/api/registered_keys.gne">list of API keys</a>
  * 
  * @author mago
- * @version $Id: AuthExample.java,v 1.5 2008/07/05 22:19:48 x-mago Exp $
+ * @version $Id: AuthExample.java,v 1.6 2009/08/25 19:37:45 x-mago Exp $
  */
 public class AuthExample {
     Flickr f;
@@ -46,7 +46,7 @@ public class AuthExample {
         f = new Flickr(
             properties.getProperty("apiKey"),
             properties.getProperty("secret"),
-            new REST()
+            new REST("www.flickr.com")
         );
         Flickr.debugStream = false;
         requestContext = RequestContext.getRequestContext();
