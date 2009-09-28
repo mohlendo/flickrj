@@ -40,7 +40,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with Flickr Photos.
  *
  * @author Anthony Eden
- * @version $Id: PhotosInterface.java,v 1.49 2009/07/12 22:43:07 x-mago Exp $
+ * @version $Id: PhotosInterface.java,v 1.50 2009/09/28 21:36:26 x-mago Exp $
  */
 public class PhotosInterface {
 	private static final long serialVersionUID = 12L;
@@ -1030,8 +1030,6 @@ public class PhotosInterface {
     /**
      * Search for photos which match the given search parameters.
      *
-     * This method does not require authentication.
-     *
      * @param params The search parameters
      * @param perPage The number of photos to show per page
      * @param page The page offset
@@ -1056,6 +1054,12 @@ public class PhotosInterface {
         if (page > 0) {
             parameters.add(new Parameter("page", "" + page));
         }
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getSignature(sharedSecret, parameters)
+            )
+        );
 
         Response response = transport.get(transport.getPath(), parameters);
         if (response.isError()) {
