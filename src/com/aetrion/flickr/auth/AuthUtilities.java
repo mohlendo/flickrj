@@ -22,7 +22,7 @@ import com.aetrion.flickr.util.UrlUtilities;
  * Utilities used by the authentication API.
  *
  * @author Anthony Eden
- * @version $Id: AuthUtilities.java,v 1.10 2008/07/09 21:13:59 x-mago Exp $
+ * @version $Id: AuthUtilities.java,v 1.11 2009/11/07 23:23:24 x-mago Exp $
  */
 public class AuthUtilities {
 
@@ -130,4 +130,29 @@ public class AuthUtilities {
         }
     }
 
+    /**
+     * Check, if we are authenticated.
+     *
+     * @param params
+     * @return isAuthenticated
+     */
+    public static boolean isAuthenticated(List params) {
+        Iterator it = params.iterator();
+        boolean tokenFlag = false;
+        while (it.hasNext()) {
+            if (((Parameter) it.next()).getName().equals("auth_token")) {
+                tokenFlag = true;
+            }
+        }
+
+        if (!tokenFlag) {
+            if (RequestContext.getRequestContext().getAuth() != null) {
+                String authToken = RequestContext.getRequestContext().getAuth().getToken();
+                if (authToken != null && !authToken.equals("")) {
+                    tokenFlag = true;
+                }
+            }
+        }
+        return tokenFlag;
+    }
 }
