@@ -33,7 +33,7 @@ import com.aetrion.flickr.util.XMLUtilities;
  * Interface for working with photosets.
  *
  * @author Anthony Eden
- * @version $Id: PhotosetsInterface.java,v 1.26 2009/07/11 20:30:27 x-mago Exp $
+ * @version $Id: PhotosetsInterface.java,v 1.27 2009/11/08 21:58:00 x-mago Exp $
  */
 public class PhotosetsInterface {
 
@@ -243,6 +243,15 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("photo_id", photoId));
         parameters.add(new Parameter("photoset_id", photosetId));
 
+        if (AuthUtilities.isAuthenticated(parameters)) {
+            parameters.add(
+                new Parameter(
+                    "api_sig",
+                    AuthUtilities.getSignature(sharedSecret, parameters)
+                )
+            );
+        }
+
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -288,6 +297,15 @@ public class PhotosetsInterface {
 
         parameters.add(new Parameter("photoset_id", photosetId));
 
+        if (AuthUtilities.isAuthenticated(parameters)) {
+            parameters.add(
+                new Parameter(
+                    "api_sig",
+                    AuthUtilities.getSignature(sharedSecret, parameters)
+                )
+            );
+        }
+
         Response response = transportAPI.post(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
@@ -325,6 +343,8 @@ public class PhotosetsInterface {
      * Get a list of all photosets for the specified user.
      *
      * This method does not require authentication.
+     * But to get a Photoset into the list, that contains just private photos,
+     * the call needs to be authenticated.
      *
      * @param userId The User id
      * @return The Photosets collection
@@ -339,6 +359,14 @@ public class PhotosetsInterface {
 
         if (userId != null) {
             parameters.add(new Parameter("user_id", userId));
+        }
+        if (AuthUtilities.isAuthenticated(parameters)) {
+            parameters.add(
+                new Parameter(
+                    "api_sig",
+                    AuthUtilities.getSignature(sharedSecret, parameters)
+                )
+            );
         }
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
@@ -382,6 +410,8 @@ public class PhotosetsInterface {
 
     /**
      * Get a collection of Photo objects for the specified Photoset.
+     * 
+     * This method does not require authentication.
      *
      * @see com.aetrion.flickr.photos.Extras
      * @see com.aetrion.flickr.Flickr#PRIVACY_LEVEL_NO_FILTER
@@ -425,12 +455,14 @@ public class PhotosetsInterface {
         if (extras != null && !extras.isEmpty()) {
             parameters.add(new Parameter(Extras.KEY_EXTRAS, StringUtilities.join(extras, ",")));
         }
-        parameters.add(
-            new Parameter(
-                "api_sig",
-                AuthUtilities.getSignature(sharedSecret, parameters)
-            )
-        );
+        if (AuthUtilities.isAuthenticated(parameters)) {
+            parameters.add(
+                new Parameter(
+                    "api_sig",
+                    AuthUtilities.getSignature(sharedSecret, parameters)
+                )
+            );
+        }
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
