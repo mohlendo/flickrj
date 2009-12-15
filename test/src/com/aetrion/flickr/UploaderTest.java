@@ -116,4 +116,69 @@ public class UploaderTest extends TestCase {
         }
     }
 
+    /**
+     * Test photo replace using an InputStream.
+     *
+     * @throws IOException
+     * @throws FlickrException
+     * @throws SAXException
+     */
+    public void testReplaceInputStream() throws IOException, FlickrException, SAXException {
+        File imageFile = new File(properties.getProperty("imagefile"));
+        InputStream uploadIS = null;
+        String photoId = null;
+        try {
+            uploadIS = new FileInputStream(imageFile);
+
+            // Upload a photo, which we'll replace, then delete
+            UploadMetaData metaData = new UploadMetaData();
+            photoId = uploader.upload(uploadIS, metaData);
+        } finally {
+            IOUtilities.close(uploadIS);
+        }
+
+        InputStream replaceIS = null;
+        try {
+            replaceIS = new FileInputStream(imageFile);
+
+            photoId = uploader.replace(replaceIS, photoId, false);
+            assertNotNull(photoId);
+            pint.delete(photoId);
+        } finally {
+            IOUtilities.close(replaceIS);
+        }
+    }
+
+    /**
+     * Test photo replace using a byte array.
+     *
+     * @throws IOException
+     * @throws FlickrException
+     * @throws SAXException
+     */
+    public void testReplaceByteArray() throws IOException, FlickrException, SAXException {
+        File imageFile = new File(properties.getProperty("imagefile"));
+        InputStream in = null;
+        ByteArrayOutputStream out = null;
+
+        try {
+            in = new FileInputStream(imageFile);
+            out = new ByteArrayOutputStream();
+            int b = -1;
+            while ((b = in.read()) != -1) {
+                out.write((byte) b);
+            }
+
+            // Upload a photo, which we'll replace, then delete
+            UploadMetaData metaData = new UploadMetaData();
+            String photoId = uploader.upload(out.toByteArray(), metaData);
+
+            photoId = uploader.replace(out.toByteArray(), photoId, false);
+            assertNotNull(photoId);
+            pint.delete(photoId);
+        } finally {
+            IOUtilities.close(in);
+        }
+    }
+
 }

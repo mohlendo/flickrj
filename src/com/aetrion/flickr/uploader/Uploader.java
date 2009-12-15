@@ -35,7 +35,7 @@ import com.aetrion.flickr.util.StringUtilities;
  * for completion.
  *
  * @author Anthony Eden
- * @version $Id: Uploader.java,v 1.11 2008/02/04 22:16:29 x-mago Exp $
+ * @version $Id: Uploader.java,v 1.12 2009/12/15 20:57:49 x-mago Exp $
  */
 public class Uploader {
     private String apiKey;
@@ -178,4 +178,81 @@ public class Uploader {
         return id;
     }
 
+    /**
+     * Upload a photo from an InputStream.
+     *
+     * @param in
+     * @param metaData
+     * @return photoId or ticketId
+     * @throws IOException
+     * @throws FlickrException
+     * @throws SAXException
+     */
+    public String replace(InputStream in, String flickrId, boolean async) throws IOException, FlickrException, SAXException {
+        List parameters = new ArrayList();
+
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("async", async ? "1" : "0"));
+        parameters.add(new Parameter("photo_id", flickrId));
+
+        parameters.add(new Parameter("photo", in));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getMultipartSignature(sharedSecret, parameters)
+            )
+        );
+
+        UploaderResponse response = (UploaderResponse) transport.post("/services/replace/", parameters, true);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        String id = "";
+        if (async) {
+            id = response.getTicketId();
+        } else {
+            id = response.getPhotoId();
+        }
+        return id;
+    }
+
+    /**
+     * Upload a photo from an InputStream.
+     *
+     * @param in
+     * @param metaData
+     * @return photoId or ticketId
+     * @throws IOException
+     * @throws FlickrException
+     * @throws SAXException
+     */
+    public String replace(byte[] data, String flickrId, boolean async) throws IOException, FlickrException, SAXException {
+        List parameters = new ArrayList();
+
+        parameters.add(new Parameter("api_key", apiKey));
+
+        parameters.add(new Parameter("async", async ? "1" : "0"));
+        parameters.add(new Parameter("photo_id", flickrId));
+
+        parameters.add(new Parameter("photo", data));
+        parameters.add(
+            new Parameter(
+                "api_sig",
+                AuthUtilities.getMultipartSignature(sharedSecret, parameters)
+            )
+        );
+
+        UploaderResponse response = (UploaderResponse) transport.post("/services/replace/", parameters, true);
+        if (response.isError()) {
+            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+        }
+        String id = "";
+        if (async) {
+            id = response.getTicketId();
+        } else {
+            id = response.getPhotoId();
+        }
+        return id;
+    }
 }
