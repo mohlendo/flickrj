@@ -3,7 +3,6 @@
  */
 package com.aetrion.flickr.photos;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -457,35 +456,7 @@ public class Photo {
         this.originalSecret = originalSecret;
     }
 
-    /**
-     * @deprecated
-     * @see PhotosInterface#getImage(Photo, int)
-     * @return An Image
-     * @throws IOException
-     * @throws FlickrException
-     */
-    public BufferedImage getOriginalImage() throws IOException, FlickrException {
-        if (originalFormat != null) {
-            return getOriginalImage("_o." + originalFormat);
-        }
-        return getOriginalImage(DEFAULT_ORIGINAL_IMAGE_SUFFIX);
-    }
-
-    /**
-     * Get an InputStream for the original image. Callers must close the stream upon completion.
-     *
-     * @deprecated
-     * @see PhotosInterface#getImageAsStream(Photo, int)
-     * @return The InputStream
-     * @throws IOException
-     */
-    public InputStream getOriginalAsStream() throws IOException, FlickrException {
-        if (originalFormat != null) {
-            return getOriginalImageAsStream("_o." + originalFormat);
-        }
-        return getOriginalImageAsStream(DEFAULT_ORIGINAL_IMAGE_SUFFIX);
-    }
-
+   
     /**
      * Get the original image URL.
      *
@@ -502,29 +473,8 @@ public class Photo {
         }
     }
 
-    /**
-     * Get an Image object which is a 75x75 pixel square.
-     *
-     * @deprecated
-     * @see PhotosInterface#getImage(Photo, int)
-     * @return An Image
-     * @throws IOException
-     */
-    public BufferedImage getSmallSquareImage()
-      throws IOException {
-        return getImage(SMALL_SQUARE_IMAGE_SUFFIX);
-    }
-
-    /**
-     * @deprecated
-     * @see PhotosInterface#getImageAsStream(Photo, int)
-     * @return The InputStream
-     * @throws IOException
-     */
-    public InputStream getSmallSquareAsInputStream() throws IOException {
-        return getImageAsStream(SMALL_SQUARE_IMAGE_SUFFIX);
-    }
-
+  
+ 
     public String getSmallSquareUrl() {
         if (squareSize == null) {
             return getBaseImageUrl() + SMALL_SQUARE_IMAGE_SUFFIX;
@@ -533,26 +483,9 @@ public class Photo {
         }
     }
 
-    /**
-     * @deprecated
-     * @see PhotosInterface#getImage(Photo, int)
-     * @return An Image
-     * @throws IOException
-     */
-    public BufferedImage getThumbnailImage() throws IOException {
-        return getImage(THUMBNAIL_IMAGE_SUFFIX);
-    }
+   
 
-    /**
-     * @deprecated
-     * @see PhotosInterface#getImageAsStream(Photo, int)
-     * @return The InputStream
-     * @throws IOException
-     */
-    public InputStream getThumbnailAsInputStream() throws IOException {
-        return getImageAsStream(THUMBNAIL_IMAGE_SUFFIX);
-    }
-
+  
     public String getThumbnailUrl() {
         if (thumbnailSize == null) {
             return getBaseImageUrl() + THUMBNAIL_IMAGE_SUFFIX;
@@ -561,26 +494,7 @@ public class Photo {
         }
     }
 
-    /**
-     * @deprecated
-     * @see PhotosInterface#getImage(Photo, int)
-     * @return An Image
-     * @throws IOException
-     */
-    public BufferedImage getSmallImage() throws IOException {
-        return getImage(SMALL_IMAGE_SUFFIX);
-    }
-
-    /**
-     * @deprecated
-     * @see PhotosInterface#getImageAsStream(Photo, int)
-     * @return The InputStream
-     * @throws IOException
-     */
-    public InputStream getSmallAsInputStream() throws IOException {
-        return getImageAsStream(SMALL_IMAGE_SUFFIX);
-    }
-
+   
     public String getSmallUrl() {
         if (smallSize == null) {
             return getBaseImageUrl() + SMALL_IMAGE_SUFFIX;
@@ -588,26 +502,7 @@ public class Photo {
             return smallSize.getSource();
         }
     }
-
-    /**
-     * @deprecated
-     * @see PhotosInterface#getImage(Photo, int)
-     * @return An Image
-     * @throws IOException
-     */
-    public BufferedImage getMediumImage() throws IOException {
-        return getImage(MEDIUM_IMAGE_SUFFIX);
-    }
-
-    /**
-     * @deprecated
-     * @see PhotosInterface#getImageAsStream(Photo, int)
-     * @return The InputStream
-     * @throws IOException
-     */
-    public InputStream getMediumAsStream() throws IOException {
-        return getImageAsStream(MEDIUM_IMAGE_SUFFIX);
-    }
+  
 
     public String getMediumUrl() {
         if (mediumSize == null) {
@@ -616,26 +511,7 @@ public class Photo {
             return mediumSize.getSource();
         }
     }
-
-    /**
-     * @deprecated
-     * @see PhotosInterface#getImage(Photo, int)
-     * @return An Image
-     * @throws IOException
-     */
-    public BufferedImage getLargeImage() throws IOException {
-        return getImage(LARGE_IMAGE_SUFFIX);
-    }
-
-    /**
-     * @deprecated
-     * @see PhotosInterface#getImageAsStream(Photo, int)
-     * @return The InputStream
-     * @throws IOException
-     */
-    public InputStream getLargeAsStream() throws IOException {
-        return getImageAsStream(LARGE_IMAGE_SUFFIX);
-    }
+   
 
     public String getLargeUrl() {
         if (largeSize == null) {
@@ -643,95 +519,6 @@ public class Photo {
         } else {
             return largeSize.getSource();
         }
-    }
-
-    /**
-     * Get an image using the specified URL suffix.
-     *
-     * @deprecated
-     * @param suffix The URL suffix, including the .extension
-     * @return The BufferedImage object
-     * @throws IOException
-     */
-    private BufferedImage getImage(String suffix)
-      throws IOException {
-        StringBuffer buffer = getBaseImageUrl();
-        buffer.append(suffix);
-        return _getImage(buffer.toString());
-    }
-
-    /**
-     * Get the original-image using the specified URL suffix.
-     * 
-     * @deprecated
-     * @see PhotosInterface#getImage(Photo, int)
-     * @param suffix The URL suffix, including the .extension
-     * @return The BufferedImage object
-     * @throws IOException
-     * @throws FlickrException
-     */
-    private BufferedImage getOriginalImage(String suffix)
-      throws IOException, FlickrException {
-        StringBuffer buffer = getOriginalBaseImageUrl();
-        buffer.append(suffix);
-        return _getImage(buffer.toString());
-    }
-
-    /**
-     * @deprecated
-     * @param urlStr
-     * @return BufferedImage
-     * @throws IOException
-     */
-    private BufferedImage _getImage(String urlStr)
-      throws IOException {
-        URL url = new URL(urlStr);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.connect();
-        InputStream in = null;
-        try {
-            in = conn.getInputStream();
-            return ImageIO.read(in);
-        } finally {
-            IOUtilities.close(in);
-        }
-    }
-
-    /**
-     * Get an image as a stream. Callers must be sure to close the stream when they are done with it.
-     *
-     * @deprecated
-     * @see PhotosInterface#getImageAsStream(Photo, int)
-     * @param suffix The suffix
-     * @return The InputStream
-     * @throws IOException
-     */
-    private InputStream getImageAsStream(String suffix) throws IOException {
-        StringBuffer buffer = getBaseImageUrl();
-        buffer.append(suffix);
-        return _getImageAsStream(buffer.toString());
-    }
-
-    /**
-     * 
-     * @deprecated
-     * @see PhotosInterface#getImageAsStream(Photo, int)
-     * @param suffix
-     * @return InoutStream
-     * @throws IOException
-     * @throws FlickrException
-     */
-    private InputStream getOriginalImageAsStream(String suffix) throws IOException, FlickrException {
-        StringBuffer buffer = getOriginalBaseImageUrl();
-        buffer.append(suffix);
-        return _getImageAsStream(buffer.toString());
-    }
-
-    private InputStream _getImageAsStream(String urlStr) throws IOException {
-        URL url = new URL(urlStr);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.connect();
-        return conn.getInputStream();
     }
 
     private StringBuffer getBaseImageUrl() {
