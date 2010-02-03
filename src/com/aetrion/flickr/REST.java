@@ -168,7 +168,7 @@ public class REST extends Transport {
      * @throws IOException
      * @throws SAXException
      */
-    public Response post(String path, List parameters, boolean multipart) throws IOException, SAXException {
+    public Response post(String path, List parameters, boolean multipart, ProgressListener progressListener) throws IOException, SAXException {
         // see: AuthUtilities.getSignature()
         //AuthUtilities.addAuthToken(parameters);
 
@@ -214,7 +214,7 @@ public class REST extends Transport {
                     while (iter.hasNext()) {
                         Parameter p = (Parameter) iter.next();
                         
-                        writeParam(p.getName(), p.getValue(), out, boundary);
+                        writeParam(p.getName(), p.getValue(), out, boundary, progressListener);
                     }
 /*                    Auth auth = requestContext.getAuth();
                     if (auth != null) {
@@ -288,7 +288,7 @@ public class REST extends Transport {
         }
     }
 
-    private void writeParam(String name, Object value, DataOutputStream out, String boundary)
+    private void writeParam(String name, Object value, DataOutputStream out, String boundary, ProgressListener progressListener)
             throws IOException {
         if (value instanceof InputStream) {
             out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"image.jpg\";\r\n");
@@ -298,6 +298,9 @@ public class REST extends Transport {
             int res = -1;
             while ((res = in.read(buf)) != -1) {
                 out.write(buf);
+                if(progressListener != null) {
+                  progressListener.update(res);
+                }
             }
             out.writeBytes("\r\n" + "--" + boundary + "\r\n");
         } else if (value instanceof byte[]) {

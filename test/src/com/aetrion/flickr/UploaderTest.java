@@ -84,7 +84,7 @@ public class UploaderTest extends TestCase {
             UploadMetaData metaData = new UploadMetaData();
             // check correct handling of escaped value
             metaData.setTitle("óöä");
-            String photoId = uploader.upload(out.toByteArray(), metaData);
+            String photoId = uploader.upload(out.toByteArray(), metaData, null);
             assertNotNull(photoId);
             pint.delete(photoId);
         } finally {
@@ -108,7 +108,7 @@ public class UploaderTest extends TestCase {
             UploadMetaData metaData = new UploadMetaData();
             // check correct handling of escaped value
             metaData.setTitle("óöä");
-            String photoId = uploader.upload(in, metaData);
+            String photoId = uploader.upload(in, metaData, null);
             assertNotNull(photoId);
             pint.delete(photoId);
         } finally {
@@ -132,7 +132,7 @@ public class UploaderTest extends TestCase {
 
             // Upload a photo, which we'll replace, then delete
             UploadMetaData metaData = new UploadMetaData();
-            photoId = uploader.upload(uploadIS, metaData);
+            photoId = uploader.upload(uploadIS, metaData, null);
         } finally {
             IOUtilities.close(uploadIS);
         }
@@ -141,7 +141,7 @@ public class UploaderTest extends TestCase {
         try {
             replaceIS = new FileInputStream(imageFile);
 
-            photoId = uploader.replace(replaceIS, photoId, false);
+            photoId = uploader.replace(replaceIS, photoId, false, null);
             assertNotNull(photoId);
             pint.delete(photoId);
         } finally {
@@ -171,9 +171,9 @@ public class UploaderTest extends TestCase {
 
             // Upload a photo, which we'll replace, then delete
             UploadMetaData metaData = new UploadMetaData();
-            String photoId = uploader.upload(out.toByteArray(), metaData);
+            String photoId = uploader.upload(out.toByteArray(), metaData, null);
 
-            photoId = uploader.replace(out.toByteArray(), photoId, false);
+            photoId = uploader.replace(out.toByteArray(), photoId, false, null);
             assertNotNull(photoId);
             pint.delete(photoId);
         } finally {

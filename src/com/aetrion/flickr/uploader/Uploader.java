@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
+import com.aetrion.flickr.ProgressListener;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.auth.AuthUtilities;
@@ -68,7 +69,7 @@ public class Uploader {
      * @throws IOException
      * @throws SAXException
      */
-    public String upload(byte[] data, UploadMetaData metaData) throws FlickrException, IOException, SAXException {
+    public String upload(byte[] data, UploadMetaData metaData, ProgressListener progressListener) throws FlickrException, IOException, SAXException {
         List parameters = new ArrayList();
 
         parameters.add(new Parameter("api_key", apiKey));
@@ -111,7 +112,7 @@ public class Uploader {
             )
         );
 
-        UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true);
+        UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true, progressListener);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -134,7 +135,7 @@ public class Uploader {
      * @throws FlickrException
      * @throws SAXException
      */
-    public String upload(InputStream in, UploadMetaData metaData) throws IOException, FlickrException, SAXException {
+    public String upload(InputStream in, UploadMetaData metaData, ProgressListener progressListener) throws IOException, FlickrException, SAXException {
         List parameters = new ArrayList();
 
         parameters.add(new Parameter("api_key", apiKey));
@@ -165,7 +166,7 @@ public class Uploader {
             )
         );
 
-        UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true);
+        UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true, progressListener);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -188,7 +189,7 @@ public class Uploader {
      * @throws FlickrException
      * @throws SAXException
      */
-    public String replace(InputStream in, String flickrId, boolean async) throws IOException, FlickrException, SAXException {
+    public String replace(InputStream in, String flickrId, boolean async, ProgressListener progressListener) throws IOException, FlickrException, SAXException {
         List parameters = new ArrayList();
 
         parameters.add(new Parameter("api_key", apiKey));
@@ -204,7 +205,7 @@ public class Uploader {
             )
         );
 
-        UploaderResponse response = (UploaderResponse) transport.post("/services/replace/", parameters, true);
+        UploaderResponse response = (UploaderResponse) transport.post("/services/replace/", parameters, true, progressListener );
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -227,7 +228,7 @@ public class Uploader {
      * @throws FlickrException
      * @throws SAXException
      */
-    public String replace(byte[] data, String flickrId, boolean async) throws IOException, FlickrException, SAXException {
+    public String replace(byte[] data, String flickrId, boolean async, ProgressListener progressListener) throws IOException, FlickrException, SAXException {
         List parameters = new ArrayList();
 
         parameters.add(new Parameter("api_key", apiKey));
@@ -243,7 +244,7 @@ public class Uploader {
             )
         );
 
-        UploaderResponse response = (UploaderResponse) transport.post("/services/replace/", parameters, true);
+        UploaderResponse response = (UploaderResponse) transport.post("/services/replace/", parameters, true, progressListener);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
