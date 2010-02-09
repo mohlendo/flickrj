@@ -112,7 +112,7 @@ public class Uploader {
             )
         );
 
-        UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true, progressListener);
+        UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true, progressListener, metaData.isVideo());
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -166,7 +166,7 @@ public class Uploader {
             )
         );
 
-        UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true, progressListener);
+        UploaderResponse response = (UploaderResponse) transport.post("/services/upload/", parameters, true, progressListener, metaData.isVideo());
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -205,7 +205,7 @@ public class Uploader {
             )
         );
 
-        UploaderResponse response = (UploaderResponse) transport.post("/services/replace/", parameters, true, progressListener );
+        UploaderResponse response = (UploaderResponse) transport.post("/services/replace/", parameters, true, progressListener, false);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
@@ -244,7 +244,7 @@ public class Uploader {
             )
         );
 
-        UploaderResponse response = (UploaderResponse) transport.post("/services/replace/", parameters, true, progressListener);
+        UploaderResponse response = (UploaderResponse) transport.post("/services/replace/", parameters, true, progressListener, false);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }

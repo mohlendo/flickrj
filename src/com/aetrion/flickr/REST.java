@@ -168,7 +168,7 @@ public class REST extends Transport {
      * @throws IOException
      * @throws SAXException
      */
-    public Response post(String path, List parameters, boolean multipart, ProgressListener progressListener) throws IOException, SAXException {
+    public Response post(String path, List parameters, boolean multipart, ProgressListener progressListener, boolean video) throws IOException, SAXException {
         // see: AuthUtilities.getSignature()
         //AuthUtilities.addAuthToken(parameters);
 
@@ -214,7 +214,7 @@ public class REST extends Transport {
                     while (iter.hasNext()) {
                         Parameter p = (Parameter) iter.next();
                         
-                        writeParam(p.getName(), p.getValue(), out, boundary, progressListener);
+                        writeParam(p.getName(), p.getValue(), out, boundary, progressListener, video);
                     }
 /*                    Auth auth = requestContext.getAuth();
                     if (auth != null) {
@@ -288,11 +288,17 @@ public class REST extends Transport {
         }
     }
 
-    private void writeParam(String name, Object value, DataOutputStream out, String boundary, ProgressListener progressListener)
+    private void writeParam(String name, Object value, DataOutputStream out, String boundary, ProgressListener progressListener, boolean video)
             throws IOException {
         if (value instanceof InputStream) {
-            out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"image.jpg\";\r\n");
-            out.writeBytes("Content-Type: image/jpeg" + "\r\n\r\n");
+            if(video) {
+              out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"video.3gp\";\r\n");
+              out.writeBytes("Content-Type: video/3gpp" + "\r\n\r\n");
+            } else {
+              out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"image.jpg\";\r\n");
+              out.writeBytes("Content-Type: image/jpeg" + "\r\n\r\n");
+            }
+           
             InputStream in = (InputStream) value;
             byte[] buf = new byte[512];
             int res = -1;

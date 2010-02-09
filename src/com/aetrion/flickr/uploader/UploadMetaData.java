@@ -24,6 +24,22 @@ public class UploadMetaData {
     private Boolean hidden;
     private String safetyLevel;
     private String contentType;
+    private boolean video;
+    
+    
+    /**
+     * @return the video
+     */
+    public boolean isVideo() {
+      return video;
+    }
+
+    /**
+     * @param video the video to set
+     */
+    public void setVideo(boolean video) {
+      this.video = video;
+    }
 
     public String getTitle() {
         return title;

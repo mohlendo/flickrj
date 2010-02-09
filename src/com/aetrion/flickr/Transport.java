@@ -72,7 +72,7 @@ public abstract class Transport {
      * @throws SAXException
      */
     public Response post(String path, List parameters) throws IOException, SAXException {
-        return post(path, parameters, false, null);
+        return post(path, parameters, false, null, false);
     }
 
     /**
@@ -85,7 +85,7 @@ public abstract class Transport {
      * @throws IOException
      * @throws SAXException
      */
-    public abstract Response post(String path, List parameters, boolean multipart, ProgressListener progressListener) throws IOException,
+    public abstract Response post(String path, List parameters, boolean multipart, ProgressListener progressListener, boolean video) throws IOException,
             SAXException;
 
     /**
