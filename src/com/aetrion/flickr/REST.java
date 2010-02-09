@@ -43,6 +43,7 @@ public class REST extends Transport {
     private String proxyPassword = "";
     private DocumentBuilder builder;
     private static Object mutex = new Object();
+    private static int MAX_BUFFER_SIZE = 4096;
 
     /**
      * Construct a new REST transport instance.
@@ -300,14 +301,25 @@ public class REST extends Transport {
             }
            
             InputStream in = (InputStream) value;
-            byte[] buf = new byte[512];
-            int res = -1;
-            while ((res = in.read(buf)) != -1) {
-                out.write(buf);
-                if(progressListener != null) {
-                  progressListener.update(res);
-                }
+            int bytesRead, bytesAvailable, bufferSize;
+            
+            byte[] buffer;
+            
+            // create a buffer of maximum size
+            bytesAvailable = in.available();
+            bufferSize = Math.min(bytesAvailable, MAX_BUFFER_SIZE);
+            buffer = new byte[bufferSize];
+
+            // read file and write it into form...            
+            while ((bytesRead = in.read(buffer, 0, bufferSize)) > 0) {
+              out.write(buffer, 0, bufferSize);
+              bytesAvailable = in.available();
+              bufferSize = Math.min(bytesAvailable, MAX_BUFFER_SIZE);
+              if(progressListener != null) {
+                progressListener.update(bytesRead);
+              }
             }
+            
             out.writeBytes("\r\n" + "--" + boundary + "\r\n");
         } else if (value instanceof byte[]) {
             out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"image.jpg\";\r\n");
