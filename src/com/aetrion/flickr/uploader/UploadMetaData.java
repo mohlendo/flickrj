@@ -25,6 +25,7 @@ public class UploadMetaData {
     private String safetyLevel;
     private String contentType;
     private boolean video;
+    private String[] blogIds;
     
     
     /**
@@ -39,6 +40,15 @@ public class UploadMetaData {
      */
     public void setVideo(boolean video) {
       this.video = video;
+    }
+    
+
+    public String[] getBlogIds() {
+      return blogIds;
+    }
+
+    public void setBlogIds(String[] blogIds) {
+      this.blogIds = blogIds;
     }
 
     public String getTitle() {
