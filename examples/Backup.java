@@ -84,7 +84,7 @@ public class Backup {
 		PhotosInterface photoInt = flickr.getPhotosInterface();
 		Map allPhotos = new HashMap();
 		
-		Iterator sets = pi.getList(this.nsid).getPhotosets().iterator();
+		Iterator sets = pi.getList(this.nsid).iterator();
 		
 		while (sets.hasNext()) {
 			Photoset set = (Photoset)sets.next();

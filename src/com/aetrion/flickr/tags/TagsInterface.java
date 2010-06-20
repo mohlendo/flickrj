@@ -231,13 +231,15 @@ public class TagsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getListUser(String userId) throws IOException, SAXException, FlickrException {
+    public List getListUser(String userId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST_USER));
         parameters.add(new Parameter("api_key", apiKey));
-
-        parameters.add(new Parameter("user_id", userId));
-
+        
+        if (userId != null) {
+          parameters.add(new Parameter("user_id", userId));
+        }
+        
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());

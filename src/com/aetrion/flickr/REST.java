@@ -6,6 +6,7 @@ package com.aetrion.flickr;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -197,16 +198,7 @@ public class REST extends Transport {
 
             DataOutputStream out = null;
             try {
-                if (Flickr.debugRequest) {
-                    out = new DataOutputStream(
-                        new DebugOutputStream(
-                            conn.getOutputStream(),
-                            System.out
-                        )
-                    );
-                } else {
-                    out = new DataOutputStream(conn.getOutputStream());
-                }
+                out = new DataOutputStream(conn.getOutputStream());                
 
                 // construct the body
                 if (multipart) {
@@ -318,6 +310,7 @@ public class REST extends Transport {
               if(progressListener != null) {
                 progressListener.update(bytesRead);
               }
+              out.flush();
             }
             
             out.writeBytes("\r\n" + "--" + boundary + "\r\n");

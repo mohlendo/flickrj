@@ -131,7 +131,7 @@ public class BlogsInterface {
      * @throws IOException
      * @throws SAXException
      */
-    public Collection getList() throws IOException, SAXException, FlickrException {
+    public List getList() throws IOException, SAXException, FlickrException {
         List blogs = new ArrayList();
 
         List parameters = new ArrayList();

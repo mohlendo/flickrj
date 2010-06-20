@@ -2,6 +2,7 @@ package com.aetrion.flickr;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -92,14 +93,14 @@ public class PhotosetsInterfaceTest extends TestCase {
 
     public void testGetList() throws FlickrException, IOException, SAXException {
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
-        Photosets photosets = iface.getList(properties.getProperty("nsid"));
+        List photosets = iface.getList(properties.getProperty("nsid"));
         assertNotNull(photosets);
-        assertEquals(2, photosets.getPhotosets().size());
+        assertEquals(2, photosets.size());
     }
 
     public void testGetList2() throws FlickrException, IOException, SAXException {
         PhotosetsInterface iface = flickr.getPhotosetsInterface();
-        Photosets photosets = iface.getList("26095690@N00");
+        List photosets = iface.getList("26095690@N00");
         assertNotNull(photosets);
     }
 

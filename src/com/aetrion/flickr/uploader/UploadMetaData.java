@@ -26,8 +26,19 @@ public class UploadMetaData {
     private String contentType;
     private boolean video;
     private String[] blogIds;
+    private String photoSetId;
     
     
+    
+    
+    public String getPhotoSetId() {
+      return photoSetId;
+    }
+
+    public void setPhotoSetId(String photoSetId) {
+      this.photoSetId = photoSetId;
+    }
+
     /**
      * @return the video
      */

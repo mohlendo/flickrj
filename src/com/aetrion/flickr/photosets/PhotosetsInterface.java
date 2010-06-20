@@ -111,6 +111,7 @@ public class PhotosetsInterface {
         parameters.add(new Parameter("title", title));
         parameters.add(new Parameter("description", description));
         parameters.add(new Parameter("primary_photo_id", primaryPhotoId));
+        
         parameters.add(
             new Parameter(
                 "api_sig",
@@ -352,7 +353,7 @@ public class PhotosetsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Photosets getList(String userId) throws IOException, SAXException, FlickrException {
+    public List getList(String userId) throws IOException, SAXException, FlickrException {
         List parameters = new ArrayList();
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
@@ -405,7 +406,7 @@ public class PhotosetsInterface {
         }
 
         photosetsObject.setPhotosets(photosets);
-        return photosetsObject;
+        return photosets;
     }
 
     /**
